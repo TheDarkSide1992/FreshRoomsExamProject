@@ -1,25 +1,57 @@
-var builder = WebApplication.CreateBuilder(args);
+using api;
+using Fleck;
+using lib;
+using Serilog;
+using api.Middleware;
+using System.Reflection;
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public static class StartUp
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public static void Main(String[] args)
+    {
+        var app = StatUp(args);
+        app.Run();
+    }
+
+    public static WebApplication StatUp(String[] args)
+    {
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(
+                outputTemplate: "\n{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}\n")
+            .CreateLogger();
+
+        var server = new WebSocketServer("ws://0.0.0.0:8181");
+        var builder = WebApplication.CreateBuilder(args);
+        var clientEventHandler = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
+
+        var app = builder.Build();
+
+        server.Start(ws =>
+        {
+            ws.OnOpen = () =>
+            {
+                StateService.AddConection(ws);
+            };
+
+            ws.OnClose = () =>
+            {
+                StateService.WsConections.Remove(ws.ConnectionInfo.Id);
+            };
+
+
+            ws.OnMessage = async message =>
+            {
+                try
+                {
+                    await app.InvokeClientEventHandler(clientEventHandler, ws, message);
+                }
+                catch (Exception e)
+                {
+                    e.Handle(ws, e.Message);
+                }
+            };
+        });
+
+        return app;
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

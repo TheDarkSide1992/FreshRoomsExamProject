@@ -13,10 +13,13 @@ public class AccountRepository
         _dataSource = dataSource;
     }
 
-    public User CreateUser(string userDisplayName, string userEmail)
+    
+   
+    
+    public User CreateUser(int id, string userDisplayName, string userEmail)
     {
         var sql =
-            $@"INSERT INTO freshrooms.users (name, email) VALUES(@userDisplayName, @userEmail,@userBirthday, false) RETURNING 
+            $@"INSERT INTO freshrooms.users (id, name, email) VALUES(@id, @userDisplayName, @userEmail, false) RETURNING 
         id as {nameof(User.userId)}, 
         name as {nameof(User.userDisplayName)},
         email as {nameof(User.userEmail)};";
@@ -25,12 +28,12 @@ public class AccountRepository
         {
             try
             {
-                return conn.QueryFirst<User>(sql, new { userDisplayName, userEmail });
+                return conn.QueryFirst<User>(sql, new { id, userDisplayName, userEmail });
 
             }
             catch (Exception e)
             {
-                throw new Exception("Could now create user");
+                throw new Exception("Could not create user");
             }
         }
     } 

@@ -14,4 +14,11 @@
       <ProjectReference Include="..\Externalities\Externalities.csproj" />
     </ItemGroup>
 
+<<<<<<< HEAD
+    <ItemGroup>
+      <ProjectReference Include="..\Externalities\Externalities.csproj" />
+    </ItemGroup>
+
+=======
+>>>>>>> c9696647c28724be07b159c8934e4805acd614a8
 </Project>

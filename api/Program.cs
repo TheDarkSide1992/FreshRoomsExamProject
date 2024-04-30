@@ -4,6 +4,7 @@ using lib;
 using Serilog;
 using api.Middleware;
 using System.Reflection;
+using api.StaticHelpers.ExtentionMethods;
 
 public static class StartUp
 {
@@ -26,32 +27,26 @@ public static class StartUp
 
         var app = builder.Build();
 
-        server.Start(ws =>
+        void Config(IWebSocketConnection ws)
         {
-            ws.OnOpen = () =>
-            {
-                StateService.AddConection(ws);
-            };
-
-            ws.OnClose = () =>
-            {
-                StateService.WsConections.Remove(ws.ConnectionInfo.Id);
-            };
-
-
+            ws.OnOpen = ws.AddConnection;
+            ws.OnClose = ws.RemoveFromConnections;
+            ws.OnError = ex => ex.Handle(ws, null);
             ws.OnMessage = async message =>
             {
                 try
                 {
                     await app.InvokeClientEventHandler(clientEventHandler, ws, message);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    e.Handle(ws, e.Message);
+                    ex.Handle(ws, message);
                 }
             };
-        });
+        }
 
+        server.RestartAfterListenError = true;
+        server.Start(Config);
         return app;
     }
 }

@@ -11,24 +11,36 @@ public class HashRepository
     {
         _dataSource = dataSource;
     }
-
-    public bool CheckIfGuidExist(string guid)
+    
+    public bool CreateGuid(string newGuid, string accperm)
     {
-        const string sql = $@"SELECT COUNT(*) guid from freshrooms.accountcode WHERE guid = @guid;";
-        using var connection = _dataSource.OpenConnection();
-        int userCount = (int) connection.ExecuteScalar(sql, new { guid } );
-        return userCount > 0;
+        const string sql = $@"INSERT INTO freshrooms.accountcode (guid, accperm, isUsed)
+        VALUES (@newGuid, @accperm, false);";
+        using (var connection = _dataSource.OpenConnection())
+        {
+            return connection.Execute(sql, new { newGuid, accperm } ) == 1;
+        }
+    }
+
+    public bool CheckIfGuidExist(string newGuid)
+    {
+        const string sql = $@"SELECT COUNT(guid) from freshrooms.accountcode WHERE guid = @newGuid;";
+        using (var connection = _dataSource.OpenConnection())
+        {
+            return connection.ExecuteScalar<int>(sql, new { newGuid } ) > 0;
+        }
     }
     
     public int GetIdFromGuid(string guid)
     {
-        const string sql = $@"SELECT guid from freshrooms.accountcode WHERE guid = @guid RETURNING id as int;";
+        const string sql = $@"SELECT id from freshrooms.accountcode WHERE guid = @guid;";
         
-        using var connection = _dataSource.OpenConnection();
-        return connection.QueryFirst(sql, new { guid } );
+        using (var connection = _dataSource.OpenConnection())
+        {
+            return connection.QueryFirst<int>(sql, new { guid } );
+        }
+        
     }
-
-    
 
     
     public void CreatePasswordHash(int userId, string hash, string salt, string algorithm)

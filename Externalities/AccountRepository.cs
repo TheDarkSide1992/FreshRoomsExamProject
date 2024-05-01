@@ -16,11 +16,11 @@ public class AccountRepository
     
    
     
-    public User CreateUser(int id, string userDisplayName, string userEmail)
+    public User CreateUser(int id, string userDisplayName, string userEmail, bool isDeleted)
     {
         var sql =
-            $@"INSERT INTO freshrooms.users (id, name, email) VALUES(@id, @userDisplayName, @userEmail, false) RETURNING 
-        id as {nameof(User.userId)}, 
+            $@"INSERT INTO freshrooms.users (userId, name, email, isDeleted) VALUES(@id, @userDisplayName, @userEmail, @isDeleted) RETURNING 
+        userId as {nameof(User.userId)}, 
         name as {nameof(User.userDisplayName)},
         email as {nameof(User.userEmail)};";
 
@@ -28,7 +28,7 @@ public class AccountRepository
         {
             try
             {
-                return conn.QueryFirst<User>(sql, new { id, userDisplayName, userEmail });
+                return conn.QueryFirst<User>(sql, new { id, userDisplayName, userEmail, isDeleted });
 
             }
             catch (Exception e)

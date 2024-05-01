@@ -5,6 +5,8 @@ using Serilog;
 using api.Middleware;
 using System.Reflection;
 using api.StaticHelpers.ExtentionMethods;
+using Infastructure;
+using Service;
 
 public static class StartUp
 {
@@ -24,7 +26,13 @@ public static class StartUp
         var server = new WebSocketServer("ws://0.0.0.0:8181");
         var builder = WebApplication.CreateBuilder(args);
         var clientEventHandler = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
-
+    
+        builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString,
+            dataSourceBuilder => dataSourceBuilder.EnableParameterLogging());
+        builder.Services.AddSingleton<AccountRepository>();
+        builder.Services.AddSingleton<AccountService>();
+        builder.Services.AddSingleton<HashRepository>();
+       
         var app = builder.Build();
 
         void Config(IWebSocketConnection ws)

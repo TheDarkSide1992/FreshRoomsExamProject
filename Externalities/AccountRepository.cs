@@ -53,8 +53,7 @@ public class AccountRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            throw new Exception("failed to login");
         }
         
     }

@@ -13,4 +13,5 @@ export class AppComponent {
   ];
   public labels = ['Living Room', 'Bathroom', 'Bedroom'];
   constructor() {}
+
 }

@@ -47,5 +47,15 @@ public class AccountService
         return null;
     }
     
+    public User? Login(string email, string password)
+    {
+        var passwordHash = _hashRepository.GetByEmail(email);
+        Console.WriteLine("first done");
+        var hashAlgorithm = PasswordHashAlgorithm.Create(passwordHash.Algorithm);
+        var isValid = hashAlgorithm.VerifyHashedPassword(password, passwordHash.Hash, passwordHash.Salt);
+        if (isValid) return _accountRepository.GetById(passwordHash.id);
+
+        return null;
+    }
     
 }

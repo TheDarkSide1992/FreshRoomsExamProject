@@ -1,23 +1,18 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import {LoginPage} from "./Login/login.page";
+import {SidebarmenuPage} from "./SidebarMenu/sidebarmenu.page";
+import {LoginPage} from "./LoginPage/Login.Page";
 
 const routes: Routes = [
-  /*{
-    path: '',
-    redirectTo: 'folder/FreshRooms',
-    pathMatch: 'full'
-  },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
-  }*/
+    path: '',
+    component: SidebarmenuPage,
+  },
   {
     path: 'login',
     component: LoginPage,
   }
 ];
-
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {WebSocketSuperClass} from "./Models/WebSocketSuperClass";
+import {WebsocketClientService} from "./Services/service.websocketClient";
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  constructor(public websocketservice: WebsocketClientService) {}
 }

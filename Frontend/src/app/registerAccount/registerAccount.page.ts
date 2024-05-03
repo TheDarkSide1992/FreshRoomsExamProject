@@ -1,5 +1,7 @@
 import {Component} from "@angular/core";
 import {FormControl, Validators} from "@angular/forms";
+import {WebsocketClientService} from "../Services/service.websocketClient";
+import {ClientWantsToCreateUserDTO} from "./RegisterMessage.model";
 
 @Component({
   template:
@@ -40,7 +42,7 @@ import {FormControl, Validators} from "@angular/forms";
                 class="error">
                 Both passwords must match
               </div>
-              <ion-button style=" margin-top: 5%" [disabled]= " !(APasswordRepeat.value === APassword.value && APassword.valid && APasswordRepeat.valid && AEmail.valid && AName.valid) ">Register
+              <ion-button style=" margin-top: 5%" (click)="sendCreateUserRequest()" [disabled]= " !(APasswordRepeat.value === APassword.value && APassword.valid && APasswordRepeat.valid && AEmail.valid && AName.valid) ">Register
               </ion-button>
             </div>
       </body>
@@ -54,22 +56,17 @@ export class RegisterAccountPage {
   APassword = new FormControl("",[Validators.required, Validators.minLength(8),Validators.maxLength(32)]);
   APasswordRepeat: FormControl = new FormControl("", [Validators.required]);
 
-  constructor(protected ws: WebSocketService){}
+  constructor(protected ws: WebsocketClientService){}
 
-  async sendMessageToAI() {
-
-
-
-    var object = {
-      eventType: "ClientWantsAIResponse",
-      aac: "",
-      name: "",
-      email: "",
-      password: "",
+  async sendCreateUserRequest() {
+    var clientRequest: ClientWantsToCreateUserDTO = {
+      eventType: "ClientWantsToCreateUser",
+      name: this.AName.value?.toString(),
+      email: this.AEmail.value?.toString(),
+      password: this.APassword.value?.toString(),
+      guid: this.AAC.value?.toString(),
     }
-
-    this.ws.socket.send(JSON.stringify(object));
-
+    this.ws.socketConnection.sendDto(clientRequest)
   }
 
 }

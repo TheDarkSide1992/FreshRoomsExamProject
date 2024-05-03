@@ -34,9 +34,7 @@ export class WebsocketClientService
 
  async ServerLogsInUser(dto: ServerLogsInUser)
   {
-    console.log(dto)
     localStorage.setItem("jwt", dto.jwt!);
-    console.log("second")
     this.router.navigate(['/home'])
     var t = await this.toast.create(
       {

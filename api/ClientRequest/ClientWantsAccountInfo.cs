@@ -9,12 +9,15 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
-public class ClientWantsAccountInfo(AccountService accountService) : BaseEventHandler<ClientWantsToAuthenticateWithJwtDto>
+public class ClientWantsAccountInfo(AccountService accountService) : BaseEventHandler<ClientWantsAccountInfoDto>
 {
-    public override Task Handle(ClientWantsToAuthenticateWithJwtDto dto, IWebSocketConnection socket)
+    public override Task Handle(ClientWantsAccountInfoDto dto, IWebSocketConnection socket)
     {
+        Console.WriteLine("\n ###____Reading_Client_Info____#### \n"); //TODO remowe before deployment
+        
         var metData = socket.GetMetadata();
-        var accountInfo = accountService.getAccountnfo(metData.userInfo.userId);
+        //var accountInfo = accountService.getAccountnfo(metData.userInfo.userId);
+        var accountInfo = accountService.getAccountnfo(1);
 
         if (accountInfo != null)
         {
@@ -26,8 +29,17 @@ public class ClientWantsAccountInfo(AccountService accountService) : BaseEventHa
             };
 
             var messageToClient = JsonSerializer.Serialize(serverSendsAccountData);
-
-
+            socket.Send(messageToClient);
+        }
+        else
+        {
+            var serverSendsAccountData = new ServerSendsAccountData()
+            {
+                realname = "N/A",
+                city = "N/A",
+                email = "N/A",
+            };
+            var messageToClient = JsonSerializer.Serialize(serverSendsAccountData);
             socket.Send(messageToClient);
         }
 

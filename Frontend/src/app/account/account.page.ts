@@ -49,7 +49,7 @@ import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
               <div style="flex: 4; flex-wrap: wrap;
               align-content: space-evenly; flex-direction: column;">
                   <br>
-                  <ion-button>
+                  <ion-button (click)="getUser()">
                       <ion-icon name="build-outline"></ion-icon>
                       <p> Change Settings </p>
                   </ion-button>
@@ -75,7 +75,7 @@ export class AccountPage implements OnInit{
   ngOnInit(): void {
     this.getUser();
 
-    this.rename = this.wsService.currentAccount?.realName;
+    this.rename = this.wsService.currentAccount?.realname;
     this.city = this.wsService.currentAccount?.city;
     this.mail = this.wsService.currentAccount?.email;
 
@@ -84,6 +84,10 @@ export class AccountPage implements OnInit{
 
   getUser() {
     this.wsService.socketConnection.sendDto(new ClientWantsAccountInfo)
+
+    this.rename = this.wsService.currentAccount?.realname;
+    this.city = this.wsService.currentAccount?.city;
+    this.mail = this.wsService.currentAccount?.email;
   }
 
 

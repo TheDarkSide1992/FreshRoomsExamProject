@@ -63,4 +63,20 @@ public class HashRepository
         using var connection = _dataSource.OpenConnection();
         return connection.Execute(sql, new { userId, hash, salt, algorithm }) == 1;
     }
+    
+    public HashModel GetByEmail(string email)
+    {
+        const string sql = $@"
+SELECT 
+    user_id as {nameof(HashModel.id)},
+    hash as {nameof(HashModel.Hash)},
+    salt as {nameof(HashModel.Salt)},
+    algorithm as {nameof(HashModel.Algorithm)}
+FROM freshrooms.password_hash
+JOIN freshrooms.users ON freshrooms.password_hash.user_id = freshrooms.users.userId
+WHERE email = @email;
+";
+        using var connection = _dataSource.OpenConnection();
+        return connection.QuerySingle<HashModel>(sql, new { email });
+    }
 }

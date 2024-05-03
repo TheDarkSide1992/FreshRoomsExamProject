@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.Security.Authentication;
 using Infastructure;
 using Infastructure.DataModels;
 
@@ -47,5 +49,32 @@ public class AccountService
         return null;
     }
     
+    public User? Login(string email, string password)
+    {
+        var passwordHash = _hashRepository.GetByEmail(email);
+        var hashAlgorithm = PasswordHashAlgorithm.Create(passwordHash.Algorithm);
+        var isValid = hashAlgorithm.VerifyHashedPassword(password, passwordHash.Hash, passwordHash.Salt);
+        if (isValid) return _accountRepository.GetById(passwordHash.id);
+
+        return null;
+    }
+
+    public User? FindUserfromId(int id)
+    {
+        try
+        {
+        var isDeleted = _accountRepository.CheckIfUserIsDeleted(id);
+                if (isDeleted == null)
+                {
+                    return _accountRepository.GetById(id);
+                }
+        }
+        catch (Exception e)
+        {
+            throw new AuthenticationException("The Account is deleted");
+        }
+
+        return null;
+    }
     
 }

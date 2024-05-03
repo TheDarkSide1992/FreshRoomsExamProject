@@ -1,5 +1,5 @@
 {
-  "name": "Sidemenu Starter",
+  "name": "Tabs Starter",
   "baseref": "main",
   "tarignore": [
     "node_modules",

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {WebSocketSuperClass} from "./Models/WebSocketSuperClass";
+
 import {WebsocketClientService} from "./Services/service.websocketClient";
 
 @Component({

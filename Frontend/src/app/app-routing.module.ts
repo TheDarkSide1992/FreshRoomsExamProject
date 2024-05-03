@@ -3,6 +3,8 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import {SidebarmenuPage} from "./SidebarMenu/sidebarmenu.page";
 import {LoginPage} from "./LoginPage/Login.Page";
 import {HomePage} from "./Home/Home.page";
+import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
+
 
 const routes: Routes = [
   {
@@ -29,6 +31,10 @@ const routes: Routes = [
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',
+  },
+  {
+    path: "register",
+    component: RegisterAccountPage,
   },
 ];
 @NgModule({

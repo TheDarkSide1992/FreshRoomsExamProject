@@ -1,4 +1,4 @@
-﻿using lib;
+using lib;
 
 namespace socketAPIFirst.Dtos;
 

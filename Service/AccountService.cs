@@ -81,15 +81,15 @@ public class AccountService
     {
         try
         {
-            //AccountInfo acInfo = _accountRepository.getAccountIngo(id);
+            AccountInfo acInfo = _accountRepository.getAccountIngo(id);
 
             //THIS IS MOCK DATA
-            AccountInfo acInfo = new AccountInfo()
+           /* AccountInfo acInfo = new AccountInfo()
             {
                 realname = "Json Object",
                 city = "Ram City",
                 email = "IamJsoN@object.dev",
-            };
+            };*/
 
             if (acInfo.city == null) acInfo.city = "N/A";
         }

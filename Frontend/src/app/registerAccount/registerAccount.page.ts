@@ -54,6 +54,22 @@ export class RegisterAccountPage {
   APassword = new FormControl("",[Validators.required, Validators.minLength(8),Validators.maxLength(32)]);
   APasswordRepeat: FormControl = new FormControl("", [Validators.required]);
 
-  constructor(){}
+  constructor(protected ws: WebSocketService){}
+
+  async sendMessageToAI() {
+
+
+
+    var object = {
+      eventType: "ClientWantsAIResponse",
+      aac: "",
+      name: "",
+      email: "",
+      password: "",
+    }
+
+    this.ws.socket.send(JSON.stringify(object));
+
+  }
 
 }

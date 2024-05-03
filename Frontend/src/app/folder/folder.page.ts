@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import {WebsocketClientService} from "../Services/service.websocketClient";
 
 @Component({
   selector: 'app-folder',
@@ -9,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 export class FolderPage implements OnInit {
   public folder!: string;
   private activatedRoute = inject(ActivatedRoute);
-  constructor() {}
+  constructor(public webSocketClientService: WebsocketClientService) {}
 
   ngOnInit() {
     this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {WebsocketClientService} from "../Services/service.websocketClient";
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,8 @@ import { Component, OnInit } from '@angular/core';
 export class HomePageComponent implements OnInit {
   public items = [];
 
+  constructor(public webSocketClientService: WebsocketClientService) {
+  }
   ngOnInit() {
     for (let i = 1; i < 51; i++) {
       // @ts-ignore

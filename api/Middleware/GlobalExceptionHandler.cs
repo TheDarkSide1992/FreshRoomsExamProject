@@ -9,7 +9,7 @@ public static class GlobalExceptionHandler
 {
     public static void Handle(this Exception exception, IWebSocketConnection socket, string? message)
     {
-        Log.Error(exception, "this Wass caught in gloabal handler");
+        Log.Error(exception, "this was caught in global handler");
         socket.Send(JsonSerializer.Serialize(new ServerSendsErrorMessageToClient()
         {
             recivedMessage = message,

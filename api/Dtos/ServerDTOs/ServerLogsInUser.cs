@@ -2,5 +2,5 @@
 
 public class ServerLogsInUser
 {
-    public string JWT { get; set; }
+    public string jwt { get; set; }
 }

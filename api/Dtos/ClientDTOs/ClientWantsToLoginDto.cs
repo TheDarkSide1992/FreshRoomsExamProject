@@ -3,7 +3,7 @@ using lib;
 
 namespace api.Dtos;
 
-public class ClientWantsToLoginDTO : BaseDto
+public class ClientWantsToLoginDto : BaseDto
 {
     [EmailAddress]
     public string email { get; set; }

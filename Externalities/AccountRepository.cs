@@ -55,6 +55,23 @@ public class AccountRepository
         {
             throw new Exception("failed to login");
         }
-        
+    }
+
+    public User? CheckIfUserIsDeleted(int id)
+    {
+        try
+        {
+            var sql = $@"select
+                   userId as {nameof(User.userId)},
+                   name as {nameof(User.userDisplayName)},
+                   email as {nameof(User.userEmail)}
+                   from freshrooms.users where userId = @id and isDeleted = true";
+            using var connection = _dataSource.OpenConnection();
+            return connection.QueryFirst<User>(sql, new { id });
+        }
+        catch (Exception e)
+        {
+            throw new Exception("failed to get user");
+        }   
     }
 }

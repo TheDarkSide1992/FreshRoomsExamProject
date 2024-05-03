@@ -3,6 +3,8 @@ import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
 import {IonContent} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
+import {WebsocketClientService} from "../Services/service.websocketClient";
+import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
 
 
 @Component({
@@ -60,14 +62,31 @@ import {FormControl, Validators} from "@angular/forms";
 })
 
 export class AccountPage implements OnInit{
-  rename : string = "N/A";
-  city : string = "N/A";
-  mail : string = "N/A";
+  rename? : string = "N/A";
+  city? : string = "N/A";
+  mail? : string = "N/A";
+
+
+  constructor(public wsService:WebsocketClientService) {
+
+  }
+
 
   ngOnInit(): void {
-    this.rename = "N/A";
-    this.city = "N/A";
-    this.mail = "N/A";
+    this.getUser();
+
+    this.rename = this.wsService.currentAccount?.realName;
+    this.city = this.wsService.currentAccount?.city;
+    this.mail = this.wsService.currentAccount?.email;
+
+    //TODO Get account data
   }
+
+  getUser() {
+    this.wsService.socketConnection.sendDto(new ClientWantsAccountInfo)
+  }
+
+
+
 
 }

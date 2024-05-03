@@ -76,5 +76,15 @@ public class AccountService
 
         return null;
     }
-    
+
+    public AccountInfo? getAccountnfo(int id)
+    {
+        AccountInfo accountInfo = new AccountInfo();
+        accountInfo.realname = "Json Object";
+        accountInfo.city = "Ram City";
+        accountInfo.email = "IamJsoN@object.dev";
+
+        return accountInfo;
+    }
+
 }

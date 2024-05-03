@@ -13,7 +13,11 @@ import { Component } from '@angular/core';
             </ion-menu-toggle>
           </ion-list>
 
-
+          <ion-list>
+            <ion-button routerLink="login">Login
+              <ion-icon name="log-in-outline"></ion-icon>
+            </ion-button>
+          </ion-list>
         </ion-content>
       </ion-menu>
       <ion-router-outlet id="main-content"></ion-router-outlet>

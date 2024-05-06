@@ -13,9 +13,7 @@ public class AccountRepository
         _dataSource = dataSource;
     }
 
-    
-   
-    
+
     public User CreateUser(int id, string userDisplayName, string userEmail, bool isDeleted)
     {
         var sql =
@@ -29,7 +27,6 @@ public class AccountRepository
             try
             {
                 return conn.QueryFirst<User>(sql, new { id, userDisplayName, userEmail, isDeleted });
-
             }
             catch (Exception e)
             {
@@ -48,8 +45,8 @@ public class AccountRepository
                    name as {nameof(User.userDisplayName)},
                    email as {nameof(User.userEmail)}
                    from freshrooms.users where userId = @id and isDeleted = false";
-                using var connection = _dataSource.OpenConnection();
-                return connection.QueryFirst<User>(sql, new { id });
+            using var connection = _dataSource.OpenConnection();
+            return connection.QueryFirst<User>(sql, new { id });
         }
         catch (Exception e)
         {
@@ -57,7 +54,7 @@ public class AccountRepository
         }
     }
 
-    public User? CheckIfUserIsDeleted(int id)
+    public int CheckIfUserIsDeleted(int id)
     {
         try
         {
@@ -67,11 +64,34 @@ public class AccountRepository
                    email as {nameof(User.userEmail)}
                    from freshrooms.users where userId = @id and isDeleted = true";
             using var connection = _dataSource.OpenConnection();
-            return connection.QueryFirst<User>(sql, new { id });
+            return connection.ExecuteScalar<int>(sql, new { id });
         }
         catch (Exception e)
         {
             throw new Exception("failed to get user");
-        }   
+        }
+    }
+
+    public AccountInfo getAccountIngo(int id)
+    {
+        var sql = $@"select
+                   name as {nameof(AccountInfo.realname)},
+                   email as {nameof(AccountInfo.email)},
+                  city as {nameof(AccountInfo.city)}
+
+                from freshrooms.users where userId = @id and isDeleted = false";
+
+        try
+        {
+            using (var connection = _dataSource.OpenConnection())
+            {
+                Console.WriteLine("runnign sql");
+                return connection.QueryFirst<AccountInfo>(sql, new { id });
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("failed to get Account info");
+        }
     }
 }

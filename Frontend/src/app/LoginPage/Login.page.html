@@ -8,7 +8,7 @@
         <ion-input label-placement="floating" label="Email:" [formControl]="emailcontrol"/>
         <ion-input type="password" label-placement="floating" label="Password:" [formControl]="passwordcontrol"/>
         <ion-buttons style="display: flex; justify-content: center;">
-          <ion-button>sign up</ion-button>
+          <ion-button routerLink="../register">sign up</ion-button>
           <ion-button (click)="login()">login</ion-button>
         </ion-buttons>
       </ion-card-content>

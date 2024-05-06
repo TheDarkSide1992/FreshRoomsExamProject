@@ -6,11 +6,14 @@ import {Injectable} from "@angular/core";
 import {ServerAuthenticatesUserFromJwt} from "../Models/ServerAuthenticatesUserFromJwt";
 import { ServerLogsInUser } from "../Models/ServerLogsInUser";
 import {ToastController} from "@ionic/angular";
+import { ServerSendsAccountData } from "../Models/ServerSendsAccountData";
+import {accountModdel} from "../Models/objects/accountModdel";
 
 @Injectable({providedIn: 'root'})
 export class WebsocketClientService
 {
   public socketConnection: WebSocketSuperClass;
+  currentAccount? : accountModdel;
 
   constructor(public router: Router, public toast: ToastController) {
     this.socketConnection = new WebSocketSuperClass(environment.url)
@@ -30,6 +33,11 @@ export class WebsocketClientService
   ServerAuthenticatesUserFromJwt(dto: ServerAuthenticatesUserFromJwt)
   {
     this.router.navigate(['/home'])
+  }
+
+  ServerSendsAccountData(dto: ServerSendsAccountData)
+  {
+    this.currentAccount = dto as accountModdel;
   }
 
  async ServerLogsInUser(dto: ServerLogsInUser)

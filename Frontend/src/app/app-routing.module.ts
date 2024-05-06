@@ -4,6 +4,7 @@ import {SidebarmenuPage} from "./SidebarMenu/sidebarmenu.page";
 import {LoginPage} from "./LoginPage/Login.Page";
 import {HomePage} from "./Home/Home.page";
 import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
+import {AccountPage} from "./account/account.page";
 
 
 const routes: Routes = [
@@ -35,6 +36,10 @@ const routes: Routes = [
   {
     path: "register",
     component: RegisterAccountPage,
+  },
+  {
+    path: "account",
+    component: AccountPage,
   },
 ];
 @NgModule({

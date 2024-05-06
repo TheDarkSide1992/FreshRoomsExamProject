@@ -10,11 +10,13 @@ import {ReactiveFormsModule} from "@angular/forms";
 import { AppComponent } from './app.component';
 import {SidebarmenuPage} from "./SidebarMenu/sidebarmenu.page";
 import {LoginPage} from "./LoginPage/Login.Page";
+import {ManageRoomsPage} from "./ViewRooms/ManageRooms";
+import {CreateRoomsModalPage} from "./CreateRooms/CreateRooms";
 
 
 
 @NgModule({
-  declarations: [AppComponent, SidebarmenuPage, LoginPage, RegisterAccountPage],
+  declarations: [AppComponent, SidebarmenuPage, LoginPage, RegisterAccountPage, ManageRoomsPage, CreateRoomsModalPage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

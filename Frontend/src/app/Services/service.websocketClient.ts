@@ -4,6 +4,8 @@ import {environment} from "../../environments/environment";
 import {BaseDto} from "../Models/baseDto";
 import {Injectable} from "@angular/core";
 import {ServerAuthenticatesUserFromJwt} from "../Models/ServerAuthenticatesUserFromJwt";
+import { ServerLogsInUser } from "../Models/ServerLogsInUser";
+import {ToastController} from "@ionic/angular";
 import { ServerSendsAccountData } from "../Models/ServerSendsAccountData";
 import {accountModdel} from "../Models/objects/accountModdel";
 
@@ -13,7 +15,7 @@ export class WebsocketClientService
   public socketConnection: WebSocketSuperClass;
   currentAccount? : accountModdel;
 
-  constructor(public router: Router) {
+  constructor(public router: Router, public toast: ToastController) {
     this.socketConnection = new WebSocketSuperClass(environment.url)
     this.handleEvent();
   }
@@ -36,6 +38,20 @@ export class WebsocketClientService
   ServerSendsAccountData(dto: ServerSendsAccountData)
   {
     this.currentAccount = dto as accountModdel;
+  }
+
+ async ServerLogsInUser(dto: ServerLogsInUser)
+  {
+    localStorage.setItem("jwt", dto.jwt!);
+    this.router.navigate(['/home'])
+    var t = await this.toast.create(
+      {
+        color: "success",
+        duration: 2000,
+        message: "Logged in successfully"
+      }
+    )
+    t.present();
   }
 }
 

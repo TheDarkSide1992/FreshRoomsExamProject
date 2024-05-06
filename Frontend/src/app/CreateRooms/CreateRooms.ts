@@ -38,12 +38,15 @@ import {SensorModel} from "./SensorModel";
                     Must enter a name
                 </div>
 
+                <ion-input [formControl]="RSensorName" style=" margin-top: 8%" label-placement="floating"
+                         label="Sensor Name" placeholder="Sensor Name">
+                </ion-input>
                 <div style="flex-direction: row;  align-content: space-evenly;">
-                    <ion-input [formControl]="RSensorId" style=" margin-top: 5%" label-placement="floating"
+                    <ion-input [formControl]="RSensorId" style=" " label-placement="floating"
                                label="Sensor Id" placeholder="Sensor Id">
                     </ion-input>
 
-                    <ion-button (click)="createTempSensor()" [disabled]="!RSensorId.valid"
+                    <ion-button (click)="createTempSensor()" [disabled]="!RSensorId.valid && !RSensorId.valid"
                                 style=" margin-top: 10%; height: 20px">Create Sensor
                     </ion-button>
 
@@ -64,7 +67,7 @@ import {SensorModel} from "./SensorModel";
 
             <ion-card style="display: flex; flex-direction: row; width: 50%" *ngFor="let sensor of this.messages">
                 <ion-card-content>{{ sensor.name }}</ion-card-content>
-                <ion-button (click)="removeTempSensor()">-</ion-button>
+                <ion-button (click)="removeTempSensor(sensor.valueOf())"><ion-icon name="remove-outline"></ion-icon></ion-button>
             </ion-card>
         </ion-content>
 
@@ -79,6 +82,8 @@ import {SensorModel} from "./SensorModel";
 export class CreateRoomsModalPage implements OnInit {
 
   RName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
+
+  RSensorName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
 
   RSensorId = new FormControl("",[Validators.required,Validators.minLength(36),Validators.maxLength(36)]);
 
@@ -95,7 +100,7 @@ export class CreateRoomsModalPage implements OnInit {
 
   createTempSensor(){
     let tempsensor: SensorModel = {
-      name: "",
+      name: this.RSensorName.value?.toString(),
       sensorGuid: this.RSensorId.value?.toString(),
     }
     this.messages.push(tempsensor);

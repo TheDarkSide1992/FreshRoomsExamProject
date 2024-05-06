@@ -63,8 +63,9 @@ public class AccountService
     {
         try
         {
-            var isDeleted = _accountRepository.CheckIfUserIsDeleted(id);
-            if (isDeleted == null)
+            var userexists = _accountRepository.CheckIfUserIsDeleted(id);
+            Console.WriteLine(userexists);
+            if (userexists == 0)
             {
                 return _accountRepository.GetById(id);
             }

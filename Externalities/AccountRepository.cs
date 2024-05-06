@@ -54,7 +54,7 @@ public class AccountRepository
         }
     }
 
-    public User? CheckIfUserIsDeleted(int id)
+    public int CheckIfUserIsDeleted(int id)
     {
         try
         {
@@ -64,7 +64,7 @@ public class AccountRepository
                    email as {nameof(User.userEmail)}
                    from freshrooms.users where userId = @id and isDeleted = true";
             using var connection = _dataSource.OpenConnection();
-            return connection.QueryFirst<User>(sql, new { id });
+            return connection.ExecuteScalar<int>(sql, new { id });
         }
         catch (Exception e)
         {

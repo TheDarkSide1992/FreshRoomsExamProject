@@ -16,8 +16,8 @@ public class ClientWantsAccountInfo(AccountService accountService) : BaseEventHa
         Console.WriteLine("\n ###____Reading_Client_Info____#### \n"); //TODO remowe before deployment
         
         var metData = socket.GetMetadata();
-        //var accountInfo = accountService.getAccountnfo(metData.userInfo.userId);
-        var accountInfo = accountService.getAccountnfo(1);
+        var accountInfo = accountService.getAccountnfo(metData.userInfo.userId);
+        //var accountInfo = accountService.getAccountnfo(1);
 
         if (accountInfo != null)
         {

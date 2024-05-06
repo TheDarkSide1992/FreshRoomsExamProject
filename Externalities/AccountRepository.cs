@@ -85,6 +85,7 @@ public class AccountRepository
         {
             using (var connection = _dataSource.OpenConnection())
             {
+                Console.WriteLine("runnign sql");
                 return connection.QueryFirst<AccountInfo>(sql, new { id });
             }
         }

@@ -1,7 +1,8 @@
 import {Component} from "@angular/core";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {ClientWantsToCreateUserDTO} from "./RegisterMessage.model";
+import {ClientWantsToCreateUserDTO} from "../Models/RegisterMessage.model";
+import {Router} from "@angular/router";
 
 @Component({
   template:
@@ -56,7 +57,7 @@ export class RegisterAccountPage {
   APassword = new FormControl("",[Validators.required, Validators.minLength(8),Validators.maxLength(32)]);
   APasswordRepeat: FormControl = new FormControl("", [Validators.required]);
 
-  constructor(protected ws: WebsocketClientService){}
+  constructor(protected ws: WebsocketClientService, private readonly router: Router,){}
 
   async sendCreateUserRequest() {
     var clientRequest: ClientWantsToCreateUserDTO = {
@@ -67,6 +68,8 @@ export class RegisterAccountPage {
       guid: this.AAC.value?.toString(),
     }
     this.ws.socketConnection.sendDto(clientRequest)
+
+    this.router.navigate(["home"])
   }
 
 }

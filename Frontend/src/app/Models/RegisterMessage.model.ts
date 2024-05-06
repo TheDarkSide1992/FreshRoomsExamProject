@@ -1,4 +1,4 @@
-import {BaseDto} from "../Models/baseDto";
+import {BaseDto} from "./baseDto";
 
 export class ClientWantsToCreateUserDTO extends BaseDto<any> {
   name?: string;

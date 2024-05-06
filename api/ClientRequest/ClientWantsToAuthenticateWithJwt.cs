@@ -14,7 +14,7 @@ public class ClientWantsToAuthenticateWithJwt(AccountService accountService) : B
     public override Task Handle(ClientWantsToAuthenticateWithJwtDto dto, IWebSocketConnection socket)
     {
         var claims = SecurityUtilities.ValidateJwtAndReturnClaims(dto.jwt!);
-        var user = accountService.FindUserfromId(int.Parse(claims["userID"]));
+        var user = accountService.FindUserfromId(int.Parse(claims["userId"]));
         socket.Authenticate(user);
         socket.Send(JsonSerializer.Serialize(new ServerAuthenticatesUserFromJwt()));
         return Task.CompletedTask;

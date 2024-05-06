@@ -14,6 +14,18 @@ public class User
     public string userEmail { get; set; }
 }
 
+public class AccountInfo
+{
+    [MinLength(4)]
+    public String email { get; set; }
+    
+    [MinLength(1)]
+    public String city { get; set; }
+    
+    [MinLength(2)]
+    public String realname { get; set; }
+}
+
 public class AccountCode
 {
     public int accountId { get; set; }

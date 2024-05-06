@@ -88,7 +88,5 @@ public class AccountService
         {
             throw new AuthenticationException("The Account is deleted or does not exist");
         }
-
-        return null;
     }
 }

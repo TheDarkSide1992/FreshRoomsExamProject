@@ -1,0 +1,17 @@
+<ion-content>
+  <div style="display: flex; justify-content: center;">
+    <ion-card style="height: 300px; width: 400px;">
+      <ion-card-header>
+        <ion-card-title mode="ios" style="display: flex; justify-content: center">Login</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-input label-placement="floating" label="Email:" [formControl]="emailcontrol"/>
+        <ion-input type="password" label-placement="floating" label="Password:" [formControl]="passwordcontrol"/>
+        <ion-buttons style="display: flex; justify-content: center;">
+          <ion-button routerLink="../register">sign up</ion-button>
+          <ion-button (click)="login()">login</ion-button>
+        </ion-buttons>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

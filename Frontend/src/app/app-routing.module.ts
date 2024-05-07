@@ -19,6 +19,10 @@ const routes: Routes = [
         component: HomePage,
       },
       {
+        path: "account",
+        component: AccountPage,
+      },
+      {
         path: '',
         redirectTo: '/home',
         pathMatch: 'full',

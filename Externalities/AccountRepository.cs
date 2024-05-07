@@ -1,6 +1,7 @@
 using Dapper;
 using Infastructure.DataModels;
 using Npgsql;
+using AccountInfo = Infastructure.DataModels.AccountInfo;
 
 namespace Infastructure;
 
@@ -92,6 +93,22 @@ public class AccountRepository
         catch (Exception e)
         {
             throw new Exception("failed to get Account info");
+        }
+    }
+
+    public string getCityFromUser(int id)
+    {
+        var sql = $@"select city from freshrooms.users where userId = @id";
+        try
+        {
+            using (var connection = _dataSource.OpenConnection())
+            {
+                return connection.QueryFirst<string>(sql, new { id });
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("failed to get city from account");
         }
     }
 

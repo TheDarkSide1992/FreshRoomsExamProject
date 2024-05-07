@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Authentication;
 using Infastructure;
+using Infastructure.CostumExeptions;
 using Infastructure.DataModels;
 
 namespace Service;
@@ -64,7 +65,6 @@ public class AccountService
         try
         {
             var userexists = _accountRepository.CheckIfUserIsDeleted(id);
-            Console.WriteLine(userexists);
             if (userexists == 0)
             {
                 return _accountRepository.GetById(id);
@@ -87,6 +87,18 @@ public class AccountService
         catch (Exception e)
         {
             throw new AuthenticationException("The Account is deleted or does not exist");
+        }
+    }
+    
+    public string getCity(int id)
+    {
+        try
+        {
+            return _accountRepository.getCityFromUser(id);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("failed to get city");
         }
     }
 }

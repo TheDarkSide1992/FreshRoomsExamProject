@@ -32,6 +32,9 @@ public static class StartUp
         builder.Services.AddSingleton<AccountRepository>();
         builder.Services.AddSingleton<AccountService>();
         builder.Services.AddSingleton<HashRepository>();
+        builder.Services.AddSingleton<OpenMeteoApi>();
+        builder.Services.AddSingleton<OpenMeteoService>();
+        builder.Services.AddSingleton<HttpClient>();
        
         var app = builder.Build();
 

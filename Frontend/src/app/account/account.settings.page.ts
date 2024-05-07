@@ -11,108 +11,114 @@ import {ClientWantsToChangeSettings} from "../Models/ClientWantsToChangeSettings
 
 @Component({
   template: `
-    <div style="flex-direction: column;">
-      <ion-toolbar>
-        <ion-title mode="ios">
-          ACCOUNT
-        </ion-title>
-      </ion-toolbar>
-
-      <br>
-
-      <ion-card>
-        <div style="flex-wrap: wrap; align-content: space-evenly;
-      justify-content: space-evenly; flex-direction: row;">
-          <div style="flex: 1;"></div>
-          <div style="display: flex; flex: 4; flex-wrap: wrap;
-              align-content: space-evenly; flex-direction: column;">
-            <br>
-            <ion-item>
-              <h1>Name : </h1>
-            </ion-item>
-            <ion-item>
-              <h1>Email : </h1>
-            </ion-item>
-            <ion-item>
-              <h1>City : </h1>
-            </ion-item>
-            <ion-item>
-              <h1>Password : </h1>
-            </ion-item>
-            <ion-item>
-              <h1>repeat Password : </h1>
-            </ion-item>
-          </div>
+      <div style="flex-direction: column;">
+          <ion-toolbar>
+              <ion-title mode="ios">
+                  ACCOUNT
+              </ion-title>
+          </ion-toolbar>
 
           <br>
 
-          <div style=" flex: 4; flex-wrap: wrap;
+          <ion-card>
+              <div style="flex-wrap: wrap; align-content: space-evenly;
+      justify-content: space-evenly; flex-direction: row;">
+                  <div style="flex: 1;"></div>
+                  <div style="display: flex; flex: 4; flex-wrap: wrap;
               align-content: space-evenly; flex-direction: column;">
-            <br>
-            <ion-item>
-              <ion-input [formControl]="changeNameForm"
-                         id="newName">{{ this.wsService.currentAccount?.realname }}</ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-input [formControl]="changeEmailForm"
-                         id="newMail">{{ this.wsService.currentAccount?.email }}</ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-input [formControl]="changeCityForm"
-                         id="newCity">{{this.wsService.currentAccount?.city}}</ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-input [formControl]="changePasswordForm" [type]="true ? 'password' : 'text'" id="newPassword">
-                ***********
-              </ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-input [formControl]="passwordRepeat" [type]="true ? 'password' : 'text'" id="repeatPassword">Repeat
-                Passwrod
-              </ion-input>
-            </ion-item>
-          </div>
-          <div style="flex: 4;"></div>
-        </div>
+                      <br>
+                      <ion-item>
+                          <h1>Name : </h1>
+                      </ion-item>
+                      <ion-item>
+                          <h1>Email : </h1>
+                      </ion-item>
+                      <ion-item>
+                          <h1>City : </h1>
+                      </ion-item>
+                      <ion-item>
+                          <h1>Password : </h1>
+                      </ion-item>
+                      <ion-item>
+                          <h1>repeat Password : </h1>
+                      </ion-item>
+                  </div>
 
-        <div style="height: 15px"></div>
+                  <br>
 
-        <div
-          *ngIf="passwordRepeat.invalid && passwordRepeat.touched && changePasswordForm.value !== passwordRepeat.value"
-          class="error">
-          Both passwords must match
-        </div>
+                  <div style=" flex: 4; flex-wrap: wrap;
+              align-content: space-evenly; flex-direction: column;">
+                      <br>
+                      <ion-item>
+                          <ion-input [formControl]="changeNameForm"
+                                     id="newName">{{ this.wsService.currentAccount?.realname }}</ion-input>
+                      </ion-item>
+                      <ion-item>
+                          <ion-input [formControl]="changeEmailForm"
+                                     id="newMail">{{ this.wsService.currentAccount?.email }}</ion-input>
+                      </ion-item>
+                      <ion-item>
+                          <ion-input [formControl]="changeCityForm"
+                                     id="newCity">{{this.wsService.currentAccount?.city}}</ion-input>
+                      </ion-item>
+                      <ion-item>
+                          <ion-input [formControl]="changePasswordForm" onPaste="return false"
+                                     onCopy="return false" onCut="return false"
+                                     onDrag="return false" onDrop="return false"
+                                     autocomplete=off [type]="true ? 'password' : 'text'" id="newPassword">
+                              ***********
+                          </ion-input>
+                      </ion-item>
+                      <ion-item>
+                          <ion-input [formControl]="passwordRepeat" onPaste="return false"
+                                     onCopy="return false" onCut="return false"
+                                     onDrag="return false" onDrop="return false"
+                                     autocomplete=off [type]="true ? 'password' : 'text'" id="repeatPassword">Repeat
+                              Passwrod
+                          </ion-input>
+                      </ion-item>
+                  </div>
+                  <div style="flex: 4;"></div>
+              </div>
 
-        <div style=" flex-wrap: wrap; align-content: space-evenly;
+              <div style="height: 15px"></div>
+
+              <div
+                      *ngIf="passwordRepeat.invalid && passwordRepeat.touched && changePasswordForm.value !== passwordRepeat.value"
+                      class="error">
+                  Both passwords must match
+              </div>
+
+              <div style=" flex-wrap: wrap; align-content: space-evenly;
       justify-content: space-evenly; flex-direction: row;">
 
-          <div style="flex: 1;"></div>
-          <div style=" flex: 4; flex-wrap: wrap;
+                  <div style="flex: 1;"></div>
+                  <div style=" flex: 4; flex-wrap: wrap;
               align-content: space-evenly; flex-direction: column;">
-            <br>
-            <h2>Save changes</h2>
-          </div>
-          <div style="flex: 4; flex-wrap: wrap;
+                      <br>
+                      <h2>Save changes</h2>
+                  </div>
+                  <div style="flex: 4; flex-wrap: wrap;
               align-content: space-evenly; flex-direction: row ;">
 
-            <ion-button (click)="cancel()">
-              <ion-icon name="stop-circle-outline"></ion-icon>
-              <p> cancel </p>
-            </ion-button>
+                      <ion-button (click)="cancel()">
+                          <ion-icon name="stop-circle-outline"></ion-icon>
+                          <p> cancel </p>
+                      </ion-button>
 
-            <br>
+                      <br>
 
-            <ion-button (click)="saveChanges()"
-                        [disabled]=" !(passwordRepeat.value?.trim() === changePasswordForm.value?.trim())">
-              <ion-icon name="save-outline"></ion-icon>
-              <p> Save </p>
-            </ion-button>
-          </div>
-          <div style="flex: 4;"></div>
-        </div>
-      </ion-card>
+                      <ion-button (click)="saveChanges()"
+                                  [disabled]=" !(passwordRepeat.value?.trim() === changePasswordForm.value?.trim())">
+                          <ion-icon name="save-outline"></ion-icon>
+                          <p> Save </p>
+                      </ion-button>
+                  </div>
+                  <div style="flex: 4;"></div>
+              </div>
+          </ion-card>
 
-    </div>
+      </div>
   `,
   styleUrls: ['account.page.scss'],
 })
@@ -182,6 +188,7 @@ export class AccountSettingsPage implements OnInit{
 
     await this.wsService.socketConnection.sendDto(new ClientWantsAccountInfo)
 
+    this.router.navigate(["account"])
   }
 
   cancel(){

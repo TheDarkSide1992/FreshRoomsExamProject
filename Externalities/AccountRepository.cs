@@ -86,6 +86,7 @@ public class AccountRepository
         {
             using (var connection = _dataSource.OpenConnection())
             {
+                Console.WriteLine("runnign sql get account info");//TODO Remowe Before deployment
                 return connection.QueryFirst<AccountInfo>(sql, new { id });
             }
         }
@@ -108,6 +109,65 @@ public class AccountRepository
         catch (Exception e)
         {
             throw new Exception("failed to get city from account");
+        }
+    }
+
+    public void updateName(int userInfoUserId, string? dtoNewNameDto)
+    {
+        var sql = $@"
+        UPDATE freshrooms.users SET name = @dtoNewNameDto  WHERE userId = @userInfoUserId 
+        ";
+        
+        try
+        {
+            using (var conn = _dataSource.OpenConnection())
+            {
+                Console.WriteLine("runnign sql update Name");//TODO Remowe Before deployment
+                conn.Execute(sql, new {dtoNewNameDto , userInfoUserId });
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("failed update Account Name");
+        }
+    }
+
+    public void updateEmail(int userInfoUserId, string? dtoNewEmailDto)
+    {
+        var sql = $@"
+        UPDATE freshrooms.users SET email = @dtoNewEmailDto  WHERE userId = @userInfoUserId 
+        ";
+        try
+        {
+            using (var conn = _dataSource.OpenConnection())
+            {
+                Console.WriteLine("runnign sql update Email");//TODO Remowe Before deployment
+                conn.Execute(sql, new { dtoNewEmailDto, userInfoUserId });
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("failed update Account Email");
+        }
+    }
+
+    public void updateCity(int userInfoUserId, string? dtoNewCityDto)
+    {
+        var sql = $@"
+        UPDATE freshrooms.users SET city = @dtoNewCityDto  WHERE userId = @userInfoUserId 
+        ";
+
+        try
+        {
+            using (var conn = _dataSource.OpenConnection())
+            {
+                Console.WriteLine("runnign sql update City"); //TODO Remowe Before deployment
+                conn.Execute(sql, new { dtoNewCityDto, userInfoUserId });
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("failed update Account City");
         }
     }
 }

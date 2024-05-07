@@ -16,9 +16,10 @@ import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
 
 
 import {AccountPage} from "./account/account.page";
+import {AccountSettingsPage} from "./account/account.settings.page";
 
 @NgModule({
-  declarations: [AppComponent,AccountPage, SidebarmenuPage, LoginPage,HomePage, RegisterAccountPage],
+  declarations: [AppComponent,AccountPage, SidebarmenuPage, AccountSettingsPage, LoginPage,HomePage, RegisterAccountPage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

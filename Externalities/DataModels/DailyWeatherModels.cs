@@ -1,6 +1,6 @@
 ﻿namespace Infastructure.DataModels;
 
-public class TodayWeatherModel
+public class DailyWeatherModel
 {
     public double latitude { get; set; }
     public double longitude { get; set; }
@@ -9,25 +9,24 @@ public class TodayWeatherModel
     public string timezone { get; set; }
     public string timezone_abbreviation { get; set; }
     public double elevation { get; set; }
-    public HourlyUnits hourly_units { get; set; }
-    public Hourly hourly { get; set; }
+    public DailyUnits daily_units { get; set; }
+    public Daily daily { get; set; }
 }
 
-public class Hourly
+public class Daily
 {
     public List<string> time { get; set; }
-    public List<double> temperature_2m { get; set; }
-    public List<double> apparent_temperature { get; set; }
-    public List<double> precipitation { get; set; }
     public List<int> weather_code { get; set; }
+    public List<double> temperature_2m_max { get; set; }
+    public List<double> apparent_temperature_max { get; set; }
+    public List<object> precipitation_probability_max { get; set; }
 }
 
-public class HourlyUnits
+public class DailyUnits
 {
     public string time { get; set; }
-    public string temperature_2m { get; set; }
-    public string apparent_temperature { get; set; }
-    public string precipitation { get; set; }
     public string weather_code { get; set; }
+    public string temperature_2m_max { get; set; }
+    public string apparent_temperature_max { get; set; }
+    public string precipitation_probability_max { get; set; }
 }
-

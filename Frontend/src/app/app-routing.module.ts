@@ -19,6 +19,10 @@ const routes: Routes = [
         component: HomePage,
       },
       {
+        path: "account",
+        component: AccountPage,
+      },
+      {
         path: '',
         redirectTo: '/home',
         pathMatch: 'full',
@@ -37,10 +41,6 @@ const routes: Routes = [
   {
     path: "register",
     component: RegisterAccountPage,
-  },
-  {
-    path: "account",
-    component: AccountPage,
   },
 ];
 @NgModule({

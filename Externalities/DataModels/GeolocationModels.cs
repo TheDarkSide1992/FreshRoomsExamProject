@@ -24,3 +24,9 @@ public class Result
     public string admin1 { get; set; }
     public string admin2 { get; set; }
 }
+
+public class Location
+{
+   public double latitude { get; set; }
+   public double longitude { get; set; }
+}

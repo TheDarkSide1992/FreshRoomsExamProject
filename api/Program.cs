@@ -32,6 +32,8 @@ public static class StartUp
         builder.Services.AddSingleton<AccountRepository>();
         builder.Services.AddSingleton<AccountService>();
         builder.Services.AddSingleton<HashRepository>();
+        builder.Services.AddSingleton<DeviceService>();
+        builder.Services.AddSingleton<DeviceRepository>();
        
         var app = builder.Build();
 

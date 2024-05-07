@@ -2,7 +2,8 @@ import {Component, OnInit} from "@angular/core";
 import {ModalController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {SensorModel} from "./SensorModel";
+import {SensorModel, SensorModelDto} from "./SensorModel";
+import {ClientWantsToCreateUserDTO} from "../registerAccount/RegisterMessage.model";
 
 
 @Component({
@@ -99,6 +100,7 @@ export class CreateRoomsModalPage implements OnInit {
   }
 
   createTempSensor(){
+    this.verifySensorId();
     let tempsensor: SensorModel = {
       name: this.RSensorName.value?.toString(),
       sensorGuid: this.RSensorId.value?.toString(),
@@ -110,7 +112,17 @@ export class CreateRoomsModalPage implements OnInit {
     this.messages.splice(this.messages.indexOf(sensor), 1)
   }
 
-  verifySensorId(){
+  async verifySensorId(){
+    var clientRequest: SensorModelDto = {
+      eventType: "ClientWantsToVerifySensor",
+      name: this.RSensorName.value?.toString(),
+      sensorGuid: this.RSensorId.value?.toString(),
+    }
+
+    this.ws.socketConnection.sendDto(clientRequest)
+  }
+
+  async createRoom(){
 
   }
 

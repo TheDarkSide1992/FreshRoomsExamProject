@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using api.StaticHelpers;
 using api.StaticHelpers.ExtentionMethods;
 using Fleck;
@@ -9,6 +10,8 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
+[ValidateDataAnnotations]
 public class ClientWantsToChangeSettings(AccountService accountService) : BaseEventHandler<ClientWantsToChangeSettingsDto>
 {
     public override Task Handle(ClientWantsToChangeSettingsDto dto, IWebSocketConnection socket)

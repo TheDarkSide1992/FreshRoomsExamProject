@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using api.StaticHelpers;
 using api.StaticHelpers.ExtentionMethods;
 using Fleck;
@@ -8,7 +9,7 @@ using Service;
 using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
-
+[ValidateDataAnnotations]
 public class ClientWantsToAuthenticateWithJwt(AccountService accountService) : BaseEventHandler<ClientWantsToAuthenticateWithJwtDto>
 {
     public override Task Handle(ClientWantsToAuthenticateWithJwtDto dto, IWebSocketConnection socket)

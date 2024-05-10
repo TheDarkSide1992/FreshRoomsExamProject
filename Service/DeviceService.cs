@@ -1,4 +1,5 @@
 using Infastructure;
+using Infastructure.DataModels;
 
 namespace Service;
 
@@ -14,5 +15,10 @@ public class DeviceService
     public bool VerifySensorGuid(String sensorGuid)
     {
         return _deviceRepository.VerifySensorGuid(sensorGuid);
+    }
+
+    public IEnumerable<DeviceTypeModel> getSensorTypes()
+    {
+        return _deviceRepository.getDeviceTypes();
     }
 }

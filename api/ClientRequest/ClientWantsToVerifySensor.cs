@@ -14,7 +14,18 @@ public class ClientWantsToVerifySensor(DeviceService deviceService) : BaseEventH
     {
 
         if (deviceService.VerifySensorGuid(dto.sensorGuid))
-            return Task.CompletedTask;
-        throw new SensorGuidNotValidException("Sensor Guid not found");
+        {
+            socket.Send(JsonSerializer.Serialize(new ServerRespondsToSensorVeryficationDto
+            {
+                deviceTypeName = dto.deviceTypeName,
+                foundSensor = true,
+                sensorGuid = dto.sensorGuid
+            }));
+        }
+        else
+        {
+            throw new SensorGuidNotValidException("Sensor Guid not found");
+        }
+        return Task.CompletedTask;
     }
 }

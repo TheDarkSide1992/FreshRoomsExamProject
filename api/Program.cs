@@ -37,6 +37,8 @@ public static class StartUp
         builder.Services.AddSingleton<OpenMeteoApi>();
         builder.Services.AddSingleton<OpenMeteoService>();
         builder.Services.AddSingleton<HttpClient>();
+        builder.Services.AddSingleton<RoomService>();
+        builder.Services.AddSingleton<RoomRepository>();
        
         var app = builder.Build();
 

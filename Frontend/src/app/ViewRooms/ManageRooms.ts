@@ -1,7 +1,5 @@
 import {Component} from "@angular/core";
-import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {ClientWantsToCreateUserDTO} from "../registerAccount/RegisterMessage.model";
 import {ModalController} from "@ionic/angular";
 import {CreateRoomsModalPage} from "../CreateRooms/CreateRooms";
 

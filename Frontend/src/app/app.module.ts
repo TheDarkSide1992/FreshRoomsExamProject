@@ -8,15 +8,16 @@ import {SidebarmenuPage} from "./SidebarMenu/sidebarmenu.page";
 import {LoginPage} from "./LoginPage/Login.Page";
 import {ManageRoomsPage} from "./ViewRooms/ManageRooms";
 import {CreateRoomsModalPage} from "./CreateRooms/CreateRooms";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HomePage} from "./Home/Home.page";
 import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
 import {AccountPage} from "./account/account.page";
+import {ServerSendsDeviceTypes} from "./Models/ServerSendsDeviceTypes";
 
 @NgModule({
 
   declarations: [AppComponent,AccountPage, SidebarmenuPage, LoginPage,HomePage, RegisterAccountPage, ManageRoomsPage, CreateRoomsModalPage],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule, FormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

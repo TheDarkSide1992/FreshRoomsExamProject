@@ -1,6 +1,7 @@
 using System.Text.Json;
 using api.CostumExeptions;
 using api.Dtos;
+using api.StaticHelpers.ExtentionMethods;
 using Fleck;
 using lib;
 using Service;
@@ -12,7 +13,7 @@ public class ClientWantsToCreateRoom(RoomService roomService) : BaseEventHandler
 {
     public override Task Handle(ClientWantsToCreateRoomDto dto, IWebSocketConnection socket)
     {
-        if (roomService.CreateRoom(dto.deviceList, dto.name) != null)
+        if (roomService.CreateRoom(dto.deviceList, dto.name, socket.GetMetadata().userInfo.userId) != null)
         {
             var echo = new ServerRespondsToUser()
             {

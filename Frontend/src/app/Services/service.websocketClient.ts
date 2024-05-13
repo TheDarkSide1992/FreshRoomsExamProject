@@ -18,6 +18,8 @@ import {DeviceModel, DeviceTypesModel} from "../Models/DeviceModel";
 import {ServerRespondsToSensorVeryfication} from "../Models/ServerRespondsToSensorVeryfication";
 import { ServerSendsDeviceTypes } from "../Models/ServerSendsDeviceTypes";
 import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
+import {ServerReturnsRoomList} from "../Models/ServerReturnsRoomList";
+import {RoomModel, RoomModelDto} from "../Models/RoomModel";
 
 @Injectable({providedIn: 'root'})
 export class WebsocketClientService
@@ -29,6 +31,7 @@ export class WebsocketClientService
   city?: string;
   sensorlist: Array<DeviceModel> = [];
   sensorTypeList: Array<DeviceTypesModel> = [];
+  roomList: Array<RoomModel> = [];
 
   constructor(public router: Router, public toast: ToastController) {
     this.socketConnection = new WebSocketSuperClass(environment.url)
@@ -133,6 +136,20 @@ export class WebsocketClientService
     )
     t.present();
   }
+
+  async ServerReturnsRoomList(dto: ServerReturnsRoomList) {
+    this.roomList = []
+    dto.roomList?.forEach(room => {
+      if (room != undefined){
+        let tempRoom: RoomModel = {
+          roomId: room.roomId,
+          name: room.name,
+          creatorId: room.creatorId
+        }
+        this.roomList.push(tempRoom);
+      }
+    }
+    )}
 }
 
 

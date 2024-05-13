@@ -4,7 +4,7 @@ import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
 import {DeviceModel, SensorModelDto} from "../Models/DeviceModel";
 import {ClientWantsSensorTypes} from "../Models/ClientWantsSensorTypes";
-import {RoomModel} from "../Models/RoomModel";
+import {RoomModelDto} from "../Models/RoomModel";
 
 
 
@@ -134,7 +134,7 @@ export class CreateRoomsModalPage implements OnInit {
   }
 
   async createRoom(){
-    this.ws.socketConnection.sendDto(new RoomModel({
+    this.ws.socketConnection.sendDto(new RoomModelDto({
       eventType: "ClientWantsToCreateRoom",
       name: this.RName.value?.toString(),
       deviceList: this.ws.sensorlist,

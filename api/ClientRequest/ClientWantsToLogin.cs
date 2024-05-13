@@ -21,7 +21,7 @@ public class ClientWantsToLogin(AccountService accountService) : BaseEventHandle
         if (user != null)
         {
             socket.Authenticate(user);
-            socket.Send(JsonSerializer.Serialize(new ServerLogsInUser { jwt = SecurityUtilities.IssueJwt(user) }));
+            socket.Send(JsonSerializer.Serialize(new ServerLogsInUser { jwt = SecurityUtilities.IssueJwt(user.userId) }));
         }
 
         return Task.CompletedTask;

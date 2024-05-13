@@ -4,6 +4,7 @@ using lib;
 using Serilog;
 using api.Middleware;
 using System.Reflection;
+using api.Mqtt;
 using api.StaticHelpers.ExtentionMethods;
 using Infastructure;
 using Service;
@@ -35,6 +36,7 @@ public static class StartUp
         builder.Services.AddSingleton<OpenMeteoApi>();
         builder.Services.AddSingleton<OpenMeteoService>();
         builder.Services.AddSingleton<HttpClient>();
+        builder.Services.AddSingleton<MqttClient>();
        
         var app = builder.Build();
 

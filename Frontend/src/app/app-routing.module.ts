@@ -6,6 +6,7 @@ import {HomePage} from "./Home/Home.page";
 import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
 import {AccountPage} from "./account/account.page";
 import {AccountSettingsPage} from "./account/account.settings.page";
+import {RoomInfoPage} from "./roomInfo/roomInfo.page";
 
 
 const routes: Routes = [
@@ -49,6 +50,10 @@ const routes: Routes = [
   {
     path: "account/settings",
     component: AccountSettingsPage,
+  },
+  {
+    path: "RoomInfo/:id/:room_name",
+    component: RoomInfoPage,
   },
 ];
 @NgModule({

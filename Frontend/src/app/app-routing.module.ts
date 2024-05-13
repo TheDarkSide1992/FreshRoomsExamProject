@@ -6,7 +6,7 @@ import {HomePage} from "./Home/Home.page";
 import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
 import {ManageRoomsPage} from "./ViewRooms/ManageRooms";
 import {AccountPage} from "./account/account.page";
-
+import {AccountSettingsPage} from "./account/account.settings.page";
 
 
 
@@ -46,6 +46,14 @@ const routes: Routes = [
   {
     path: "register",
     component: RegisterAccountPage,
+  },
+  {
+    path: "account",
+    component: AccountPage,
+  },
+  {
+    path: "account/settings",
+    component: AccountSettingsPage,
   },
 ];
 @NgModule({

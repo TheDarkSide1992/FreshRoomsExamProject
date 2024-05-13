@@ -1,5 +1,6 @@
 using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using Fleck;
 using Infastructure.DataModels;
 using lib;
@@ -8,6 +9,8 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[rateLimiter(2)]
+[ValidateDataAnnotations]
 public class ClientWantsToCreateUser(AccountService accountService) : BaseEventHandler<ClientWantsToCreateUserDto>
 {
     public override Task Handle(ClientWantsToCreateUserDto dto, IWebSocketConnection socket)

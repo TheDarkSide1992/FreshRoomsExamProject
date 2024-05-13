@@ -65,6 +65,7 @@ public class AccountService
         try
         {
             var userexists = _accountRepository.CheckIfUserIsDeleted(id);
+            Console.WriteLine(userexists);
             if (userexists == 0)
             {
                 return _accountRepository.GetById(id);
@@ -100,5 +101,40 @@ public class AccountService
         {
             throw new Exception("failed to get city");
         }
+    }
+
+    public bool changeAccountInfo(int userInfoUserId, string? dtoNewNameDto, string? dtoNewEmailDto, string? dtoNewCityDto, string? dtoNewPasswordDto)
+    {
+        bool couldUpdate = false;
+        if (dtoNewNameDto != "N/A")
+        {
+            _accountRepository.updateName(userInfoUserId, dtoNewNameDto);
+            couldUpdate = true;
+
+        }        
+        if (dtoNewEmailDto != "N/A")
+        {
+            _accountRepository.updateEmail(userInfoUserId, dtoNewEmailDto);
+            couldUpdate = true;
+
+        }        
+        if (dtoNewCityDto != "N/A")
+        {
+            _accountRepository.updateCity(userInfoUserId, dtoNewCityDto);
+            couldUpdate = true;
+
+        }        
+        if (dtoNewPasswordDto != "N/A")
+        {
+            //TODO HASH PASSWROD
+            var hashAlgorithm = PasswordHashAlgorithm.Create();
+            var salt = hashAlgorithm.GenerateSalt();
+            var hash = hashAlgorithm.HashPassword(dtoNewPasswordDto, salt);
+            _hashRepository.UpdatePasswordHash(userInfoUserId, hash, salt, hashAlgorithm.GetName());
+            
+            couldUpdate = true;
+        }
+        
+        return couldUpdate;
     }
 }

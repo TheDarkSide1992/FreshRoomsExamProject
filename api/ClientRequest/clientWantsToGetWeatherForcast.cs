@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using api.StaticHelpers.ExtentionMethods;
 using Fleck;
 using Infastructure.DataModels;
@@ -9,6 +10,8 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
+[ValidateDataAnnotations]
 public class clientWantsToGetWeatherForcast(AccountService accountService, OpenMeteoService openMeteo) : BaseEventHandler<clientWantsToGetWeatherForcastDto>
 {
     public override async Task Handle(clientWantsToGetWeatherForcastDto dto, IWebSocketConnection socket)

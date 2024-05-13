@@ -13,10 +13,10 @@ import {HomePage} from "./Home/Home.page";
 import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
 import {AccountPage} from "./account/account.page";
 import {ServerSendsDeviceTypes} from "./Models/ServerSendsDeviceTypes";
+import {AccountSettingsPage} from "./account/account.settings.page";
 
 @NgModule({
-
-  declarations: [AppComponent,AccountPage, SidebarmenuPage, LoginPage,HomePage, RegisterAccountPage, ManageRoomsPage, CreateRoomsModalPage],
+  declarations: [AppComponent,AccountPage, SidebarmenuPage, LoginPage,HomePage, RegisterAccountPage, AccountSettingsPage, ManageRoomsPage, CreateRoomsModalPage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule, FormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

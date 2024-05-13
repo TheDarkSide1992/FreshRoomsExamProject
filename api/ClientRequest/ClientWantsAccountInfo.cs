@@ -4,11 +4,14 @@ using api.StaticHelpers.ExtentionMethods;
 using Fleck;
 using lib;
 using System.Text.Json;
+using api.EventFilters;
 using Service;
 using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
+[ValidateDataAnnotations]
 public class ClientWantsAccountInfo(AccountService accountService) : BaseEventHandler<ClientWantsAccountInfoDto>
 {
     public override Task Handle(ClientWantsAccountInfoDto dto, IWebSocketConnection socket)

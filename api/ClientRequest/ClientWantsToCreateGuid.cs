@@ -1,5 +1,6 @@
 using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using Fleck;
 using lib;
 using Service;
@@ -7,6 +8,8 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
+[ValidateDataAnnotations]
 public class ClientWantsToCreateGuid(AccountService accountService) : BaseEventHandler<ClientWantsToCreateGuidDto>
 {
     public override Task Handle(ClientWantsToCreateGuidDto dto, IWebSocketConnection socket)

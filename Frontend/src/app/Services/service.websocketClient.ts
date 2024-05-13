@@ -13,6 +13,8 @@ import {DailyWeatherModel} from "../Models/objects/DailyForcastModels";
 import {TodayWeatherModel} from "../Models/objects/TodaysForcastModels";
 import { ServerLogsoutUser } from "../Models/ServerLogsoutUser";
 import { ServerReturnsCity } from "../Models/ServerReturnsCity";
+import {ServerSendsRoomConfigurations} from "../Models/ServerSendsRoomConfigurations";
+import {RoomConfig} from "../Models/objects/roomConfig";
 
 @Injectable({providedIn: 'root'})
 export class WebsocketClientService
@@ -22,6 +24,7 @@ export class WebsocketClientService
   dailyForecast? : DailyWeatherModel;
   todaysForecast? : TodayWeatherModel;
   city?: string;
+  roomConfig?: RoomConfig;
 
   constructor(public router: Router, public toast: ToastController) {
     this.socketConnection = new WebSocketSuperClass(environment.url)
@@ -46,6 +49,10 @@ export class WebsocketClientService
   ServerSendsAccountData(dto: ServerSendsAccountData)
   {
     this.currentAccount = dto as accountModdel;
+  }
+  ServerSendsRoomConfigurations(dto: ServerSendsRoomConfigurations)
+  {
+     this.roomConfig = dto as RoomConfig;
   }
 
  async ServerLogsInUser(dto: ServerLogsInUser)

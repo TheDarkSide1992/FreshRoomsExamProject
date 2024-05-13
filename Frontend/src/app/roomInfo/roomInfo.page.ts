@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
-import {IonContent} from "@ionic/angular";
+import {IonContent, ModalController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
 import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
+import {RoomSensorSetPage} from "./RoomSensorSet.page";
 
 
 @Component({
@@ -22,12 +23,21 @@ import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
       justify-content: space-evenly; flex-direction: row; height: 250px;">
               <ion-card style="height: 50%; width: 30%;">
                   Graph One
+                <br>
+                <br>
+                <ion-title>Current temperature: {{currentTemp}}</ion-title>
               </ion-card>
               <ion-card style="height: 50%; width: 30%;">
                   Graph Two
+                <br>
+                <br>
+                <ion-title>Current Humidity: {{currentHum}}</ion-title>
               </ion-card>
               <ion-card style="height: 50%; width: 30%;">
                   Graph Three
+                <br>
+                <br>
+                <ion-title>Current Air-Quality(CO<sub>2</sub> Level): {{currentAq}}</ion-title>
               </ion-card>
           </div>
 
@@ -60,18 +70,18 @@ import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
                   <br>
                   <ion-card>
                       <div style=" flex: 2; flex-wrap: wrap;
-                    align-content: space-evenly; flex-direction: column;">
+                    align-content: space-evenly; flex-direction: column; width: 100%;">
                           <div style=" flex: 2; flex-wrap: wrap;
-                    align-content: space-evenly; flex-direction: row;">
-                              <ion-title>
+                    align-content: flex-start; flex-direction: row; width: 100%;">
+                              <ion-title style="width: max-content">
                                   MIN TEMPERATURE
                               </ion-title>
-                              <ion-title>
+                              <ion-title style="width: max-content">
                                   MAX TEMPERATURE
                               </ion-title>
                           </div>
                           <div style=" flex: 2; flex-wrap: wrap;
-                    align-content: space-evenly; flex-direction: row;">
+                    align-content: flex-start; flex-direction: row;">
                               <ion-title style="width: 45%;">{{minTemp}} C</ion-title>
                               <ion-title style="width: 45%;">{{maxTemp}} C</ion-title>
                           </div>
@@ -81,18 +91,18 @@ import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
                   <br>
                   <ion-card>
                       <div style=" flex: 2; flex-wrap: wrap;
-                    align-content: space-evenly; flex-direction: column;">
+                    align-content: space-evenly; flex-direction: column; width: 100%;">
                           <div style=" flex: 2; flex-wrap: wrap;
-                    align-content: space-evenly; flex-direction: row;">
-                              <ion-title>
+                    align-content: flex-start; flex-direction: row; width: 100%;">
+                              <ion-title style="width: max-content">
                                   MIN HUMIDITY
                               </ion-title>
-                              <ion-title>
+                              <ion-title style="width: max-content">
                                   MAX HUMIDITY
                               </ion-title>
                           </div>
                           <div style=" flex: 2; flex-wrap: wrap;
-                    align-content: space-evenly; flex-direction: row;">
+                    align-content: flex-start; flex-direction: row;">
                               <ion-title style="width: 45%;">{{minHum}} %</ion-title>
                               <ion-title style="width: 45%;">{{maxHum}} %</ion-title>
                           </div>
@@ -102,18 +112,18 @@ import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
                   <br>
                   <ion-card>
                       <div style=" flex: 2; flex-wrap: wrap;
-                    align-content: space-evenly; flex-direction: column;">
+                    align-content: space-evenly; flex-direction: column; width: 100%;">
                           <div style=" flex: 2; flex-wrap: wrap;
-                    align-content: space-evenly; flex-direction: row;">
-                              <ion-title>
-                                  MIN CO2 Level
+                    align-content: flex-start; flex-direction: row; width: 100%;">
+                              <ion-title style="width: max-content">
+                                  MIN CO<sub>2</sub> Level
                               </ion-title>
-                              <ion-title>
-                                  MAX CO2 Level
+                              <ion-title style="width: max-content">
+                                  MAX CO<sub>2</sub> Level
                               </ion-title>
                           </div>
                           <div style=" flex: 2; flex-wrap: wrap;
-                    align-content: space-evenly; flex-direction: row;">
+                    align-content: flex-start; flex-direction: row;">
                               <ion-title style="width: 42%;">{{minCO2}} PPM</ion-title>
                               <ion-title style="width: 42%;">{{maxCO2}} PPM</ion-title>
                           </div>
@@ -121,7 +131,7 @@ import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
                   </ion-card>
 
                   <ion-card>
-                      <ion-button style="align-self: center">
+                      <ion-button style="align-self: center" (click)="openRoomSetSettings()">
                         <ion-icon name="create-outline"></ion-icon>
                         Edit
                       </ion-button>
@@ -136,7 +146,7 @@ import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
 
 export class RoomInfoPage implements OnInit {
 
-  constructor(public wsService: WebsocketClientService, public route: ActivatedRoute, private readonly router: Router,) {
+  constructor(public wsService: WebsocketClientService, private modalcontroller: ModalController, public route: ActivatedRoute, private readonly router: Router,) {
 
   }
 
@@ -149,6 +159,10 @@ export class RoomInfoPage implements OnInit {
   maxHum: number = -1
   minCO2: number = -1;
   maxCO2: number = -1;
+
+  currentTemp: number = -1;
+  currentHum: number = -1;
+  currentAq: number = -1;
 
 
 
@@ -166,4 +180,13 @@ export class RoomInfoPage implements OnInit {
   }
 
 
+  openRoomSetSettings() {
+    this.modalcontroller.create({
+      component: RoomSensorSetPage,
+      componentProps: {
+      }
+    }).then(res => {
+      res.present();
+    })
+  }
 }

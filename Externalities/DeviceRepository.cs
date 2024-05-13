@@ -74,7 +74,7 @@ public class DeviceRepository
         }
     }
 
-    public void CreateDevices(IEnumerable<DeviceModel> deviceList, int roomId)
+    public void UpdateDevices(IEnumerable<DeviceModel> deviceList, int roomId)
     {
         using (var conn = _dataSource.OpenConnection())
         {

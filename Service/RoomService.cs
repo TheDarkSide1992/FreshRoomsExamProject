@@ -19,7 +19,7 @@ public class RoomService
         RoomModel roomModel = _roomRepository.CreateRoom(name);
         if (roomModel != null)
         { 
-            _deviceRepository.CreateDevices(deviceList, roomModel.roomId);
+            _deviceRepository.UpdateDevices(deviceList, roomModel.roomId);
             return roomModel;
         }
         return null;

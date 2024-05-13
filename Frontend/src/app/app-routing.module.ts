@@ -4,16 +4,21 @@ import {SidebarmenuPage} from "./SidebarMenu/sidebarmenu.page";
 import {LoginPage} from "./LoginPage/Login.Page";
 import {HomePage} from "./Home/Home.page";
 import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
+import {ManageRoomsPage} from "./ViewRooms/ManageRooms";
 import {AccountPage} from "./account/account.page";
 import {AccountSettingsPage} from "./account/account.settings.page";
+
 
 
 const routes: Routes = [
   {
     path: '',
     component: SidebarmenuPage,
-    children:
-    [
+    children: [
+      {
+        path: 'managerooms',
+        component: ManageRoomsPage,
+      },
       {
         path: 'home',
         component: HomePage,

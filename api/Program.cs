@@ -33,9 +33,13 @@ public static class StartUp
         builder.Services.AddSingleton<AccountRepository>();
         builder.Services.AddSingleton<AccountService>();
         builder.Services.AddSingleton<HashRepository>();
+        builder.Services.AddSingleton<DeviceService>();
+        builder.Services.AddSingleton<DeviceRepository>();
         builder.Services.AddSingleton<OpenMeteoApi>();
         builder.Services.AddSingleton<OpenMeteoService>();
         builder.Services.AddSingleton<HttpClient>();
+        builder.Services.AddSingleton<RoomService>();
+        builder.Services.AddSingleton<RoomRepository>();
         builder.Services.AddSingleton<MqttClient>();
        
         var app = builder.Build();

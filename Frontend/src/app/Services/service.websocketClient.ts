@@ -17,6 +17,7 @@ import {ServerSendsErrorMessageToClient} from "../Models/ServerSendsErrorMessage
 import {DeviceModel, DeviceTypesModel} from "../Models/DeviceModel";
 import {ServerRespondsToSensorVeryfication} from "../Models/ServerRespondsToSensorVeryfication";
 import { ServerSendsDeviceTypes } from "../Models/ServerSendsDeviceTypes";
+import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
 
 @Injectable({providedIn: 'root'})
 export class WebsocketClientService
@@ -121,6 +122,17 @@ export class WebsocketClientService
       }
     }
     )}
+
+  async ServerRespondsToUser(dto: ServerRespondsToUser){
+    var t = await this.toast.create(
+      {
+        color: "success",
+        duration: 2000,
+        message: dto.message,
+      }
+    )
+    t.present();
+  }
 }
 
 

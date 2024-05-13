@@ -139,6 +139,6 @@ export class CreateRoomsModalPage implements OnInit {
       name: this.RName.value?.toString(),
       deviceList: this.ws.sensorlist,
     }))
-
+    this.dismissModal();
   }
 }

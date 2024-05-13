@@ -20,9 +20,12 @@ public class RoomService
         if (roomModel != null)
         { 
             _deviceRepository.CreateDevices(deviceList, roomModel.roomId);
+            return roomModel;
         }
+        return null;
+        
 
-        return roomModel;
+        
 
     }
 }

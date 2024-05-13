@@ -12,7 +12,6 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HomePage} from "./Home/Home.page";
 import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
 import {AccountPage} from "./account/account.page";
-import {ServerSendsDeviceTypes} from "./Models/ServerSendsDeviceTypes";
 import {AccountSettingsPage} from "./account/account.settings.page";
 
 @NgModule({

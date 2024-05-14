@@ -33,4 +33,15 @@ public class RoomService
     {
         return _roomRepository.getRoomPrefrencesConfiguration(userInfoUserId, dtoRoomId);
     }
+
+
+    public RoomConfigModel updateRoomPrefrencesConfiguration(int userInfoUserId, int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, double dtoUpdatedMinHumidity, double dtoUpdatedMaxHumidity, double dtoUpdatedMinAq, double dtoUpdatedMaxAq)
+    {
+        if (true) //TODO get if is admin
+        {
+            return _roomRepository.updateRoomPrefrencesConfiguration( dtoRoomId, dtoUpdatedMinTemperature, dtoUpdatedMaxTemperature, dtoUpdatedMinHumidity, dtoUpdatedMaxHumidity, dtoUpdatedMinAq, dtoUpdatedMaxAq);
+        }
+        
+        throw new NotImplementedException();
+    }
 }

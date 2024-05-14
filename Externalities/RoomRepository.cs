@@ -53,17 +53,38 @@ public class RoomRepository
             }
             catch (Exception e)
             {
-                throw new Exception("Could not get room Data, you donout");
+                throw new Exception("Could not get room Data.");
             }
         }
+    }
+
+
+    public RoomConfigModel updateRoomPrefrencesConfiguration(int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, 
+        double dtoUpdatedMinHumidity, double dtoUpdatedMaxHumidity, double dtoUpdatedMinAq, double dtoUpdatedMaxAq)
+    {
+        var sql = $@"UPDATE freshrooms.roomConfig
+SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxTemperature, 
+    minhumidity = @dtoUpdatedMinHumidity, maxhumidity = @dtoUpdatedMaxHumidity, minaq = @dtoUpdatedMinAq, 
+    maxaq = @dtoUpdatedMaxAq WHERE roomid = @dtoRoomId
+
+    RETURNING mintemparature as {nameof(RoomConfigModel.minTemparature)}, 
+    maxtemparature as {nameof(RoomConfigModel.maxTemparature)},
+    minhumidity as {nameof(RoomConfigModel.minHumidity)},
+    maxhumidity as {nameof(RoomConfigModel.maxHumidity)},
+    minaq as {nameof(RoomConfigModel.minAq)},
+    maxaq as {nameof(RoomConfigModel.maxAq)}
+;";
         
-        return new RoomConfigModel(){
-            minTemparature = 12.0,
-            maxTemparature = 22.0,
-            maxHumidity = 25.5,
-            minHumidity = 2.0,
-            minAq = 1.0,
-            maxAq = 2.0,
-        };
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.QuerySingle<RoomConfigModel>(sql, new {dtoUpdatedMinTemperature, dtoUpdatedMaxTemperature,dtoUpdatedMinHumidity, dtoUpdatedMaxHumidity, dtoUpdatedMinAq, dtoUpdatedMaxAq, dtoRoomId });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not update room Data.");
+            }
+        }
     }
 }

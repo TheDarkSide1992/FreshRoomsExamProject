@@ -149,6 +149,15 @@ export class RoomInfoPage implements OnInit {
 
   constructor(public wsService: WebsocketClientService, private modalcontroller: ModalController, public route: ActivatedRoute, private readonly router: Router,) {
 
+    this.route.params.subscribe(params => {
+      const id = params['id'];
+      const name = params['room_name'];
+      this.roomId = parseInt(id);
+      this.displayname = name;
+      this.wsService.currentRoomId = this.roomId;
+    });
+
+
   }
 
   displayname: string = "@displayname";
@@ -161,14 +170,6 @@ export class RoomInfoPage implements OnInit {
 
 
   ngOnInit(): void {
-
-
-      this.route.params.subscribe(params => {
-        const id = params['id'];
-        const name = params['room_name'];
-        this.roomId = parseInt(id);
-        this.displayname = name;
-      });
 
     if (localStorage.getItem('jwt') !== '' && localStorage.getItem('jwt') !== undefined) {
 

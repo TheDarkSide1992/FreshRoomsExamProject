@@ -32,6 +32,7 @@ export class WebsocketClientService
   sensorlist: Array<DeviceModel> = [];
   sensorTypeList: Array<DeviceTypesModel> = [];
   roomConfig?: RoomConfig;
+  currentRoomId?: number;
 
   constructor(public router: Router, public toast: ToastController) {
     this.socketConnection = new WebSocketSuperClass(environment.url)

@@ -12,11 +12,9 @@ public class ClientWantsToUpdateRoomConf(RoomService service) : BaseEventHandler
 {
     public override Task Handle(ClientWantsToUpdateRoomConfDto dto, IWebSocketConnection socket)
     {
-        Console.WriteLine("Updateing");
-        
         var metData = socket.GetMetadata();
 
-        var roomConf = service.updateRoomPrefrencesConfiguration(metData.userInfo.userId, dto.roomId);
+        var roomConf = service.updateRoomPrefrencesConfiguration(metData.userInfo.userId, dto.roomId, dto.updatedMinTemperature, dto.updatedMaxTemperature, dto.updatedMinHumidity, dto.updatedMaxHumidity, dto.updatedMinAq, dto.updatedMaxAq);
         var roomConfig = new ServerSendsRoomConfigurations(){
             minTemparature = roomConf.minTemparature,
             maxTemparature = roomConf.maxTemparature,
@@ -29,5 +27,6 @@ public class ClientWantsToUpdateRoomConf(RoomService service) : BaseEventHandler
         var messageToClient = JsonSerializer.Serialize(roomConfig);
         socket.Send(messageToClient);
 
+        return Task.CompletedTask;
     }
 }

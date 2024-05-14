@@ -4,6 +4,7 @@ import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
 import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurations";
 import {ClientWantsToUpdateRoomConf} from "../Models/ClientWantsToUpdateRoomConf";
+import {ActivatedRoute} from "@angular/router";
 
 
 
@@ -13,7 +14,7 @@ import {ClientWantsToUpdateRoomConf} from "../Models/ClientWantsToUpdateRoomConf
     `
       <ion-header>
         <ion-toolbar>
-          <ion-title>Edit Room Snesativity</ion-title>
+          <ion-title>Edit Room Sensitivity</ion-title>
           <ion-buttons slot="end">
             <ion-button (click)="dismissModal()">Close</ion-button>
           </ion-buttons>
@@ -99,7 +100,7 @@ import {ClientWantsToUpdateRoomConf} from "../Models/ClientWantsToUpdateRoomConf
     `,
   styleUrls: ['roomInfo.page.scss'],
 })
-export class RoomSensorSetPage implements OnInit {
+export class RoomSensorSetPage {
 
   errorMessage: string = "";
   minTemp: number = this.wsService.roomConfig?.minTemparature!;
@@ -119,15 +120,7 @@ export class RoomSensorSetPage implements OnInit {
   SensorAqMax : FormControl<number | null> = new FormControl(this.maxCO2,[Validators.required,Validators.min(0),Validators.max(100)]);
 
 
-
-
-  constructor(public wsService: WebsocketClientService, private modalController: ModalController, protected ws: WebsocketClientService){}
-
-  ngOnInit(): void {
-
-    setTimeout(() => {
-
-    }, 2000)
+  constructor(public wsService: WebsocketClientService, private modalController: ModalController, protected ws: WebsocketClientService){
   }
   dismissModal() {
     this.modalController.dismiss();
@@ -153,7 +146,7 @@ export class RoomSensorSetPage implements OnInit {
 
 
     await this.wsService.socketConnection.sendDto(new ClientWantsToUpdateRoomConf({
-      roomId: 0,
+      roomId: this.wsService.currentRoomId,
       updatedMinTemperature : parseFloat(this.minTemp.toString()),
       updatedMaxTemperature : parseFloat(this.maxTemp.toString()),
       updatedMaxHumidity : parseFloat(this.minHum.toString()),

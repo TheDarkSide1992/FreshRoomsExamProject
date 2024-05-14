@@ -13,6 +13,11 @@ import {DailyWeatherModel} from "../Models/objects/DailyForcastModels";
 import {TodayWeatherModel} from "../Models/objects/TodaysForcastModels";
 import { ServerLogsoutUser } from "../Models/ServerLogsoutUser";
 import { ServerReturnsCity } from "../Models/ServerReturnsCity";
+import {ServerSendsErrorMessageToClient} from "../Models/ServerSendsErrorMessageToClient";
+import {DeviceModel, DeviceTypesModel} from "../Models/DeviceModel";
+import {ServerRespondsToSensorVeryfication} from "../Models/ServerRespondsToSensorVeryfication";
+import { ServerSendsDeviceTypes } from "../Models/ServerSendsDeviceTypes";
+import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
 import {ServerSendsRoomConfigurations} from "../Models/ServerSendsRoomConfigurations";
 import {RoomConfig} from "../Models/objects/roomConfig";
 
@@ -24,6 +29,8 @@ export class WebsocketClientService
   dailyForecast? : DailyWeatherModel;
   todaysForecast? : TodayWeatherModel;
   city?: string;
+  sensorlist: Array<DeviceModel> = [];
+  sensorTypeList: Array<DeviceTypesModel> = [];
   roomConfig?: RoomConfig;
 
   constructor(public router: Router, public toast: ToastController) {
@@ -93,6 +100,46 @@ export class WebsocketClientService
     this.city = dto.city;
   }
 
+  async ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient){
+    var t = await this.toast.create(
+      {
+        color: "warning",
+        duration: 2000,
+        message: dto.errorMessage,
+      }
+    )
+    t.present();
+  }
+  async ServerRespondsToSensorVeryfication(dto: ServerRespondsToSensorVeryfication){
+    let tempsensor: DeviceModel = {
+      deviceTypeName: dto.deviceTypeName,
+      sensorGuid: dto.sensorGuid,
+    }
+    this.sensorlist.push(tempsensor);
+  }
+
+  async ServerSendsDeviceTypes(dto: ServerSendsDeviceTypes){
+    dto.deviceTypeList?.forEach(deviceType => {
+      if (deviceType != undefined){
+        let tempDeviceType: DeviceTypesModel = {
+          deviceTypeId: deviceType.deviceTypeId,
+          deviceTypeName: deviceType.deviceTypeName,
+        }
+        this.sensorTypeList.push(tempDeviceType);
+      }
+    }
+    )}
+
+  async ServerRespondsToUser(dto: ServerRespondsToUser){
+    var t = await this.toast.create(
+      {
+        color: "success",
+        duration: 2000,
+        message: dto.message,
+      }
+    )
+    t.present();
+  }
 }
 
 

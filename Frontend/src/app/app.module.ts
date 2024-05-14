@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
-
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {SidebarmenuPage} from "./SidebarMenu/sidebarmenu.page";
 import {LoginPage} from "./LoginPage/Login.Page";
-import {ReactiveFormsModule} from "@angular/forms";
+import {ManageRoomsPage} from "./ViewRooms/ManageRooms";
+import {CreateRoomsModalPage} from "./CreateRooms/CreateRooms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HomePage} from "./Home/Home.page";
 import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
 
@@ -21,8 +21,8 @@ import {RoomInfoPage} from "./roomInfo/roomInfo.page";
 import {RoomSensorSetPage} from "./roomInfo/RoomSensorSet.page";
 
 @NgModule({
-  declarations: [AppComponent,AccountPage, RoomInfoPage, RoomSensorSetPage, SidebarmenuPage, AccountSettingsPage, LoginPage,HomePage, RegisterAccountPage],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule],
+  declarations: [AppComponent,AccountPage, SidebarmenuPage, LoginPage,HomePage, RoomInfoPage, RoomSensorSetPage, AccountSettingsPage, RegisterAccountPage, AccountSettingsPage, ManageRoomsPage, CreateRoomsModalPage],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule, FormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

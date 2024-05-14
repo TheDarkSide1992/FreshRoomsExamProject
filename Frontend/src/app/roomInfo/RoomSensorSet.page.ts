@@ -2,6 +2,8 @@ import {Component, OnInit} from "@angular/core";
 import {ModalController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
+import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurations";
+import {ClientWantsToUpdateRoomConf} from "../Models/ClientWantsToUpdateRoomConf";
 
 
 
@@ -103,7 +105,7 @@ export class RoomSensorSetPage implements OnInit {
   minTemp: number = this.wsService.roomConfig?.minTemparature!;
   maxTemp: number = this.wsService.roomConfig?.maxTemparature!;
   minHum: number = this.wsService.roomConfig?.minHumidity!;
-  maxHum: number = this.wsService.roomConfig?.maxTemparature!;
+  maxHum: number = this.wsService.roomConfig?.maxHumidity!;
   minCO2: number = this.wsService.roomConfig?.minAq!;
   maxCO2: number = this.wsService.roomConfig?.maxAq!;
 
@@ -131,11 +133,11 @@ export class RoomSensorSetPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  saveChanges() {
+  async saveChanges() {
 
 
-    if(this.SensorTempMax.value! < this.SensorTempMin.value! ||
-      this.SensorHumMax.value! < this.SensorHumMin.value! || this.SensorAqMax.value! < this.SensorAqMin.value!){
+    if (this.SensorTempMax.value! < this.SensorTempMin.value! ||
+      this.SensorHumMax.value! < this.SensorHumMin.value! || this.SensorAqMax.value! < this.SensorAqMin.value!) {
 
       this.errorMessage = "Minimum value cant be larger than the Maximum Value";
 
@@ -150,6 +152,16 @@ export class RoomSensorSetPage implements OnInit {
     this.maxCO2 = this.SensorAqMax.value!;
 
 
-    //this.dismissModal();
+    await this.wsService.socketConnection.sendDto(new ClientWantsToUpdateRoomConf({
+      roomId: 0,
+      updatedMinTemperature : parseFloat(this.minTemp.toString()),
+      updatedMaxTemperature : parseFloat(this.maxTemp.toString()),
+      updatedMaxHumidity : parseFloat(this.minHum.toString()),
+      updatedMinHumidity : parseFloat(this.maxHum.toString()),
+      updatedMinAq : parseFloat(this.minCO2.toString()),
+      updatedMaxAq : parseFloat(this.maxCO2.toString()),
+    }))
+
+    this.dismissModal();
   }
 }

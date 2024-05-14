@@ -149,8 +149,8 @@ export class RoomSensorSetPage {
       roomId: this.wsService.currentRoomId,
       updatedMinTemperature : parseFloat(this.minTemp.toString()),
       updatedMaxTemperature : parseFloat(this.maxTemp.toString()),
-      updatedMaxHumidity : parseFloat(this.minHum.toString()),
-      updatedMinHumidity : parseFloat(this.maxHum.toString()),
+      updatedMaxHumidity : parseFloat(this.maxHum.toString()),
+      updatedMinHumidity : parseFloat(this.minHum.toString()),
       updatedMinAq : parseFloat(this.minCO2.toString()),
       updatedMaxAq : parseFloat(this.maxCO2.toString()),
     }))

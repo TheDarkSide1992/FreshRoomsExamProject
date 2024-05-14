@@ -42,18 +42,21 @@ import {RoomModelDto} from "../Models/RoomModel";
           </div>
 
 
-            <ion-item style="margin-top: 8%">
-              <ion-select [formControl]="RSensorName" aria-label="DeviceType" interface="popover" placeholder="Select DeviceType"  >
-                <ion-select-option  *ngFor="let tempDeviceType of this.ws.sensorTypeList"  value="{{tempDeviceType.deviceTypeName}}">{{tempDeviceType.deviceTypeName}}</ion-select-option>
-              </ion-select>
-            </ion-item>
+          <ion-item style="margin-top: 8%">
+            <ion-select [formControl]="RDeviceType" aria-label="DeviceType" interface="popover"
+                        placeholder="Select DeviceType">
+              <ion-select-option *ngFor="let tempDeviceType of this.ws.sensorTypeList"
+                                 value="{{tempDeviceType.deviceTypeName}}">{{ tempDeviceType.deviceTypeName }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
 
           <div style="flex-direction: row;  align-content: space-evenly;">
             <ion-input [formControl]="RSensorId" label-placement="floating"
-                       label="Sensor Id" placeholder="Sensor Id">
+                       label="Device Id" placeholder="Device Id">
             </ion-input>
 
-            <ion-button (click)="verifySensorId()" [disabled]="!(RSensorId.valid && RSensorName.valid)"
+            <ion-button (click)="verifySensorId()" [disabled]="!(RSensorId.valid && RDeviceType.valid)"
                         style=" margin-top: 10%; height: 20px">Create Sensor
             </ion-button>
 
@@ -74,7 +77,7 @@ import {RoomModelDto} from "../Models/RoomModel";
 
         <ion-card style="display: flex; justify-content: space-around; flex-direction: row; background: transparent;"
                   *ngFor="let sensor of this.ws.sensorlist">
-          <ion-card-content>{{ sensor.deviceTypeName }}: {{sensor.sensorGuid}}</ion-card-content>
+          <ion-card-content>{{ sensor.deviceTypeName }}: {{ sensor.sensorGuid }}</ion-card-content>
           <ion-button (click)="removeTempSensor(sensor.valueOf())">
             <ion-icon name="remove-outline"></ion-icon>
           </ion-button>
@@ -82,7 +85,9 @@ import {RoomModelDto} from "../Models/RoomModel";
       </ion-content>
 
 
-      <ion-button (click)="createRoom()" [disabled]="!(this.ws.sensorlist.length>=1 && RName.valid)" style="margin-bottom: 5%; margin-left: 5%; width: 25%">Create Room</ion-button>
+      <ion-button (click)="createRoom()" [disabled]="!(this.ws.sensorlist.length>=1 && RName.valid)"
+                  style="margin-bottom: 5%; margin-left: 5%; width: 25%">Create Room
+      </ion-button>
 
 
 
@@ -93,9 +98,10 @@ export class CreateRoomsModalPage implements OnInit {
 
   RName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
 
-  RSensorName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
+  RDeviceType = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
 
   RSensorId = new FormControl("",[Validators.required,Validators.minLength(36),Validators.maxLength(36)]);
+
 
 
 
@@ -128,9 +134,11 @@ export class CreateRoomsModalPage implements OnInit {
 
     this.ws.socketConnection.sendDto(new SensorModelDto({
       eventType: "ClientWantsToVerifySensor",
-      deviceTypeName: this.RSensorName.value?.toString(),
+      deviceTypeName: this.RDeviceType.value?.toString(),
       sensorGuid: this.RSensorId.value?.toString(),
     }))
+    this.RSensorId.reset();
+    this.RDeviceType.reset();
   }
 
   async createRoom(){

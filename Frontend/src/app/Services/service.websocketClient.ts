@@ -20,6 +20,7 @@ import { ServerSendsDeviceTypes } from "../Models/ServerSendsDeviceTypes";
 import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
 import {ServerReturnsRoomList} from "../Models/ServerReturnsRoomList";
 import {RoomModel, RoomModelDto} from "../Models/RoomModel";
+import {ServerReturnsCreatedRoom} from "../Models/ServerReturnsCreatedRoom";
 
 @Injectable({providedIn: 'root'})
 export class WebsocketClientService
@@ -150,6 +151,16 @@ export class WebsocketClientService
       }
     }
     )}
+
+  async ServerReturnsCreatedRoom(dto: ServerReturnsCreatedRoom){
+    let tempRoom: RoomModel = {
+      roomId: dto.roomId,
+      name: dto.name,
+      creatorId: dto.creatorId,
+      deviceList: dto.deviceList,
+    }
+    this.roomList.push(tempRoom);
+  }
 }
 
 

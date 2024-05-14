@@ -166,7 +166,7 @@ export class RoomInfoPage implements OnInit {
       this.route.params.subscribe(params => {
         const id = params['id'];
         const name = params['room_name'];
-        this.roomId = id;
+        this.roomId = parseInt(id);
         this.displayname = name;
       });
 
@@ -179,7 +179,7 @@ export class RoomInfoPage implements OnInit {
   }
 
   async getConfig() {
-    await this.wsService.socketConnection.sendDto(new ClientWantsRoomConfigurations)
+    await this.wsService.socketConnection.sendDto(new ClientWantsRoomConfigurations({roomID:this.roomId}))
   }
 
   openRoomSetSettings() {

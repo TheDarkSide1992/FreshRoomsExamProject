@@ -3,26 +3,27 @@ using api.Dtos;
 using api.StaticHelpers.ExtentionMethods;
 using Fleck;
 using lib;
+using Service;
 using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
-public class ClientWantsRoomConfigurations() : BaseEventHandler<ClientWantsRoomConfigurationsDto>
+public class ClientWantsRoomConfigurations(RoomService service) : BaseEventHandler<ClientWantsRoomConfigurationsDto>
 {
     public override Task Handle(ClientWantsRoomConfigurationsDto dto, IWebSocketConnection socket)
     {
-        //var metData = socket.GetMetadata();
+        var metData = socket.GetMetadata();
+
+        var roomConf = service.getRoomPrefrencesConfiguration(metData.userInfo.userId, dto.roomId);
         var roomConfig = new ServerSendsRoomConfigurations(){
-            minTemparature = 12.0,
-            maxTemparature = 22.0,
-            maxHumidity = 25.5,
-            minHumidity = 2.0,
-            minAq = 1.0,
-            maxAq = 2.0,
+            minTemparature = roomConf.minTemparature,
+            maxTemparature = roomConf.maxTemparature,
+            maxHumidity = roomConf.maxHumidity,
+            minHumidity = roomConf.minHumidity,
+            minAq = roomConf.minAq,
+            maxAq = roomConf.maxAq,
         };
 
-        Console.WriteLine("Made Mock");
-        
         var messageToClient = JsonSerializer.Serialize(roomConfig);
         socket.Send(messageToClient);
         

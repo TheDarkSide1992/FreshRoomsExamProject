@@ -36,8 +36,8 @@ import {WebsocketClientService} from "../Services/service.websocketClient";
             </div>
             <div style=" flex: 2; flex-wrap: wrap;
                     align-content: space-evenly; flex-direction: row; width: 100%;">
-              <ion-input [formControl]="SensorTempMin" label-placement="floating" style="width: 45%;" label="{{minTemp}} C"></ion-input>
-              <ion-input [formControl]="SensorTempMax" label-placement="floating" style="width: 45%;" label="{{maxTemp}} C"></ion-input>
+              <ion-input [formControl]="SensorTempMin" label-placement="floating" style="width: 45%;" label="{{this.wsService.roomConfig?.minTemparature}} C"></ion-input>
+              <ion-input [formControl]="SensorTempMax" label-placement="floating" style="width: 45%;" label="{{this.wsService.roomConfig?.maxTemparature}} C"></ion-input>
             </div>
           </div>
         </ion-card>
@@ -57,8 +57,8 @@ import {WebsocketClientService} from "../Services/service.websocketClient";
             </div>
             <div style=" flex: 2; flex-wrap: wrap;
             align-content: space-evenly; flex-direction: row; width: 100%;">
-              <ion-input [formControl]="SensorHumMin" label-placement="floating" style="width: 45%;" label="{{minHum}} %"></ion-input>
-              <ion-input [formControl]="SensorHumMax" label-placement="floating" style="width: 45%;" label="{{maxHum}} %"></ion-input>
+              <ion-input [formControl]="SensorHumMin" label-placement="floating" style="width: 45%;" label="{{this.wsService.roomConfig?.minHumidity}} %"></ion-input>
+              <ion-input [formControl]="SensorHumMax" label-placement="floating" style="width: 45%;" label="{{this.wsService.roomConfig?.maxHumidity}} %"></ion-input>
             </div>
           </div>
         </ion-card>
@@ -78,8 +78,8 @@ import {WebsocketClientService} from "../Services/service.websocketClient";
             </div>
             <div style=" flex: 2; flex-wrap: wrap;
                     align-content: space-evenly; flex-direction: row; width: 100%;">
-              <ion-input [formControl]="SensorAqMin" label-placement="floating" style="width: 42%;" label="{{minCO2}} PPM"></ion-input>
-              <ion-input [formControl]="SensorAqMax" label-placement="floating" style="width: 42%;" label="{{maxCO2}} PPM "></ion-input>
+              <ion-input [formControl]="SensorAqMin" label-placement="floating" style="width: 42%;" label="{{this.wsService.roomConfig?.minAq}} PPM"></ion-input>
+              <ion-input [formControl]="SensorAqMax" label-placement="floating" style="width: 42%;" label="{{this.wsService.roomConfig?.maxAq}} PPM "></ion-input>
             </div>
           </div>
         </ion-card>
@@ -100,12 +100,12 @@ import {WebsocketClientService} from "../Services/service.websocketClient";
 export class RoomSensorSetPage implements OnInit {
 
   errorMessage: string = "";
-  minTemp: number = -1;
-  maxTemp: number = -1
-  minHum: number = -1;
-  maxHum: number = -1
-  minCO2: number = -1;
-  maxCO2: number = -1;
+  minTemp: number = this.wsService.roomConfig?.minTemparature!;
+  maxTemp: number = this.wsService.roomConfig?.maxTemparature!;
+  minHum: number = this.wsService.roomConfig?.minHumidity!;
+  maxHum: number = this.wsService.roomConfig?.maxTemparature!;
+  minCO2: number = this.wsService.roomConfig?.minAq!;
+  maxCO2: number = this.wsService.roomConfig?.maxAq!;
 
   SensorTempMin : FormControl<number | null> = new FormControl(this.minTemp,[Validators.required,Validators.min(0),Validators.max(100)]);
   SensorTempMax : FormControl<number | null> = new FormControl(this.maxTemp,[Validators.required,Validators.min(0),Validators.max(100)]);
@@ -119,7 +119,7 @@ export class RoomSensorSetPage implements OnInit {
 
 
 
-  constructor(private modalController: ModalController, protected ws: WebsocketClientService){}
+  constructor(public wsService: WebsocketClientService, private modalController: ModalController, protected ws: WebsocketClientService){}
 
   ngOnInit(): void {
 

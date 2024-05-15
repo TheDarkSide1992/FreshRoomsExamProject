@@ -102,17 +102,35 @@ public class DeviceRepository
     public bool DeleteRoomIdOnDevices(int roomId)
     {
         const string sql =
-            $@"UPDATE freshrooms.devices SET roomId = null,  WHERE roomId = @roomId";
+            $@"UPDATE freshrooms.devices SET roomId = null WHERE roomId = @roomId";
         
         using (var conn = _dataSource.OpenConnection())
         {
             try
             {
-                return conn.Execute(sql, new { roomId }) == 1;
+                return conn.Execute(sql, new { roomId }) != 0;
             }
             catch (Exception e)
             {
                 throw new Exception("Could not delete device to room relation");
+            }
+        }
+    }
+
+    public IEnumerable<MotorModel> getMotorsForRoom(int roomId)
+    {
+        const string sql = $@"SELECT motorstatus.motorId as {nameof(MotorModel.motorId)}, motorstatus.isOpen as {nameof(MotorModel.isOpen)}, motorstatus.isDisabled as {nameof(MotorModel.isDisabled)}
+                    FROM freshrooms.motorstatus join freshrooms.devices f on motorstatus.motorId = devices.deviceId where roomId = @roomId";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Query<MotorModel>(sql, new { roomId });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not get motors for room");
             }
         }
     }

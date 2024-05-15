@@ -35,6 +35,25 @@ public class RoomRepository
         }
     }
     
+    public bool CreateRoomConfig(int roomId)
+    {
+        
+        var sql =
+            $@"INSERT INTO freshrooms.roomConfig(roomid, mintemparature, maxtemparature, minhumidity, maxhumidity, minaq, maxaq) VALUES (@roomId, 17,25,40,60,0.4,1)";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) == 1;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not create roomConfig");
+            }
+        }
+    }
+    
     public IEnumerable<RoomModel> GetAllRooms()
     {
         
@@ -114,7 +133,7 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
 
     public bool DeleteRoomConfig(int roomId)
     {
-        var sql = $@"DELETE * FROM freshrooms.roomConfig WHERE roomId = @roomId;";
+        var sql = $@"DELETE FROM freshrooms.roomConfig WHERE roomId = @roomId;";
         using (var conn = _dataSource.OpenConnection())
         {
             try
@@ -124,6 +143,22 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
             catch (Exception e)
             {
                 throw new Exception("Could not delete roomConfig");
+            }
+        }
+    }
+
+    public bool DeleteRoom(int roomId)
+    {
+        var sql = $@"DELETE FROM freshrooms.rooms WHERE roomId = @roomId;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) == 1;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete room");
             }
         }
     }

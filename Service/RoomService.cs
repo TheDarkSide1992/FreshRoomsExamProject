@@ -22,20 +22,23 @@ public class RoomService
         RoomModel roomModel = _roomRepository.CreateRoom(name, createdBy);
         if (roomModel != null)
         {
+            _roomRepository.CreateRoomConfig(roomModel.roomId);
             _deviceRepository.UpdateDevices(deviceList, roomModel.roomId);
             return roomModel;
         }
-
         return null;
     }
 
     public bool DeleteRoom(int roomId)
     {
-        if (_deviceRepository.DeleteRoomIdOnDevices(roomId) && _roomRepository.DeleteRoomConfig(roomId))
+        if (_roomRepository.DeleteRoomConfig(roomId) && _deviceRepository.DeleteRoomIdOnDevices(roomId))
         {
             return _roomRepository.DeleteRoom(roomId);
         }
-        throw new NotImplementedException();
+        else
+        {
+            throw new Exception("Could not delete room");
+        }
     }
     
     public IEnumerable<RoomModel> GetAllRooms()
@@ -57,5 +60,27 @@ public class RoomService
         }
         
         throw new NotImplementedException();
+    }
+
+    public string getBasicRoomWindowStatus(int roomId)
+    {
+        string output = "";
+        var motorList = _deviceRepository.getMotorsForRoom(roomId);
+        foreach (var motor in motorList)
+        {
+            if (motor.isOpen)
+            {
+                output = "Open";
+            }
+            else if(!motor.isOpen && output != "")
+            {
+                return "Mixed";
+            }
+            else if(!motor.isOpen)
+            {
+                output = "Closed";
+            }
+        }
+        return output;
     }
 }

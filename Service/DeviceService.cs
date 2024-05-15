@@ -21,4 +21,14 @@ public class DeviceService
     {
         return _deviceRepository.getDeviceTypes();
     }
+
+    public void createOrUpdateSensorData(SensorModel sensorModel)
+    {
+        _deviceRepository.createOrUpdateData(sensorModel);
+    }
+
+    public bool createOrUpdateMotorStatus(MotorModel motorModel)
+    {
+        return _deviceRepository.createOrUpdateMoterStatus(motorModel);
+    }
 }

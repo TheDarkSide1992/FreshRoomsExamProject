@@ -23,11 +23,5 @@
     <ProjectReference Include="..\Externalities\Externalities.csproj" />
     <ProjectReference Include="..\Service\Service.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Include="..\Cert\ca.crt">
-            <Link>cert/ca.crt</Link>
-    </EmbeddedResource>
-  </ItemGroup>
 
 </Project>

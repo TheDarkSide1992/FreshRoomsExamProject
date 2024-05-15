@@ -98,6 +98,57 @@ public class DeviceRepository
             }
         }
     }
-    
+
+    public SensorModel createOrUpdateData(SensorModel sensorModel)
+    {
+        var sql = $@"insert into freshrooms.devicedata (sensorId, temp, hum, aq, timestamp) values (@sensorId,@temp,@hum,@aq,@timestamp)
+                        on conflict(sensorId)
+                        do update set temp = @temp, hum = @hum, aq = @aq, timestamp = @timestamp;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+
+                conn.Execute(sql, new
+                {
+                    sensorModel.sensorId,
+                    temp = double.Parse(sensorModel.Temperature),
+                    hum = double.Parse(sensorModel.Humidity),
+                    aq = double.Parse(sensorModel.CO2),
+                    timestamp = DateTime.Now
+                });
+                return sensorModel;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to save sensor data");
+            }
+        }
+    }
+
+    public bool createOrUpdateMoterStatus(MotorModel motorModel)
+    {
+        var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isDisabled) values (@motorId,@isOpen,@isDisabled)
+                        on conflict(motorId)
+                        do update set isOpen = @isOpen;";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                conn.Execute(sql, new
+                {
+                    motorModel.MotorId,
+                    motorModel.isOpen,
+                    isDisabled = false
+                });
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to save window status");
+            }
+        }
+    }
 }
 

@@ -1,4 +1,5 @@
-﻿using api.Dtos;
+﻿using System.Security.Authentication;
+using api.Dtos;
 using api.EventFilters;
 using api.StaticHelpers;
 using api.StaticHelpers.ExtentionMethods;
@@ -17,12 +18,20 @@ public class ClientWantsToLogin(AccountService accountService) : BaseEventHandle
 {
     public override Task Handle(ClientWantsToLoginDto dto, IWebSocketConnection socket)
     {
-        User user = accountService.Login(dto.email, dto.password);
-        if (user != null)
+        try
         {
-            socket.Authenticate(user);
-            socket.Send(JsonSerializer.Serialize(new ServerLogsInUser { jwt = SecurityUtilities.IssueJwt(user.userId) }));
+            User user = accountService.Login(dto.email, dto.password);
+            if (user != null)
+                {
+                    socket.Authenticate(user);
+                    socket.Send(JsonSerializer.Serialize(new ServerLogsInUser { jwt = SecurityUtilities.IssueJwt(user.userId) }));
+                }
         }
+        catch (Exception e)
+        {
+            throw new AuthenticationException("Wrong password or email, please try again");
+        }
+       
 
         return Task.CompletedTask;
     }

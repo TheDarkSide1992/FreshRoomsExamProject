@@ -37,7 +37,7 @@ public static class SecurityUtilities
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-            return encoder.Encode(userId, Environment.GetEnvironmentVariable("JWT_KEY"));
+            return encoder.Encode(new {u = userId}, Environment.GetEnvironmentVariable("JWT_KEY"));
         }
         catch (Exception e)
         {

@@ -112,9 +112,9 @@ public class DeviceRepository
                 conn.Execute(sql, new
                 {
                     sensorModel.sensorId,
-                    temp = double.Parse(sensorModel.Temperature),
-                    hum = double.Parse(sensorModel.Humidity),
-                    aq = double.Parse(sensorModel.CO2),
+                    temp = sensorModel.Temperature,
+                    hum = sensorModel.Humidity,
+                    aq = sensorModel.CO2,
                     timestamp = DateTime.Now
                 });
                 return sensorModel;
@@ -147,6 +147,40 @@ public class DeviceRepository
             catch (Exception e)
             {
                 throw new Exception("Failed to save window status");
+            }
+        }
+    }
+
+    public void saveOldData(string sensorId)
+    {
+        var selectOldData = $@"select sensorId, temp as {nameof(SensorModel.Temperature)}, hum as {nameof(SensorModel.Humidity)}, aq as {nameof(SensorModel.CO2)}, timestamp from freshrooms.devicedata where sensorId = @sensorId";
+        var save =
+            $@"insert into freshrooms.historicdata (sensorId, temp, hum, aq, timestamp) values (@sensorId,@temp,@hum,@aq,@timestamp);";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                var oldData = conn.QueryFirst<SensorModel>(selectOldData, new { sensorId });
+                Console.WriteLine(oldData.timestamp);
+                Console.WriteLine(oldData.sensorId);
+                Console.WriteLine(oldData.Humidity);
+                Console.WriteLine(oldData.CO2);
+                Console.WriteLine(oldData.Temperature);
+                conn.Execute(save,
+                    new
+                    {
+                        oldData.sensorId, hum = oldData.Humidity,
+                        temp = oldData.Temperature, aq = oldData.CO2,
+                        oldData.timestamp
+                    });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.InnerException);
+                throw new Exception("failed to save old data");
             }
         }
     }

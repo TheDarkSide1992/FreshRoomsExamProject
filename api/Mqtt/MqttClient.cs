@@ -1,13 +1,14 @@
 ﻿using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
 using Infastructure.DataModels;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Exceptions;
 using MQTTnet.Formatter;
+using Newtonsoft.Json;
 using Serilog;
 using Service;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace api.Mqtt;
 
@@ -88,7 +89,6 @@ public class MqttClient(DeviceService _service)
 
     public async Task sendMessageToTopic(string topic, string message)
     {
-        topic = "freshrooms/motor/action/c85194f5-dbb0-4ccd-9b49-03aeb46f312a";
         var pongMessage = new MqttApplicationMessageBuilder()
             .WithTopic(topic)
             .WithPayload(message)
@@ -98,7 +98,7 @@ public class MqttClient(DeviceService _service)
 
     private void saveOrCreateSensordata(string message, string id)
     {
-        var obj = JsonSerializer.Deserialize<SensorModel>(message);
+        var obj = JsonConvert.DeserializeObject<SensorModel>(message);
         obj.sensorId = id;
         _service.createOrUpdateSensorData(obj);
     }
@@ -106,7 +106,6 @@ public class MqttClient(DeviceService _service)
     private void saveOrCreateMotorStatus(string message, string id)
     {
         var obj = JsonSerializer.Deserialize<MotorModel>(message);
-        obj.MotorId = id;
         _service.createOrUpdateMotorStatus(obj);
     }
 }

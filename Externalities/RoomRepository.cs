@@ -57,4 +57,58 @@ public class RoomRepository
             }
         }
     }
+    
+    public RoomConfigModel getRoomPrefrencesConfiguration(int userInfoUserId, int dtoRoomId)
+    {
+        var sql = $@"SELECT 
+    mintemparature as {nameof(RoomConfigModel.minTemparature)}, 
+    maxtemparature as {nameof(RoomConfigModel.maxTemparature)},
+    minhumidity as {nameof(RoomConfigModel.minHumidity)},
+    maxhumidity as {nameof(RoomConfigModel.maxHumidity)},
+    minaq as {nameof(RoomConfigModel.minAq)},
+    maxaq as {nameof(RoomConfigModel.maxAq)}
+    FROM freshrooms.roomConfig WHERE roomid = @dtoRoomId;";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.QuerySingle<RoomConfigModel>(sql, new { dtoRoomId });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not get room Data.");
+            }
+        }
+    }
+
+
+    public RoomConfigModel updateRoomPrefrencesConfiguration(int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, 
+        double dtoUpdatedMinHumidity, double dtoUpdatedMaxHumidity, double dtoUpdatedMinAq, double dtoUpdatedMaxAq)
+    {
+        var sql = $@"UPDATE freshrooms.roomConfig
+SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxTemperature, 
+    minhumidity = @dtoUpdatedMinHumidity, maxhumidity = @dtoUpdatedMaxHumidity, minaq = @dtoUpdatedMinAq, 
+    maxaq = @dtoUpdatedMaxAq WHERE roomid = @dtoRoomId
+
+    RETURNING mintemparature as {nameof(RoomConfigModel.minTemparature)}, 
+    maxtemparature as {nameof(RoomConfigModel.maxTemparature)},
+    minhumidity as {nameof(RoomConfigModel.minHumidity)},
+    maxhumidity as {nameof(RoomConfigModel.maxHumidity)},
+    minaq as {nameof(RoomConfigModel.minAq)},
+    maxaq as {nameof(RoomConfigModel.maxAq)}
+;";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.QuerySingle<RoomConfigModel>(sql, new {dtoUpdatedMinTemperature, dtoUpdatedMaxTemperature,dtoUpdatedMinHumidity, dtoUpdatedMaxHumidity, dtoUpdatedMinAq, dtoUpdatedMaxAq, dtoRoomId });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not update room Data.");
+            }
+        }
+    }
 }

@@ -40,7 +40,7 @@ import {ClientWantsToChangeSettings} from "../Models/ClientWantsToChangeSettings
                           <h1>Password : </h1>
                       </ion-item>
                       <ion-item>
-                          <h1>repeat Password : </h1>
+                          <h1>Repeat Password : </h1>
                       </ion-item>
                   </div>
 
@@ -74,7 +74,7 @@ import {ClientWantsToChangeSettings} from "../Models/ClientWantsToChangeSettings
                                      onCopy="return false" onCut="return false"
                                      onDrag="return false" onDrop="return false"
                                      autocomplete=off [type]="true ? 'password' : 'text'" id="repeatPassword">Repeat
-                              Passwrod
+                              Password
                           </ion-input>
                       </ion-item>
                   </div>
@@ -96,7 +96,7 @@ import {ClientWantsToChangeSettings} from "../Models/ClientWantsToChangeSettings
                   <div style=" flex: 4; flex-wrap: wrap;
               align-content: space-evenly; flex-direction: column;">
                       <br>
-                      <h2>Save changes</h2>
+
                   </div>
                   <div style="flex: 4; flex-wrap: wrap;
               align-content: space-evenly; flex-direction: row ;">

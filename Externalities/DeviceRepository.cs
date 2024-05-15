@@ -98,6 +98,23 @@ public class DeviceRepository
             }
         }
     }
-    
+
+    public bool DeleteRoomIdOnDevices(int roomId)
+    {
+        const string sql =
+            $@"UPDATE freshrooms.devices SET roomId = null,  WHERE roomId = @roomId";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) == 1;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete device to room relation");
+            }
+        }
+    }
 }
 

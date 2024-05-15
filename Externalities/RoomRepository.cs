@@ -111,4 +111,20 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
             }
         }
     }
+
+    public bool DeleteRoomConfig(int roomId)
+    {
+        var sql = $@"DELETE * FROM freshrooms.roomConfig WHERE roomId = @roomId;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) == 1;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete roomConfig");
+            }
+        }
+    }
 }

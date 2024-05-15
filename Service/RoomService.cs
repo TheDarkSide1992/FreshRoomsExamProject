@@ -28,6 +28,15 @@ public class RoomService
 
         return null;
     }
+
+    public bool DeleteRoom(int roomId)
+    {
+        if (_deviceRepository.DeleteRoomIdOnDevices(roomId) && _roomRepository.DeleteRoomConfig(roomId))
+        {
+            return _roomRepository.DeleteRoom(roomId);
+        }
+        throw new NotImplementedException();
+    }
     
     public IEnumerable<RoomModel> GetAllRooms()
     {

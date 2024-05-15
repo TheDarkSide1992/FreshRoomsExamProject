@@ -8,32 +8,28 @@ import {ClientWantsRoomList} from "../Models/ClientWantsRoomList";
 @Component({
   template:
     `
-
-
       <body style="display: flex; justify-content: center; flex-direction: column;">
-
             <div style="display: flex; flex-direction: column;" >
               <div style="display: flex; justify-content: flex-end; margin-top: 1%">
                 <ion-button (click)="openCreateNewRoom()" >
                   <ion-icon name="add-outline"></ion-icon>
                 </ion-button>
               </div>
-
             </div>
-            <ion-content style="display: flex; align-content: center;
-                     justify-content: center;" #textWindow id="Textcontainer"
-                         [scrollEvents]="true">
 
-              <ion-card style="display: flex; min-width: 400px; width: 70%; min-height: 200px; height: 40%; justify-content: space-around; flex-direction: row;"
-                        *ngFor="let room of this.ws.roomList">
+            <div style="height: 100%; display: flex; align-items: center; flex-direction: column; overflow-x: hidden;overflow-y: scroll;">
+
+              <ion-card style="display: flex; min-height: 300px; min-width: 400px; width: 70%;  justify-content: space-around; flex-direction: row;" *ngFor="let room of this.ws.roomList">
 
                 <ion-card-content style="display: flex; flex-grow: 7; height: 100%; flex-direction: column; justify-items: start;">
-                <div style="font-size: xx-large">Room: {{room.name}}({{room.roomId}})</div>
+                  <div style="font-size: xx-large">Room: {{room.name}}({{room.roomId}})</div>
+
                   <div style="width: 100%; height: 60%; flex-direction: column; flex-wrap: wrap">
                     <ion-item><ion-label style="width: 100%;">Temp: {{this.currentTemp}}</ion-label></ion-item>
                     <ion-item><ion-label style="width: 100%">Humidity: {{this.currentHum}}</ion-label></ion-item>
-                    <ion-item><ion-label style="width: 100%">Air Quality:</ion-label></ion-item>
+                    <ion-item><ion-label style="width: 100%">Air Quality:</ion-label>{{this.currentAq}}</ion-item>
                   </div>
+
                   <div>
                     <ion-item  style="font-size: xx-large">Windows Status: {{this.windowStatus}}</ion-item>
                   </div>
@@ -45,12 +41,14 @@ import {ClientWantsRoomList} from "../Models/ClientWantsRoomList";
                       <ion-icon name="trash-outline"></ion-icon>
                     </ion-button>
                   </div>
+
                   <div style="width: 100%; height: 60%; flex-direction: column; flex-wrap: wrap">
                     <ion-title style="display: flex; text-align: center; width: 100%">Room Settings</ion-title>
                     <ion-item><ion-label style="width: 100%;">Temp: {{this.settingTemp}}</ion-label></ion-item>
                     <ion-item><ion-label style="width: 100%">Humidity: {{this.settingHum}}</ion-label></ion-item>
                     <ion-item><ion-label style="width: 100%">Air Quality: {{this.settingAq}}</ion-label></ion-item>
                   </div>
+
                   <div style="width: 100%; height: 30%; justify-content: center">
                     <ion-button style=" margin: 4%;  width: 35%; --border-radius: 25px;" >
                       <ion-icon name="play-outline"></ion-icon>
@@ -58,7 +56,7 @@ import {ClientWantsRoomList} from "../Models/ClientWantsRoomList";
                   </div>
                 </ion-card-content>
               </ion-card>
-            </ion-content>
+            </div>
       </body>
     `,
   styleUrls: ['ManageRooms.scss'],

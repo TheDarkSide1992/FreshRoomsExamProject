@@ -11,11 +11,17 @@ import {CreateRoomsModalPage} from "./CreateRooms/CreateRooms";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HomePage} from "./Home/Home.page";
 import {RegisterAccountPage} from "./registerAccount/registerAccount.page";
+
+
+
+
 import {AccountPage} from "./account/account.page";
 import {AccountSettingsPage} from "./account/account.settings.page";
+import {RoomInfoPage} from "./roomInfo/roomInfo.page";
+import {RoomSensorSetPage} from "./roomInfo/RoomSensorSet.page";
 
 @NgModule({
-  declarations: [AppComponent,AccountPage, SidebarmenuPage, LoginPage,HomePage, RegisterAccountPage, AccountSettingsPage, ManageRoomsPage, CreateRoomsModalPage],
+  declarations: [AppComponent,AccountPage, SidebarmenuPage, LoginPage,HomePage, RoomInfoPage, RoomSensorSetPage, AccountSettingsPage, RegisterAccountPage, AccountSettingsPage, ManageRoomsPage, CreateRoomsModalPage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule, FormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

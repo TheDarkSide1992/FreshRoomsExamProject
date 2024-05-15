@@ -86,7 +86,7 @@ public class AccountRepository
         {
             using (var connection = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql get account info");//TODO Remowe Before deployment
+                Console.WriteLine("runnign sql get account info"); //TODO Remowe Before deployment
                 return connection.QueryFirst<AccountInfo>(sql, new { id });
             }
         }
@@ -117,13 +117,13 @@ public class AccountRepository
         var sql = $@"
         UPDATE freshrooms.users SET name = @dtoNewNameDto  WHERE userId = @userInfoUserId 
         ";
-        
+
         try
         {
             using (var conn = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql update Name");//TODO Remowe Before deployment
-                conn.Execute(sql, new {dtoNewNameDto , userInfoUserId });
+                Console.WriteLine("runnign sql update Name"); //TODO Remowe Before deployment
+                conn.Execute(sql, new { dtoNewNameDto, userInfoUserId });
             }
         }
         catch (Exception e)
@@ -141,7 +141,7 @@ public class AccountRepository
         {
             using (var conn = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql update Email");//TODO Remowe Before deployment
+                Console.WriteLine("runnign sql update Email"); //TODO Remowe Before deployment
                 conn.Execute(sql, new { dtoNewEmailDto, userInfoUserId });
             }
         }
@@ -169,5 +169,24 @@ public class AccountRepository
         {
             throw new Exception("failed update Account City");
         }
+    }
+
+    public bool isAdmin(int userInfoUserId)
+    {
+        var sql = $@"SELECT id FROM freshrooms.accountcode WHERE id = @userInfoUserId AND accperm = 'admin'";
+
+        try
+        {
+            using (var conn = _dataSource.OpenConnection())
+            {
+                int id = conn.QuerySingle<int>(sql, new { userInfoUserId });
+                return id == userInfoUserId;
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("You dont have Permission for this action");
+        }
+
     }
 }

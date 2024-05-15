@@ -18,6 +18,8 @@ import {DeviceModel, DeviceTypesModel} from "../Models/DeviceModel";
 import {ServerRespondsToSensorVeryfication} from "../Models/ServerRespondsToSensorVeryfication";
 import { ServerSendsDeviceTypes } from "../Models/ServerSendsDeviceTypes";
 import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
+import {ServerSendsRoomConfigurations} from "../Models/ServerSendsRoomConfigurations";
+import {RoomConfig} from "../Models/objects/roomConfig";
 
 @Injectable({providedIn: 'root'})
 export class WebsocketClientService
@@ -29,6 +31,8 @@ export class WebsocketClientService
   city?: string;
   sensorlist: Array<DeviceModel> = [];
   sensorTypeList: Array<DeviceTypesModel> = [];
+  roomConfig?: RoomConfig;
+  currentRoomId?: number;
 
   constructor(public router: Router, public toast: ToastController) {
     this.socketConnection = new WebSocketSuperClass(environment.url)
@@ -53,6 +57,10 @@ export class WebsocketClientService
   ServerSendsAccountData(dto: ServerSendsAccountData)
   {
     this.currentAccount = dto as accountModdel;
+  }
+  ServerSendsRoomConfigurations(dto: ServerSendsRoomConfigurations)
+  {
+     this.roomConfig = dto as RoomConfig;
   }
 
  async ServerLogsInUser(dto: ServerLogsInUser)

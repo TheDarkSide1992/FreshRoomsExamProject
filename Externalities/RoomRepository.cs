@@ -162,4 +162,25 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
             }
         }
     }
+
+    public IEnumerable<RoomConfigModel> GetALLRoomSettings()
+    {
+        var sql = $@"SELECT roomId as {nameof(RoomConfigModel.roomId)}, minTemparature as {nameof(RoomConfigModel.minTemparature)}, 
+       maxTemparature as {nameof(RoomConfigModel.maxTemparature)}, minHumidity as {nameof(RoomConfigModel.minHumidity)}, 
+       maxHumidity as {nameof(RoomConfigModel.maxHumidity)}, minAq as {nameof(RoomConfigModel.minAq)}, 
+       maxAq as {nameof(RoomConfigModel.maxAq)} FROM freshrooms.roomConfig";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Query<RoomConfigModel>(sql);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not get room config");
+            }
+        }
+        
+    }
 }

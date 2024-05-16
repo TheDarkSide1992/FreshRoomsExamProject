@@ -13,8 +13,7 @@ public class ClientWantsBasicWindowStatus(RoomService roomService) : BaseEventHa
     {
         var mess = new ServerReturnsBasicWindowStatus()
         {
-            windowStatus = roomService.getBasicRoomWindowStatus(dto.roomId),
-            roomId = dto.roomId,
+            windowStatus = roomService.getBasicRoomWindowStatus(),
         };
         var messageToClient = JsonSerializer.Serialize(mess);
 

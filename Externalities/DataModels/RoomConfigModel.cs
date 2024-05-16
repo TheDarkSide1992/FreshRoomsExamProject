@@ -2,6 +2,7 @@
 
 public class RoomConfigModel
 {
+    public int roomId { get; set; }
     public double minTemparature { get; set; }
     public double maxTemparature { get; set; }
     public double maxHumidity { get; set; }

@@ -62,10 +62,17 @@ public class RoomService
         throw new NotImplementedException();
     }
 
-    public string getBasicRoomWindowStatus(int roomId)
+    public string getBasicRoomWindowStatus()
     {
-        string output = "";
-        var motorList = _deviceRepository.getMotorsForRoom(roomId);
+        IEnumerable<BasicRoomStatus> roomStatusList = _deviceRepository.getMotorsForRoom();
+        IEnumerable<RoomConfigModel> roomConfigModels = _roomRepository.GetALLRoomSettings();
+        
+        foreach (var roomConfig in roomConfigModels)
+        {
+            
+        }
+        /*string output = "";
+        var motorList = _deviceRepository.getMotorsForRoom();
         foreach (var motor in motorList)
         {
             if (motor.isOpen)
@@ -81,6 +88,6 @@ public class RoomService
                 output = "Closed";
             }
         }
-        return output;
+        return output;*/
     }
 }

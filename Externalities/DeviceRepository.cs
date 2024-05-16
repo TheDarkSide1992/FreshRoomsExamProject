@@ -117,21 +117,61 @@ public class DeviceRepository
         }
     }
 
-    public IEnumerable<MotorModel> getMotorsForRoom(int roomId)
+    public IEnumerable<BasicRoomStatus> getMotorsForRoom()
     {
+        IEnumerable<int> roomIdList = null;
+        List<BasicRoomStatus> roomStatusList = null;
         const string sql = $@"SELECT motorstatus.motorId as {nameof(MotorModel.motorId)}, motorstatus.isOpen as {nameof(MotorModel.isOpen)}, motorstatus.isDisabled as {nameof(MotorModel.isDisabled)}
-                    FROM freshrooms.motorstatus join freshrooms.devices f on motorstatus.motorId = devices.deviceId where roomId = @roomId";
+                    FROM freshrooms.motorstatus join freshrooms.devices f on motorstatus.motorId = devices.deviceId where roomId = @room";
+
+        const string sql2 = @"SELECT roomId as int FROM freshrooms.room";
         
         using (var conn = _dataSource.OpenConnection())
         {
             try
             {
-                return conn.Query<MotorModel>(sql, new { roomId });
+                roomIdList = conn.Query<int>(sql2);
             }
             catch (Exception e)
             {
-                throw new Exception("Could not get motors for room");
+                throw new Exception("Could not get id's for rooms");
             }
+
+            if (roomIdList != null)
+            {
+                foreach (var room in roomIdList)
+                {
+                    try
+                    {
+                        string output = "";
+                        BasicRoomStatus roomStatus = new BasicRoomStatus();
+                        IEnumerable<MotorModel> motorList = conn.Query<MotorModel>(sql, new { room });
+                        foreach (var motor in motorList)
+                        {
+                            if (motor.isOpen)
+                            {
+                                output = "Open";
+                            }
+                            else if(!motor.isOpen && output != "")
+                            {
+                                roomStatus.basicWindowStatus = "Mixed";
+                                break;
+                            }
+                            else if(!motor.isOpen)
+                            {
+                                output = "Closed";
+                            }
+                            roomStatus.basicWindowStatus = output;
+                        }
+                        roomStatusList.Add(roomStatus);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Could not get motor status for rooms");
+                    }
+                }
+            }
+            return roomStatusList;
         }
     }
 }

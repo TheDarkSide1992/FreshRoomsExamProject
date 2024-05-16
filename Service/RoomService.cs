@@ -29,9 +29,9 @@ public class RoomService
         return null;
     }
 
-    public RoomConfigModel getRoomPrefrencesConfiguration(int userInfoUserId, int dtoRoomId)
+    public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
     {
-        return _roomRepository.getRoomPrefrencesConfiguration(userInfoUserId, dtoRoomId);
+        return _roomRepository.getRoomPrefrencesConfiguration(dtoRoomId);
     }
 
 

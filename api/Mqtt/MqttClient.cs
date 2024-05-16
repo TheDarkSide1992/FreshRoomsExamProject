@@ -12,10 +12,11 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace api.Mqtt;
 
-public class MqttClient(DeviceService _service)
+public class MqttClient(DeviceService _deviceService, RoomService _roomService)
 {
    public IMqttClient _Client;
    public MqttFactory Factory;
+   public DateTime? timelastChecked = null;
 
    public async Task communicateWithMqttBroker()
    {
@@ -100,12 +101,57 @@ public class MqttClient(DeviceService _service)
     {
         var obj = JsonConvert.DeserializeObject<SensorModel>(message);
         obj.sensorId = id;
-        _service.createOrUpdateSensorData(obj);
+        _deviceService.createOrUpdateSensorData(obj);
+        if (timelastChecked != null && DateTime.Now.Minute >= timelastChecked.Value.Minute + 5)
+        {
+            openWindows(id);
+        }
+        if (timelastChecked == null)
+        {
+            timelastChecked = DateTime.Now;
+        }
+        
+    }
+
+    public void openWindows(string id)
+    {
+        var avrage = _deviceService.getAvrageRoomSensorData(id);
+        var pref = _roomService.getRoomPrefrencesConfiguration(avrage.roomId);
+        List<MotorModel> motors = _deviceService.getMotersForRoom(avrage.roomId);
+        if (avrage.Humidity <= pref.minHumidity || avrage.Humidity >= pref.maxHumidity)
+        {
+            windowAction(motors);
+        }
+        else if(avrage.Temperature <= pref.minTemparature || avrage.Temperature >= pref.maxTemparature)
+        {
+            windowAction(motors);
+        }
+        else if (avrage.CO2 <= pref.minAq || avrage.CO2 >= pref.maxAq)
+        {
+            windowAction(motors);   
+        }
+    }
+
+    private void windowAction(List<MotorModel> motors)
+    {
+        foreach (var m in motors)
+        {
+            if (!m.isOpen)
+            {
+                sendMessageToTopic("freshrooms/motor/action/" + m.MotorId, "open");
+            }
+            else
+            {
+                sendMessageToTopic("freshrooms/motor/action/" + m.MotorId, "close");
+            }
+        }
+
+        timelastChecked = DateTime.Now;
     }
     
     private void saveOrCreateMotorStatus(string message, string id)
     {
         var obj = JsonSerializer.Deserialize<MotorModel>(message);
-        _service.createOrUpdateMotorStatus(obj);
+        _deviceService.createOrUpdateMotorStatus(obj);
     }
 }

@@ -32,4 +32,14 @@ public class DeviceService
     {
         return _deviceRepository.createOrUpdateMoterStatus(motorModel);
     }
+
+    public RoomAvrageSensorData getAvrageRoomSensorData(string sensorId)
+    {
+        return _deviceRepository.getAvrageSensordataforRoom(sensorId);
+    }
+
+    public List<MotorModel> getMotersForRoom(int roomId)
+    {
+        return (List<MotorModel>)_deviceRepository.getMotersForRoom(roomId);
+    }
 }

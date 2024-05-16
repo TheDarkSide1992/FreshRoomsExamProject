@@ -34,7 +34,7 @@ public class RoomRepository
         }
     }
 
-    public RoomConfigModel getRoomPrefrencesConfiguration(int userInfoUserId, int dtoRoomId)
+    public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
     {
         var sql = $@"SELECT 
     mintemparature as {nameof(RoomConfigModel.minTemparature)}, 

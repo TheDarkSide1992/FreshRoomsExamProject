@@ -177,11 +177,30 @@ public class DeviceRepository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-                Console.WriteLine(e.InnerException);
                 throw new Exception("failed to save old data");
             }
+        }
+    }
+
+    public RoomAvrageSensorData getAvrageSensordataforRoom(string sensorId)
+    {
+        var getRoomid = $@"select roomid from freshrooms.devices where deviceid = @sensorId";
+        var getAvrage = $@"select avg(hum) as {nameof(RoomAvrageSensorData.Humidity)}, avg(temp) as {nameof(RoomAvrageSensorData.Temperature)}, avg(aq) as {nameof(RoomAvrageSensorData.CO2)}, d.roomid as {nameof(RoomAvrageSensorData.roomId)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid
+                            group by d.roomid;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            var roomid = conn.QueryFirst<int>(getRoomid, new { sensorId });
+            return conn.QueryFirst<RoomAvrageSensorData>(getAvrage, new { roomid });
+        }
+    }
+
+    public IEnumerable<MotorModel> getMotersForRoom(int roomId)
+    {
+        var sql = $@"select * from freshrooms.motorstatus join freshrooms.devices d on d.deviceid = motorstatus.motorid where d.roomid = @roomId and isDisabled = @isdisabled;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<MotorModel>(sql, new { roomId, isDisabled = false });
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿namespace Infastructure.DataModels;
+namespace Infastructure.DataModels;
 
-public class RoomConfigModel
+public class BasicRoomSettingModel
 {
+    public int roomId { get; set; }
+    public string roomName { get; set; }
     public double minTemparature { get; set; }
     public double maxTemparature { get; set; }
     public double maxHumidity { get; set; }

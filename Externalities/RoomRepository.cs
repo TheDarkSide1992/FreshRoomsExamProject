@@ -163,18 +163,24 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
         }
     }
 
-    public IEnumerable<RoomConfigModel> GetALLRoomSettings()
+    public IEnumerable<BasicRoomSettingModel> GetALLRoomSettings()
     {
-        var sql = $@"SELECT roomId as {nameof(RoomConfigModel.roomId)}, minTemparature as {nameof(RoomConfigModel.minTemparature)}, 
-       maxTemparature as {nameof(RoomConfigModel.maxTemparature)}, minHumidity as {nameof(RoomConfigModel.minHumidity)}, 
-       maxHumidity as {nameof(RoomConfigModel.maxHumidity)}, minAq as {nameof(RoomConfigModel.minAq)}, 
-       maxAq as {nameof(RoomConfigModel.maxAq)} FROM freshrooms.roomConfig";
+        var sql = $@"select r.roomid,
+       roomname as {nameof(BasicRoomSettingModel.roomName)},
+       c.mintemparature as {nameof(BasicRoomSettingModel.minTemparature)},
+       c.maxtemparature as {nameof(BasicRoomSettingModel.maxTemparature)},
+       c.minhumidity as {nameof(BasicRoomSettingModel.minHumidity)},
+       c.maxhumidity as {nameof(BasicRoomSettingModel.maxHumidity)},
+       c.minaq as {nameof(BasicRoomSettingModel.minAq)},
+       c.maxaq as {nameof(BasicRoomSettingModel.maxAq)}
+from freshrooms.rooms r
+         join freshrooms.roomconfig c on r.roomid = c.roomid;";
         
         using (var conn = _dataSource.OpenConnection())
         {
             try
             {
-                return conn.Query<RoomConfigModel>(sql);
+                return conn.Query<BasicRoomSettingModel>(sql);
             }
             catch (Exception e)
             {

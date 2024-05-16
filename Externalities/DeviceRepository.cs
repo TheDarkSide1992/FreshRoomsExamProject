@@ -117,61 +117,19 @@ public class DeviceRepository
         }
     }
 
-    public IEnumerable<BasicRoomStatus> getMotorsForRoom()
+    public List<BasicDeviceDModel> GetBasicDeviceData()
     {
-        IEnumerable<int> roomIdList = null;
-        List<BasicRoomStatus> roomStatusList = null;
-        const string sql = $@"SELECT motorstatus.motorId as {nameof(MotorModel.motorId)}, motorstatus.isOpen as {nameof(MotorModel.isOpen)}, motorstatus.isDisabled as {nameof(MotorModel.isDisabled)}
-                    FROM freshrooms.motorstatus join freshrooms.devices f on motorstatus.motorId = devices.deviceId where roomId = @room";
+        const string sql = $@"select roomid as {nameof(BasicDeviceDModel.roomId)}, temp as {nameof(BasicDeviceDModel.avgTemp)}, 
+       hum as {nameof(BasicDeviceDModel.avgHum)}, aq as {nameof(BasicDeviceDModel.avgAq)}, isopen as {nameof(BasicDeviceDModel.isOpen)},
+       devicetype as {nameof(BasicDeviceDModel.deviceType)}
+                     from freshrooms.devices
+                               left  join freshrooms.motorstatus s on deviceid = s.motorid
+                               left  join freshrooms.devicedata m on deviceid = m.sensorid
+                        where roomid is not null;";
 
-        const string sql2 = @"SELECT roomId as int FROM freshrooms.room";
-        
         using (var conn = _dataSource.OpenConnection())
         {
-            try
-            {
-                roomIdList = conn.Query<int>(sql2);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Could not get id's for rooms");
-            }
-
-            if (roomIdList != null)
-            {
-                foreach (var room in roomIdList)
-                {
-                    try
-                    {
-                        string output = "";
-                        BasicRoomStatus roomStatus = new BasicRoomStatus();
-                        IEnumerable<MotorModel> motorList = conn.Query<MotorModel>(sql, new { room });
-                        foreach (var motor in motorList)
-                        {
-                            if (motor.isOpen)
-                            {
-                                output = "Open";
-                            }
-                            else if(!motor.isOpen && output != "")
-                            {
-                                roomStatus.basicWindowStatus = "Mixed";
-                                break;
-                            }
-                            else if(!motor.isOpen)
-                            {
-                                output = "Closed";
-                            }
-                            roomStatus.basicWindowStatus = output;
-                        }
-                        roomStatusList.Add(roomStatus);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new Exception("Could not get motor status for rooms");
-                    }
-                }
-            }
-            return roomStatusList;
+            return conn.Query<BasicDeviceDModel>(sql) as List<BasicDeviceDModel>;
         }
     }
 }

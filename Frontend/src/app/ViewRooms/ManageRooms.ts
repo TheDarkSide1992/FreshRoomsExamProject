@@ -5,6 +5,7 @@ import {CreateRoomsModalPage} from "../CreateRooms/CreateRooms";
 import {ClientWantsRoomList} from "../Models/ClientWantsRoomList";
 import {ClientWantsToDeleteRoom} from "../Models/ClientWantsToDeleteRoom";
 import {RoomModel} from "../Models/RoomModel";
+import {ClientWantsBasicRoomStatus} from "../Models/ClientWantsBasicRoomStatus";
 
 @Component({
   template:
@@ -23,21 +24,21 @@ import {RoomModel} from "../Models/RoomModel";
 
         <ion-card
           style="display: flex; min-height: 350px; max-height: 400px; min-width: 400px; width: 70%;  justify-content: space-around; flex-direction: row;"
-          *ngFor="let room of this.ws.roomList">
+          *ngFor="let room of this.ws.roomStatusList">
 
           <ion-card-content
             style="display: flex; flex-grow: 7; height: 100%; flex-direction: column; justify-items: start;">
-            <div style="font-size: xx-large">Room: {{ room.name }}({{ room.roomId }})</div>
+            <div style="font-size: xx-large">Room: {{ room.roomName }}({{ room.roomId }})</div>
 
             <div style="width: 100%; height: 60%; flex-direction: column; flex-wrap: wrap">
               <ion-item>
-                <ion-label style="width: 100%;">Temp: {{ this.currentTemp }}</ion-label>
+                <ion-label style="width: 100%;">Temp: {{ room.basicCurrentTemp }}</ion-label>
               </ion-item>
               <ion-item>
-                <ion-label style="width: 100%">Humidity: {{ this.currentHum }}</ion-label>
+                <ion-label style="width: 100%">Humidity: {{ room.basicCurrentHum }}</ion-label>
               </ion-item>
               <ion-item>
-                <ion-label style="width: 100%">Air Quality: {{ this.currentAq }}</ion-label>
+                <ion-label style="width: 100%">Air Quality: {{ room.basicCurrentAq }}</ion-label>
               </ion-item>
             </div>
 
@@ -56,13 +57,13 @@ import {RoomModel} from "../Models/RoomModel";
             <div style="width: 100%; height: 60%; flex-direction: column; flex-wrap: wrap">
               <ion-title style="display: flex; text-align: center; width: 100%">Room Settings</ion-title>
               <ion-item>
-                <ion-label style="width: 100%;">Temp: {{ this.settingTemp }}</ion-label>
+                <ion-label style="width: 100%;">Temp: {{ room.basicTempSetting }}</ion-label>
               </ion-item>
               <ion-item>
-                <ion-label style="width: 100%">Humidity: {{ this.settingHum }}</ion-label>
+                <ion-label style="width: 100%">Humidity: {{ room.basicHumSetting }}</ion-label>
               </ion-item>
               <ion-item>
-                <ion-label style="width: 100%">Air Quality: {{ this.settingAq }}</ion-label>
+                <ion-label style="width: 100%">Air Quality: {{ room.basicAqSetting }}</ion-label>
               </ion-item>
             </div>
 
@@ -79,14 +80,6 @@ import {RoomModel} from "../Models/RoomModel";
   styleUrls: ['ManageRooms.scss'],
 })
 export class ManageRoomsPage implements OnInit {
-
-
-  public currentAq: string = "Pending";
-  public currentTemp: string = "Pending";
-  public currentHum: string = "Pending";
-  public settingAq: string = "Pending";
-  public settingTemp: string = "Pending";
-  public settingHum: string = "Pending";
 
   constructor(protected ws: WebsocketClientService, private modalcontroller: ModalController){}
 
@@ -105,12 +98,7 @@ export class ManageRoomsPage implements OnInit {
     })
   }
   setup(){
-    this.RequestRoomList();
-  }
-  async RequestRoomList(){
-    this.ws.socketConnection.sendDto(new ClientWantsRoomList({
-      eventType: "ClientWantsRoomList",
-    }))
+    this.GetBasicRoomStatus();
   }
 
   async DeleteRoom(room:RoomModel){
@@ -124,10 +112,9 @@ export class ManageRoomsPage implements OnInit {
     }
   }
 
-  async GetBasicWindowStatus(roomId: number) {
-    this.ws.socketConnection.sendDto(new ClientWantsToDeleteRoom({
-      eventType: "ClientWantsBasicWindowStatus",
-      roomId: roomId,
+  async GetBasicRoomStatus() {
+    this.ws.socketConnection.sendDto(new ClientWantsBasicRoomStatus({
+      eventType: "ClientWantsBasicRoomStatusDto",
     }))
   }
 

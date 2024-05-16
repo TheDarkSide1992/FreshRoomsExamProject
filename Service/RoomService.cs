@@ -62,32 +62,92 @@ public class RoomService
         throw new NotImplementedException();
     }
 
-    public string getBasicRoomWindowStatus()
+    public IEnumerable<BasicRoomStatus> getBasicRoomWindowStatus()
     {
-        IEnumerable<BasicRoomStatus> roomStatusList = _deviceRepository.getMotorsForRoom();
-        IEnumerable<RoomConfigModel> roomConfigModels = _roomRepository.GetALLRoomSettings();
+        List<BasicRoomStatus> roomStatusList = new List<BasicRoomStatus>();
+        IEnumerable<BasicRoomSettingModel> roomConfigModels = _roomRepository.GetALLRoomSettings();
+        List<BasicDeviceDModel> basicDeviceDList = _deviceRepository.GetBasicDeviceData();
         
         foreach (var roomConfig in roomConfigModels)
         {
-            
+            Console.WriteLine("Roomconfig here: " + roomConfig.roomName + ", " + roomConfig.roomId);
+            BasicRoomStatus roomStatus = new BasicRoomStatus();
+            int countD = 0;
+            string output = "";
+            BasicDeviceDModel dModel = null;
+            foreach (var dInfo in basicDeviceDList)
+            {
+                
+                dModel = dInfo;
+                if (roomConfig.roomId == dInfo.roomId)
+                {
+                    Console.WriteLine("this is room stats: " + roomStatus.roomId);
+                    if (roomStatus.roomId == 0 || roomStatus.roomId == null)
+                    {
+                        roomStatus.roomId = roomConfig.roomId;
+                        roomStatus.roomName = roomConfig.roomName;
+                        roomStatus.basicAqSetting = roomConfig.minAq + " - " + roomConfig.maxAq;
+                        roomStatus.basicHumSetting = roomConfig.minHumidity + " - " + roomConfig.maxHumidity;
+                        roomStatus.basicTempSetting = roomConfig.minTemparature + " - " + roomConfig.maxTemparature;
+                    }
+                    
+                    if (roomStatus.basicCurrentAq == null)
+                    {
+                        roomStatus.basicCurrentAq = dInfo.avgAq;
+                        roomStatus.basicCurrentHum = dInfo.avgHum;
+                        roomStatus.basicCurrentTemp = dInfo.avgTemp;
+                    }
+                    else
+                    {
+                        roomStatus.basicCurrentAq += dInfo.avgAq;
+                        roomStatus.basicCurrentHum += dInfo.avgHum;
+                        roomStatus.basicCurrentTemp += dInfo.avgTemp;
+                    }
+
+                    if (dInfo.deviceType == "Window Motor")
+                    {
+                        if (dInfo.isOpen)
+                        {
+                            output = "Open";
+                        }
+                        else if(!dInfo.isOpen && output != "")
+                        {
+                            roomStatus.basicWindowStatus = "Mixed";
+                        }
+                        else if(!dInfo.isOpen)
+                        {
+                            output = "Closed";
+                        }
+                    }
+                }
+
+                if (dInfo.deviceType == "Sensor")
+                {
+                    countD++;
+                }
+                
+            }
+            basicDeviceDList.Remove(dModel);
+
+            if (roomStatus.basicWindowStatus == null || output == "")
+            {
+                roomStatus.basicWindowStatus = output;
+            }
+            if (countD!= 0)
+            {
+                roomStatus.basicCurrentAq /= countD;
+                roomStatus.basicCurrentHum /= countD;
+                roomStatus.basicCurrentTemp /= countD;
+            }
+            else
+            {
+                roomStatus.basicCurrentAq = 0;
+                roomStatus.basicCurrentHum = 0;
+                roomStatus.basicCurrentTemp = 0;
+                throw new Exception("Could not get proper average data for room");
+            }
+            roomStatusList.Add(roomStatus);
         }
-        /*string output = "";
-        var motorList = _deviceRepository.getMotorsForRoom();
-        foreach (var motor in motorList)
-        {
-            if (motor.isOpen)
-            {
-                output = "Open";
-            }
-            else if(!motor.isOpen && output != "")
-            {
-                return "Mixed";
-            }
-            else if(!motor.isOpen)
-            {
-                output = "Closed";
-            }
-        }
-        return output;*/
+        return roomStatusList;
     }
 }

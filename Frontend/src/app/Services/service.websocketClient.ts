@@ -23,6 +23,7 @@ import {RoomModel, RoomModelDto} from "../Models/RoomModel";
 import {ServerReturnsCreatedRoom} from "../Models/ServerReturnsCreatedRoom";
 import {ServerSendsRoomConfigurations} from "../Models/ServerSendsRoomConfigurations";
 import {RoomConfig} from "../Models/objects/roomConfig";
+import {ServerReturnsBasicWindowStatus} from "../Models/ServerReturnsBasicWindowStatus";
 
 @Injectable({providedIn: 'root'})
 export class WebsocketClientService
@@ -168,6 +169,16 @@ export class WebsocketClientService
       deviceList: dto.deviceList,
     }
     this.roomList.push(tempRoom);
+  }
+
+  async ServerReturnsBasicWindowStatus(dto: ServerReturnsBasicWindowStatus){
+    this.roomList.forEach(room => {
+      if (room != undefined){
+        if (room.roomId == dto.roomId){
+          room.basicWindowStatus = dto.windowStatus;
+        }
+      }
+    })
   }
 }
 

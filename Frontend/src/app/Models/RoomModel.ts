@@ -6,6 +6,7 @@ export class RoomModel {
   name?: string;
   creatorId?: number;
   deviceList? : Array<DeviceModel>;
+  basicWindowStatus?: string;
 }
 
 export class RoomModelDto extends BaseDto<RoomModelDto>{

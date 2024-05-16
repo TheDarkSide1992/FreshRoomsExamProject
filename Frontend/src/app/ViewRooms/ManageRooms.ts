@@ -42,7 +42,7 @@ import {RoomModel} from "../Models/RoomModel";
             </div>
 
             <div>
-              <ion-item style="font-size: xx-large">Windows Status: {{ this.windowStatus }}</ion-item>
+              <ion-item style="font-size: xx-large">Windows Status: {{ room.basicWindowStatus }}</ion-item>
             </div>
           </ion-card-content>
 
@@ -81,7 +81,6 @@ import {RoomModel} from "../Models/RoomModel";
 export class ManageRoomsPage implements OnInit {
 
 
-  public windowStatus: string = "Pending";
   public currentAq: string = "Pending";
   public currentTemp: string = "Pending";
   public currentHum: string = "Pending";
@@ -123,6 +122,13 @@ export class ManageRoomsPage implements OnInit {
       }))
       this.ws.roomList.splice(this.ws.roomList.indexOf(room), 1)
     }
+  }
+
+  async GetBasicWindowStatus(roomId: number) {
+    this.ws.socketConnection.sendDto(new ClientWantsToDeleteRoom({
+      eventType: "ClientWantsBasicWindowStatus",
+      roomId: roomId,
+    }))
   }
 
 

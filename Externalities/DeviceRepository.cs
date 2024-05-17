@@ -98,6 +98,39 @@ public class DeviceRepository
             }
         }
     }
-    
+
+    public bool DeleteRoomIdOnDevices(int roomId)
+    {
+        const string sql =
+            $@"UPDATE freshrooms.devices SET roomId = null WHERE roomId = @roomId";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) != 0;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete device to room relation");
+            }
+        }
+    }
+
+    public List<BasicDeviceDModel> GetBasicDeviceData()
+    {
+        const string sql = $@"select roomid as {nameof(BasicDeviceDModel.roomId)}, temp as {nameof(BasicDeviceDModel.cTemp)}, 
+       hum as {nameof(BasicDeviceDModel.cHum)}, aq as {nameof(BasicDeviceDModel.cAq)}, isopen as {nameof(BasicDeviceDModel.isOpen)},
+       devicetype as {nameof(BasicDeviceDModel.deviceType)}
+                     from freshrooms.devices
+                               left  join freshrooms.motorstatus s on deviceid = s.motorid
+                               left  join freshrooms.devicedata m on deviceid = m.sensorid
+                        where roomid is not null;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<BasicDeviceDModel>(sql) as List<BasicDeviceDModel>;
+        }
+    }
 }
 

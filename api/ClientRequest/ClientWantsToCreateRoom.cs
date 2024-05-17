@@ -1,7 +1,9 @@
 using System.Text.Json;
 using api.CostumExeptions;
 using api.Dtos;
+using api.StaticHelpers.ExtentionMethods;
 using Fleck;
+using Infastructure.DataModels;
 using lib;
 using Service;
 using socketAPIFirst.Dtos;
@@ -12,14 +14,23 @@ public class ClientWantsToCreateRoom(RoomService roomService) : BaseEventHandler
 {
     public override Task Handle(ClientWantsToCreateRoomDto dto, IWebSocketConnection socket)
     {
-        if (roomService.CreateRoom(dto.deviceList, dto.name) != null)
+        RoomModel room = roomService.CreateRoom(dto.deviceList, dto.name, socket.GetMetadata().userInfo.userId);
+        if (room != null)
         {
+            
+            //TODO make this return one room to add to frontend list instead of override
+            var mess = new ServerReturnsBasicRoomStatus()
+            {
+                basicRoomListData = roomService.getBasicRoomWindowStatus(),
+            };
+            
             var echo = new ServerRespondsToUser()
             {
                 message = "You successfully create room: " + dto.name,
             };
+            var roomToClient = JsonSerializer.Serialize(mess);
             var messageToClient = JsonSerializer.Serialize(echo);
-
+            socket.Send(roomToClient);
             socket.Send(messageToClient);
         }
         else

@@ -18,8 +18,13 @@ import {DeviceModel, DeviceTypesModel} from "../Models/DeviceModel";
 import {ServerRespondsToSensorVeryfication} from "../Models/ServerRespondsToSensorVeryfication";
 import { ServerSendsDeviceTypes } from "../Models/ServerSendsDeviceTypes";
 import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
+import {ServerReturnsRoomList} from "../Models/ServerReturnsRoomList";
+import {RoomModel, RoomModelDto} from "../Models/RoomModel";
+import {ServerReturnsCreatedRoom} from "../Models/ServerReturnsCreatedRoom";
 import {ServerSendsRoomConfigurations} from "../Models/ServerSendsRoomConfigurations";
 import {RoomConfig} from "../Models/objects/roomConfig";
+import {ServerReturnsBasicRoomStatus} from "../Models/ServerReturnsBasicRoomStatus";
+import {BasicRoomStatusModel} from "../Models/objects/BasicRoomStatusModel";
 
 @Injectable({providedIn: 'root'})
 export class WebsocketClientService
@@ -31,6 +36,7 @@ export class WebsocketClientService
   city?: string;
   sensorlist: Array<DeviceModel> = [];
   sensorTypeList: Array<DeviceTypesModel> = [];
+  roomStatusList: Array<BasicRoomStatusModel> = [];
   roomConfig?: RoomConfig;
   currentRoomId?: number;
 
@@ -140,6 +146,12 @@ export class WebsocketClientService
       }
     )
     t.present();
+  }
+
+  async ServerReturnsBasicRoomStatus(dto: ServerReturnsBasicRoomStatus){
+    if (dto.basicRoomListData != undefined){
+      this.roomStatusList = dto.basicRoomListData;
+    }
   }
 }
 

@@ -15,6 +15,9 @@ import {ClientWantsToLogout} from "../Models/ClientWantsToLogout";
             <ion-item>
               <ion-label routerLink="account">Account</ion-label>
             </ion-item>
+            <ion-item>
+              <ion-label routerLink="managerooms">ManageRooms</ion-label>
+            </ion-item>
             <ion-menu-toggle auto-hide="fales">
             </ion-menu-toggle>
           </ion-list>

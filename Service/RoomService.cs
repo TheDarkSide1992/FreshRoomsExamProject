@@ -78,9 +78,10 @@ public class RoomService
             foreach (var dInfo in basicDeviceDList)
             {
                 
-                dModel = dInfo;
+                
                 if (roomConfig.roomId == dInfo.roomId)
                 {
+                    dModel = dInfo;
                     if (roomStatus.roomId == 0 || roomStatus.roomId == null)
                     {
                         roomStatus.roomId = roomConfig.roomId;

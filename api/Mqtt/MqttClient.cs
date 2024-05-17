@@ -18,7 +18,7 @@ public class MqttClient
         
         byte[]? caCertFile = null;
         X509Certificate2? caCert = null;
-        caCertFile = File.ReadAllBytes("cert.ca.crt");
+        caCertFile = File.ReadAllBytes(Environment.GetEnvironmentVariable("crt"));
         caCert = new X509Certificate2(caCertFile);
 
         var mqttClientOptions = new MqttClientOptionsBuilder()

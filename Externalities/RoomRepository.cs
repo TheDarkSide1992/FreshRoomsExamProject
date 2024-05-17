@@ -87,4 +87,27 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
             }
         }
     }
+
+    public RoomDataModel getGraphData(int roomid, DateTime startInterval, DateTime endInterval)
+    {
+        //TODO Make SQL string for getting average temp, hum and aq in time interval based on room-id 
+        var sql = $@"select avg(hum) as {nameof(RoomDataModel.avgHumidity)}, avg(temp) as {nameof(RoomDataModel.avgTemperature)}, 
+       avg(aq) as {nameof(RoomDataModel.avgCO2)}, 
+       d.roomid as {nameof(RoomDataModel.roomId)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid 
+       where d.roomid = @roomid group by d.roomid and timestamp >= @startInterval and timestamp <= @endInterval;";
+
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.QuerySingle<RoomDataModel>(sql, new { roomid, startInterval, endInterval});
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    }
 }

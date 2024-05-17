@@ -44,4 +44,9 @@ public class RoomService
         
         throw new NotImplementedException();
     }
+
+    public RoomDataModel GetGraphData(int dtoRoomId, DateTime startInterval, DateTime endInterval)
+    {
+        return _roomRepository.getGraphData(dtoRoomId, startInterval,endInterval);
+    }
 }

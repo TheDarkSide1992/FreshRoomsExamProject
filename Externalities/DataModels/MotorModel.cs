@@ -1,4 +1,4 @@
-﻿namespace Infastructure.DataModels;
+namespace Infastructure.DataModels;
 
 public class MotorModel
 {

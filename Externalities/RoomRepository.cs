@@ -14,19 +14,20 @@ public class RoomRepository
         _dataSource = dataSource;
     }
 
-    public RoomModel CreateRoom(string name)
+    public RoomModel CreateRoom(string name, int createdBy)
     {
         
         var sql =
-            $@"INSERT INTO freshrooms.rooms (roomName) VALUES(@name) RETURNING 
+            $@"INSERT INTO freshrooms.rooms (roomName, userId) VALUES(@name, @createdBy) RETURNING 
         roomId as {nameof(RoomModel.roomId)}, 
-        roomName as {nameof(RoomModel.name)};";
+        roomName as {nameof(RoomModel.name)},
+        userId as {nameof(RoomModel.creatorId)};";
 
         using (var conn = _dataSource.OpenConnection())
         {
             try
             {
-                return conn.QueryFirst<RoomModel>(sql, new { name });
+                return conn.QueryFirst<RoomModel>(sql, new { name, createdBy });
             }
             catch (Exception e)
             {
@@ -34,7 +35,49 @@ public class RoomRepository
             }
         }
     }
+    
+    public bool CreateRoomConfig(int roomId)
+    {
+        
+        var sql =
+            $@"INSERT INTO freshrooms.roomConfig(roomid, mintemparature, maxtemparature, minhumidity, maxhumidity, minaq, maxaq) VALUES (@roomId, 17,25,40,60,0.4,1)";
 
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) == 1;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not create roomConfig");
+            }
+        }
+    }
+    
+    public IEnumerable<RoomModel> GetAllRooms()
+    {
+        
+        var sql =
+            $@"SELECT 
+        roomId as {nameof(RoomModel.roomId)}, 
+        roomName as {nameof(RoomModel.name)},
+        userId as {nameof(RoomModel.creatorId)} 
+            FROM freshrooms.rooms";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Query<RoomModel>(sql, new {});
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not get rooms");
+            }
+        }
+    }
+    
     public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
     {
         var sql = $@"SELECT 
@@ -87,6 +130,65 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
                 throw new Exception("Could not update room Data.");
             }
         }
+    }
+
+    public bool DeleteRoomConfig(int roomId)
+    {
+        var sql = $@"DELETE FROM freshrooms.roomConfig WHERE roomId = @roomId;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) == 1;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete roomConfig");
+            }
+        }
+    }
+
+    public bool DeleteRoom(int roomId)
+    {
+        var sql = $@"DELETE FROM freshrooms.rooms WHERE roomId = @roomId;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) == 1;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete room");
+            }
+        }
+    }
+
+    public IEnumerable<BasicRoomSettingModel> GetALLRoomSettings()
+    {
+        var sql = $@"select r.roomid,
+       roomname as {nameof(BasicRoomSettingModel.roomName)},
+       c.mintemparature as {nameof(BasicRoomSettingModel.minTemparature)},
+       c.maxtemparature as {nameof(BasicRoomSettingModel.maxTemparature)},
+       c.minhumidity as {nameof(BasicRoomSettingModel.minHumidity)},
+       c.maxhumidity as {nameof(BasicRoomSettingModel.maxHumidity)},
+       c.minaq as {nameof(BasicRoomSettingModel.minAq)},
+       c.maxaq as {nameof(BasicRoomSettingModel.maxAq)}
+from freshrooms.rooms r
+         join freshrooms.roomconfig c on r.roomid = c.roomid;";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Query<BasicRoomSettingModel>(sql);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not get room config");
+            }
+        }
+        
     }
 
     public string getRoomName(int roomid)

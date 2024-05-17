@@ -1,4 +1,5 @@
 using Dapper;
+using Infastructure.CostumExeptions;
 using Infastructure.DataModels;
 using Npgsql;
 
@@ -84,6 +85,23 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
             catch (Exception e)
             {
                 throw new Exception("Could not update room Data.");
+            }
+        }
+    }
+
+    public string getRoomName(int roomid)
+    {
+        var sql = $@"select roomname from freshrooms.rooms where roomid = @roomid";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.QueryFirst<string>(sql, new { roomid });
+            }
+            catch (Exception e)
+            {
+                throw new DataNotFoundExeption("failed to get room name");
             }
         }
     }

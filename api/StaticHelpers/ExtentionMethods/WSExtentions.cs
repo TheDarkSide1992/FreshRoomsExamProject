@@ -16,6 +16,15 @@ public static class WSExtentions
             });
     }
 
+    public static void AddClientToRoom(this IWebSocketConnection ws, int roomId)
+    {
+        if (!WebSocketConnections.usersInrooms.ContainsKey(roomId))
+        {
+            WebSocketConnections.usersInrooms.TryAdd(roomId, new HashSet<Guid>());
+        }
+        WebSocketConnections.usersInrooms[roomId].Add(ws.ConnectionInfo.Id);
+    }
+
     public static void RemoveFromConnections(this IWebSocketConnection connection)
     {
         WebSocketConnections.connections.TryRemove(connection.ConnectionInfo.Id, out _);

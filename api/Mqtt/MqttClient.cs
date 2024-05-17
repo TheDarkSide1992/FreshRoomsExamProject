@@ -1,5 +1,6 @@
 ﻿using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using api.State;
 using Infastructure.DataModels;
 using MQTTnet;
 using MQTTnet.Client;
@@ -8,6 +9,7 @@ using MQTTnet.Formatter;
 using Newtonsoft.Json;
 using Serilog;
 using Service;
+using socketAPIFirst.Dtos;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace api.Mqtt;
@@ -69,6 +71,10 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                Console.WriteLine("message: " + message);
                if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("sensor"))
                {
+                   var roomid = _deviceService.getRoomIdFromDeviceId(e.ApplicationMessage.Topic.ToString().Split("/")[2]);
+                   var obj = JsonConvert.DeserializeObject<SensorModel>(message);
+                   obj.sensorId = e.ApplicationMessage.Topic.ToString().Split("/")[2];
+                   sendDataToAllUsersInRooms(roomid, obj);
                    saveOrCreateSensordata(message, e.ApplicationMessage.Topic.ToString().Split("/")[2]);
                }
                else if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("motor") &&
@@ -153,5 +159,19 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
     {
         var obj = JsonSerializer.Deserialize<MotorModel>(message);
         _deviceService.createOrUpdateMotorStatus(obj);
+    }
+
+    public void sendDataToAllUsersInRooms(int id, SensorModel model)
+    {
+        if ( WebSocketConnections.usersInrooms.TryGetValue(id, out var guids))
+        {
+            foreach (var guid in guids)
+            {
+                if(WebSocketConnections.connections.TryGetValue(guid, out var ws))
+                {
+                    ws.Socket.Send(JsonSerializer.Serialize(new ServerReturnsNewestSensorData{data = model}));
+                }
+            }
+        }
     }
 }

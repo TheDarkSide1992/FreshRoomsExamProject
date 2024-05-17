@@ -49,10 +49,6 @@ const routes: Routes = [
     component: RegisterAccountPage,
   },
   {
-    path: "account",
-    component: AccountPage,
-  },
-  {
     path: "account/settings",
     component: AccountSettingsPage,
   },

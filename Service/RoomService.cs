@@ -44,4 +44,9 @@ public class RoomService
         
         throw new NotImplementedException();
     }
+
+    public string getRoomName(int roomid)
+    {
+        return _roomRepository.getRoomName(roomid);
+    }
 }

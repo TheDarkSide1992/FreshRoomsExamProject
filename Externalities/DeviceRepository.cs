@@ -1,4 +1,6 @@
+using System.Data;
 using Dapper;
+using Infastructure.CostumExeptions;
 using Infastructure.DataModels;
 using Npgsql;
 
@@ -162,11 +164,6 @@ public class DeviceRepository
             try
             {
                 var oldData = conn.QueryFirst<SensorModel>(selectOldData, new { sensorId });
-                Console.WriteLine(oldData.timestamp);
-                Console.WriteLine(oldData.sensorId);
-                Console.WriteLine(oldData.Humidity);
-                Console.WriteLine(oldData.CO2);
-                Console.WriteLine(oldData.Temperature);
                 conn.Execute(save,
                     new
                     {
@@ -190,8 +187,15 @@ public class DeviceRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            var roomid = conn.QueryFirst<int>(getRoomid, new { sensorId });
-            return conn.QueryFirst<RoomAvrageSensorData>(getAvrage, new { roomid });
+            try
+            {
+                var roomid = conn.QueryFirst<int>(getRoomid, new { sensorId });
+                return conn.QueryFirst<RoomAvrageSensorData>(getAvrage, new { roomid });
+            }
+            catch (Exception e)
+            {
+                throw new DataNotFoundExeption("Failed to get average data for room");
+            }
         }
     }
 
@@ -200,7 +204,49 @@ public class DeviceRepository
         var sql = $@"select * from freshrooms.motorstatus join freshrooms.devices d on d.deviceid = motorstatus.motorid where d.roomid = @roomId and isDisabled = @isdisabled;";
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<MotorModel>(sql, new { roomId, isDisabled = false });
+            try
+            {
+                return conn.Query<MotorModel>(sql, new { roomId, isDisabled = false });
+            }
+            catch (Exception e)
+            {
+                throw new DataNotFoundExeption("failed to get window motors for room");
+            }
+        }
+    }
+
+    public int getRoomIdFromDeviceId(string id)
+    {
+        var sql = $@"select roomid from freshrooms.devices where deviceid = @id;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.QueryFirst<int>(sql, new { id });
+            }
+            catch (Exception e)
+            {
+                throw new DataNotFoundExeption("Failed to get room id");
+            }
+            
+        }
+    }
+
+    public List<SensorModel> getSensorsForRoom(int roomid)
+    {
+        var sql = $@"select sensorid as {nameof(SensorModel.sensorId)}, hum as {nameof(SensorModel.Humidity)}, temp as {nameof(SensorModel.Temperature)}, aq as {nameof(SensorModel.CO2)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return (List<SensorModel>)conn.Query<SensorModel>(sql, new { roomid });
+            }
+            catch (Exception e)
+            {
+                throw new DataNotFoundExeption("Failed to get sensors for the room");
+            }
         }
     }
 }

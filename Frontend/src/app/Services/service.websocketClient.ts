@@ -20,6 +20,9 @@ import { ServerSendsDeviceTypes } from "../Models/ServerSendsDeviceTypes";
 import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
 import {ServerSendsRoomConfigurations} from "../Models/ServerSendsRoomConfigurations";
 import {RoomConfig} from "../Models/objects/roomConfig";
+import {DetailedRoomModel} from "../Models/objects/DetailedRoomModel";
+import {ServerReturnsDetailedRoomToUser} from "../Models/ServerReturnsDetailedRoomToUser";
+import {ServerReturnsNewestSensorData} from "../Models/ServerReturnsNewestSensorData";
 
 @Injectable({providedIn: 'root'})
 export class WebsocketClientService
@@ -32,7 +35,10 @@ export class WebsocketClientService
   sensorlist: Array<DeviceModel> = [];
   sensorTypeList: Array<DeviceTypesModel> = [];
   roomConfig?: RoomConfig;
-  currentRoomId?: number;
+  currentRoom?: DetailedRoomModel;
+  currenttemp?: number;
+  currenthum?: number;
+  currentaq?: number;
 
   constructor(public router: Router, public toast: ToastController) {
     this.socketConnection = new WebSocketSuperClass(environment.url)
@@ -140,6 +146,51 @@ export class WebsocketClientService
       }
     )
     t.present();
+  }
+
+  ServerReturnsDetailedRoomToUser(dto: ServerReturnsDetailedRoomToUser)
+  {
+    console.log(dto)
+    if (dto.room) {
+      this.currentRoom = dto.room;
+    }
+    let temp = 0;
+    let hum = 0;
+    let aq = 0;
+    for(var sensor of this.currentRoom?.sensors!)
+    {
+      temp = temp +  sensor.Temperature
+      hum =  hum + sensor.Humidity
+      aq =  aq + sensor.CO2
+    }
+
+    this.currentaq = aq/this.currentRoom?.sensors?.length!
+    this.currenttemp = temp/this.currentRoom?.sensors?.length!
+    this.currenthum = hum/this.currentRoom?.sensors?.length!
+  }
+
+  ServerReturnsNewestSensorData(dto: ServerReturnsNewestSensorData)
+  {
+    console.log(this.currentRoom?.sensors);
+    var index = this.currentRoom?.sensors?.findIndex(function(item){ return item.sensorId == dto.data.sensorId});
+    this.currentRoom?.sensors?.splice(0,1,dto.data);
+    console.log(this.currentRoom?.sensors);
+    let temp = 0;
+    let hum = 0;
+    let aq = 0;
+    for(var sensor of this.currentRoom?.sensors!)
+    {
+      temp = temp +  sensor.Temperature
+      console.log(temp);
+      hum =  hum + sensor.Humidity
+      console.log(hum);
+      aq =  aq + sensor.CO2
+      console.log(aq);
+    }
+
+    this.currentaq = aq/this.currentRoom?.sensors?.length!
+    this.currenttemp = temp/this.currentRoom?.sensors?.length!
+    this.currenthum = hum/this.currentRoom?.sensors?.length!
   }
 }
 

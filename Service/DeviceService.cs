@@ -24,7 +24,7 @@ public class DeviceService
 
     public void createOrUpdateSensorData(SensorModel sensorModel)
     {
-        _deviceRepository.saveOldData(sensorModel.sensorId!);
+        _deviceRepository.saveOldData(sensorModel.sensorId);
         _deviceRepository.createOrUpdateData(sensorModel);
     }
 
@@ -41,5 +41,15 @@ public class DeviceService
     public List<MotorModel> getMotersForRoom(int roomId)
     {
         return (List<MotorModel>)_deviceRepository.getMotersForRoom(roomId);
+    }
+
+    public int getRoomIdFromDeviceId(string id)
+    {
+        return _deviceRepository.getRoomIdFromDeviceId(id);
+    }
+
+    public List<SensorModel> getSensorsForRoom(int roomid)
+    {
+        return _deviceRepository.getSensorsForRoom(roomid);
     }
 }

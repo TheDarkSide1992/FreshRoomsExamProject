@@ -1,12 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {IonContent, ModalController} from "@ionic/angular";
-import {FormControl, Validators} from "@angular/forms";
+import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
+import {ModalController} from "@ionic/angular";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
 import {RoomSensorSetPage} from "./RoomSensorSet.page";
 import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurations";
+import {ClientWantsDetailedRoom} from "../Models/ClientWantsDetailedRoom";
 
 
 @Component({
@@ -14,7 +12,7 @@ import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurat
     <div style="flex-direction: column;">
       <ion-toolbar>
         <ion-title mode="ios">
-          ROOM_PAGE : {{displayname}} ({{roomId}})
+          ROOM_PAGE : {{ this.wsService.currentRoom?.name }} ({{ roomId }})
         </ion-title>
       </ion-toolbar>
 
@@ -26,19 +24,20 @@ import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurat
           Graph One
           <br>
           <br>
-          <ion-title>Current temperature: {{currentTemp}}</ion-title>
+          <ion-title>Current temperature: {{ this.wsService.currenttemp?.toFixed(2) }}°C</ion-title>
         </ion-card>
         <ion-card style="height: 50%; width: 30%;">
           Graph Two
           <br>
           <br>
-          <ion-title>Current Humidity: {{currentHum}}</ion-title>
+          <ion-title>Current Humidity: {{ this.wsService.currenthum?.toFixed(2) }}%</ion-title>
         </ion-card>
         <ion-card style="height: 50%; width: 30%;">
           Graph Three
           <br>
           <br>
-          <ion-title>Current Air-Quality(CO<sub>2</sub> Level): {{currentAq}}</ion-title>
+          <ion-title>Current Air-Quality: {{ this.wsService.currentaq?.toFixed(2) }} ppm
+          </ion-title>
         </ion-card>
       </div>
 
@@ -51,15 +50,36 @@ import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurat
         <div style="display: flex; flex: 4; flex-wrap: wrap;
               align-content: space-evenly; flex-direction: column;">
           <br>
-          <ion-card>
-            <h1>WINDOWS : OPEN</h1>
-            <br>
-            <ion-button>
-              <ion-icon name="stopwatch-outline"></ion-icon>
-              Close
-            </ion-button>
+          <ion-card *ngFor="let m of this.wsService.currentRoom?.motors">
 
-            <br>
+
+              <div *ngIf="m.isOpen">
+                <ion-card-header>
+                  <ion-title>Window: Open</ion-title>
+                </ion-card-header>
+                <ion-card-content style="display: flex; flex-direction: column; flex-wrap: wrap;">
+                <ion-button>
+                  <ion-icon name="stopwatch-outline"></ion-icon>
+                  Close
+                </ion-button>
+                </ion-card-content>
+              </div>
+
+              <div *ngIf="!m.isOpen">
+                <ion-card-header>
+                  <ion-title>Window: Closed</ion-title>
+                </ion-card-header>
+                <ion-card-content style="display: flex; flex-direction: column;">
+                <div>
+                <ion-button>
+                  <ion-icon name="stopwatch-outline"></ion-icon>
+                  Open
+                </ion-button>
+                </div>
+                </ion-card-content>
+              </div>
+              <br>
+
           </ion-card>
         </div>
 
@@ -83,8 +103,8 @@ import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurat
               </div>
               <div style=" flex: 2; flex-wrap: wrap;
                     align-content: flex-start; flex-direction: row;">
-                <ion-title style="width: 45%;">{{this.wsService.roomConfig?.minTemparature}} C</ion-title>
-                <ion-title style="width: 45%;">{{this.wsService.roomConfig?.maxTemparature}} C</ion-title>
+                <ion-title style="width: 45%;">{{ this.wsService.roomConfig?.minTemparature }} C</ion-title>
+                <ion-title style="width: 45%;">{{ this.wsService.roomConfig?.maxTemparature }} C</ion-title>
               </div>
             </div>
           </ion-card>
@@ -104,8 +124,8 @@ import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurat
               </div>
               <div style=" flex: 2; flex-wrap: wrap;
                     align-content: flex-start; flex-direction: row;">
-                <ion-title style="width: 45%;">{{this.wsService.roomConfig?.minHumidity}} %</ion-title>
-                <ion-title style="width: 45%;">{{this.wsService.roomConfig?.maxHumidity}} %</ion-title>
+                <ion-title style="width: 45%;">{{ this.wsService.roomConfig?.minHumidity }} %</ion-title>
+                <ion-title style="width: 45%;">{{ this.wsService.roomConfig?.maxHumidity }} %</ion-title>
               </div>
             </div>
           </ion-card>
@@ -117,16 +137,16 @@ import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurat
               <div style=" flex: 2; flex-wrap: wrap;
                     align-content: flex-start; flex-direction: row; width: 100%;">
                 <ion-title style="width: max-content">
-                  MIN CO<sub>2</sub> Level
+                  MIN air quality
                 </ion-title>
                 <ion-title style="width: max-content">
-                  MAX CO<sub>2</sub> Level
+                  MAX air quality
                 </ion-title>
               </div>
               <div style=" flex: 2; flex-wrap: wrap;
                     align-content: flex-start; flex-direction: row;">
-                <ion-title style="width: 42%;">{{this.wsService.roomConfig?.minAq}} PPM</ion-title>
-                <ion-title style="width: 42%;">{{this.wsService.roomConfig?.maxAq}} PPM</ion-title>
+                <ion-title style="width: 42%;">{{ this.wsService.roomConfig?.minAq }} PPM</ion-title>
+                <ion-title style="width: 42%;">{{ this.wsService.roomConfig?.maxAq }} PPM</ion-title>
               </div>
             </div>
           </ion-card>
@@ -151,11 +171,19 @@ export class RoomInfoPage implements OnInit {
 
     this.route.params.subscribe(params => {
       const id = params['id'];
-      const name = params['room_name'];
       this.roomId = parseInt(id);
-      this.displayname = name;
-      this.wsService.currentRoomId = this.roomId;
     });
+
+    this.router.events.subscribe(event =>
+    {
+      if(event instanceof NavigationStart)
+      {
+        this.getRoomInfo();
+        this.getConfig();
+      }
+    });
+
+
 
 
   }
@@ -175,6 +203,7 @@ export class RoomInfoPage implements OnInit {
 
       setTimeout(() => {
         this.getConfig();
+        this.getRoomInfo();
       }, 2000)
     }
   }
@@ -191,5 +220,10 @@ export class RoomInfoPage implements OnInit {
     }).then(res => {
       res.present();
     })
+  }
+
+  getRoomInfo()
+  {
+    this.wsService.socketConnection.sendDto(new ClientWantsDetailedRoom({roomId : this.roomId}))
   }
 }

@@ -31,12 +31,11 @@ import {BasicRoomStatusModel} from "../Models/objects/BasicRoomStatusModel";
 
 
 @Injectable({providedIn: 'root'})
-export class WebsocketClientService
-{
+export class WebsocketClientService {
   public socketConnection: WebSocketSuperClass;
-  currentAccount? : accountModdel;
-  dailyForecast? : DailyWeatherModel;
-  todaysForecast? : TodayWeatherModel;
+  currentAccount?: accountModdel;
+  dailyForecast?: DailyWeatherModel;
+  todaysForecast?: TodayWeatherModel;
   city?: string;
   sensorlist: Array<DeviceModel> = [];
   sensorTypeList: Array<DeviceTypesModel> = [];
@@ -52,32 +51,27 @@ export class WebsocketClientService
     this.handleEvent();
   }
 
-  handleEvent()
-  {
-    this.socketConnection.onmessage = (event) =>
-    {
+  handleEvent() {
+    this.socketConnection.onmessage = (event) => {
       const data = JSON.parse(event.data) as BaseDto<any>;
       //@ts-ignore
       this[data.eventType].call(this, data);
     }
   }
 
-  ServerAuthenticatesUserFromJwt(dto: ServerAuthenticatesUserFromJwt)
-  {
+  ServerAuthenticatesUserFromJwt(dto: ServerAuthenticatesUserFromJwt) {
     this.router.navigate(['/home'])
   }
 
-  ServerSendsAccountData(dto: ServerSendsAccountData)
-  {
+  ServerSendsAccountData(dto: ServerSendsAccountData) {
     this.currentAccount = dto as accountModdel;
   }
-  ServerSendsRoomConfigurations(dto: ServerSendsRoomConfigurations)
-  {
-     this.roomConfig = dto as RoomConfig;
+
+  ServerSendsRoomConfigurations(dto: ServerSendsRoomConfigurations) {
+    this.roomConfig = dto as RoomConfig;
   }
 
- async ServerLogsInUser(dto: ServerLogsInUser)
-  {
+  async ServerLogsInUser(dto: ServerLogsInUser) {
     localStorage.setItem("jwt", dto.jwt!);
     this.router.navigate(['/home'])
     var t = await this.toast.create(
@@ -90,15 +84,13 @@ export class WebsocketClientService
     t.present();
   }
 
-  ServerReturnsForecast(dto: ServerReturnsForecast)
-  {
+  ServerReturnsForecast(dto: ServerReturnsForecast) {
     this.dailyForecast = dto.dailyForecast;
     this.todaysForecast = dto.todaysForecast;
   }
 
-  async ServerLogsoutUser(dto: ServerLogsoutUser)
-  {
-    localStorage.setItem('jwt','');
+  async ServerLogsoutUser(dto: ServerLogsoutUser) {
+    localStorage.setItem('jwt', '');
     var t = await this.toast.create(
       {
         color: "success",
@@ -109,12 +101,11 @@ export class WebsocketClientService
     t.present();
   }
 
-  ServerReturnsCity(dto: ServerReturnsCity)
-  {
+  ServerReturnsCity(dto: ServerReturnsCity) {
     this.city = dto.city;
   }
 
-  async ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient){
+  async ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {
     var t = await this.toast.create(
       {
         color: "warning",
@@ -124,7 +115,8 @@ export class WebsocketClientService
     )
     t.present();
   }
-  async ServerRespondsToSensorVeryfication(dto: ServerRespondsToSensorVeryfication){
+
+  async ServerRespondsToSensorVeryfication(dto: ServerRespondsToSensorVeryfication) {
     let tempsensor: DeviceModel = {
       deviceTypeName: dto.deviceTypeName,
       sensorGuid: dto.sensorGuid,
@@ -132,19 +124,20 @@ export class WebsocketClientService
     this.sensorlist.push(tempsensor);
   }
 
-  async ServerSendsDeviceTypes(dto: ServerSendsDeviceTypes){
+  async ServerSendsDeviceTypes(dto: ServerSendsDeviceTypes) {
     dto.deviceTypeList?.forEach(deviceType => {
-      if (deviceType != undefined){
-        let tempDeviceType: DeviceTypesModel = {
-          deviceTypeId: deviceType.deviceTypeId,
-          deviceTypeName: deviceType.deviceTypeName,
+        if (deviceType != undefined) {
+          let tempDeviceType: DeviceTypesModel = {
+            deviceTypeId: deviceType.deviceTypeId,
+            deviceTypeName: deviceType.deviceTypeName,
+          }
+          this.sensorTypeList.push(tempDeviceType);
         }
-        this.sensorTypeList.push(tempDeviceType);
       }
-    }
-    )}
+    )
+  }
 
-  async ServerRespondsToUser(dto: ServerRespondsToUser){
+  async ServerRespondsToUser(dto: ServerRespondsToUser) {
     var t = await this.toast.create(
       {
         color: "success",
@@ -154,9 +147,8 @@ export class WebsocketClientService
     )
     t.present();
   }
-  
-  ServerReturnsDetailedRoomToUser(dto: ServerReturnsDetailedRoomToUser)
-  {
+
+  ServerReturnsDetailedRoomToUser(dto: ServerReturnsDetailedRoomToUser) {
     console.log(dto)
     if (dto.room) {
       this.currentRoom = dto.room;
@@ -164,51 +156,44 @@ export class WebsocketClientService
     let temp = 0;
     let hum = 0;
     let aq = 0;
-    for(var sensor of this.currentRoom?.sensors!)
-    {
-      temp = temp +  sensor.Temperature
-      hum =  hum + sensor.Humidity
-      aq =  aq + sensor.CO2
+    for (var sensor of this.currentRoom?.sensors!) {
+      temp = temp + sensor.Temperature
+      hum = hum + sensor.Humidity
+      aq = aq + sensor.CO2
     }
 
-    this.currentaq = aq/this.currentRoom?.sensors?.length!
-    this.currenttemp = temp/this.currentRoom?.sensors?.length!
-    this.currenthum = hum/this.currentRoom?.sensors?.length!
+    this.currentaq = aq / this.currentRoom?.sensors?.length!
+    this.currenttemp = temp / this.currentRoom?.sensors?.length!
+    this.currenthum = hum / this.currentRoom?.sensors?.length!
   }
 
-  ServerReturnsNewestSensorData(dto: ServerReturnsNewestSensorData)
-  {
+  ServerReturnsNewestSensorData(dto: ServerReturnsNewestSensorData) {
     console.log(this.currentRoom?.sensors);
-    var index = this.currentRoom?.sensors?.findIndex(function(item){ return item.sensorId == dto.data.sensorId});
-    this.currentRoom?.sensors?.splice(0,1,dto.data);
+    var index = this.currentRoom?.sensors?.findIndex(function (item) {
+      return item.sensorId == dto.data.sensorId
+    });
+    this.currentRoom?.sensors?.splice(0, 1, dto.data);
     console.log(this.currentRoom?.sensors);
     let temp = 0;
     let hum = 0;
     let aq = 0;
-    for(var sensor of this.currentRoom?.sensors!)
-    {
-      temp = temp +  sensor.Temperature
+    for (var sensor of this.currentRoom?.sensors!) {
+      temp = temp + sensor.Temperature
       console.log(temp);
-      hum =  hum + sensor.Humidity
+      hum = hum + sensor.Humidity
       console.log(hum);
-      aq =  aq + sensor.CO2
+      aq = aq + sensor.CO2
       console.log(aq);
     }
 
-    this.currentaq = aq/this.currentRoom?.sensors?.length!
-    this.currenttemp = temp/this.currentRoom?.sensors?.length!
-    this.currenthum = hum/this.currentRoom?.sensors?.length!
-}
-  async ServerReturnsBasicRoomStatus(dto: ServerReturnsBasicRoomStatus){
-    if (dto.basicRoomListData != undefined){
-      this.roomStatusList = dto.basicRoomListData;
+    this.currentaq = aq / this.currentRoom?.sensors?.length!
+    this.currenttemp = temp / this.currentRoom?.sensors?.length!
+    this.currenthum = hum / this.currentRoom?.sensors?.length!
   }
 
-  async ServerReturnsBasicRoomStatus(dto: ServerReturnsBasicRoomStatus){
-    if (dto.basicRoomListData != undefined){
+  async ServerReturnsBasicRoomStatus(dto: ServerReturnsBasicRoomStatus) {
+    if (dto.basicRoomListData != undefined) {
       this.roomStatusList = dto.basicRoomListData;
     }
   }
 }
-
-

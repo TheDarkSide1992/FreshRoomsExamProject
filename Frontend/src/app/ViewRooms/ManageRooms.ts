@@ -120,7 +120,7 @@ export class ManageRoomsPage implements OnInit {
   }
 
   openRoom(roomdId:number){
-    this.router.navigate(["RoomInfo/"+roomdId+"/Kitchen"])
+    this.router.navigate(["RoomInfo/"+roomdId])
   }
 
 

@@ -53,7 +53,7 @@ const routes: Routes = [
     component: AccountSettingsPage,
   },
   {
-    path: "RoomInfo/:id/:room_name",
+    path: "RoomInfo/:id",
     component: RoomInfoPage,
   },
 ];

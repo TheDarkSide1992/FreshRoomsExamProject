@@ -119,8 +119,8 @@ public class DeviceRepository
 
     public List<BasicDeviceDModel> GetBasicDeviceData()
     {
-        const string sql = $@"select roomid as {nameof(BasicDeviceDModel.roomId)}, temp as {nameof(BasicDeviceDModel.avgTemp)}, 
-       hum as {nameof(BasicDeviceDModel.avgHum)}, aq as {nameof(BasicDeviceDModel.avgAq)}, isopen as {nameof(BasicDeviceDModel.isOpen)},
+        const string sql = $@"select roomid as {nameof(BasicDeviceDModel.roomId)}, temp as {nameof(BasicDeviceDModel.cTemp)}, 
+       hum as {nameof(BasicDeviceDModel.cHum)}, aq as {nameof(BasicDeviceDModel.cAq)}, isopen as {nameof(BasicDeviceDModel.isOpen)},
        devicetype as {nameof(BasicDeviceDModel.deviceType)}
                      from freshrooms.devices
                                left  join freshrooms.motorstatus s on deviceid = s.motorid

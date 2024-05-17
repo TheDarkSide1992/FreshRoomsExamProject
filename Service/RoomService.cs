@@ -107,9 +107,9 @@ public class RoomService
                     }
                     if (dInfo.deviceType == "Sensor")
                     {
-                        roomStatus.basicCurrentAq += dInfo.avgAq;
-                        roomStatus.basicCurrentHum += dInfo.avgHum;
-                        roomStatus.basicCurrentTemp += dInfo.avgTemp;
+                        roomStatus.basicCurrentAq += dInfo.cAq;
+                        roomStatus.basicCurrentHum += dInfo.cHum;
+                        roomStatus.basicCurrentTemp += dInfo.cTemp;
                         
                         countD++;
                     }

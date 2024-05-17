@@ -115,4 +115,5 @@ export class HomePage implements OnInit{
 
   protected readonly localStorage = localStorage;
   protected readonly openWeatherWMOToEmoji = openWeatherWMOToEmoji;
+
 }

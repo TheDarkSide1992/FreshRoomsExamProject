@@ -21,4 +21,35 @@ public class DeviceService
     {
         return _deviceRepository.getDeviceTypes();
     }
+
+    public void createOrUpdateSensorData(SensorModel sensorModel)
+    {
+        _deviceRepository.saveOldData(sensorModel.sensorId);
+        _deviceRepository.createOrUpdateData(sensorModel);
+    }
+
+    public bool createOrUpdateMotorStatus(MotorModel motorModel)
+    {
+        return _deviceRepository.createOrUpdateMoterStatus(motorModel);
+    }
+
+    public RoomAvrageSensorData getAvrageRoomSensorData(string sensorId)
+    {
+        return _deviceRepository.getAvrageSensordataforRoom(sensorId);
+    }
+
+    public List<MotorModel> getMotersForRoom(int roomId)
+    {
+        return (List<MotorModel>)_deviceRepository.getMotersForRoom(roomId);
+    }
+
+    public int getRoomIdFromDeviceId(string id)
+    {
+        return _deviceRepository.getRoomIdFromDeviceId(id);
+    }
+
+    public List<SensorModel> getSensorsForRoom(int roomid)
+    {
+        return _deviceRepository.getSensorsForRoom(roomid);
+    }
 }

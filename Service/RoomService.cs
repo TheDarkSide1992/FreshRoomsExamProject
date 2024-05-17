@@ -46,9 +46,9 @@ public class RoomService
         return _roomRepository.GetAllRooms();
     }
     
-    public RoomConfigModel getRoomPrefrencesConfiguration(int userInfoUserId, int dtoRoomId)
+    public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
     {
-        return _roomRepository.getRoomPrefrencesConfiguration(userInfoUserId, dtoRoomId);
+        return _roomRepository.getRoomPrefrencesConfiguration(dtoRoomId);
     }
 
 
@@ -60,6 +60,11 @@ public class RoomService
         }
         
         throw new NotImplementedException();
+    }
+
+    public string getRoomName(int roomid)
+    {
+        return _roomRepository.getRoomName(roomid);
     }
 
     public IEnumerable<BasicRoomStatus> getBasicRoomWindowStatus()

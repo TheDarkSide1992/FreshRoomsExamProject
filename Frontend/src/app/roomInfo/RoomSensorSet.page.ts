@@ -1,10 +1,8 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {ModalController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurations";
 import {ClientWantsToUpdateRoomConf} from "../Models/ClientWantsToUpdateRoomConf";
-import {ActivatedRoute} from "@angular/router";
 
 
 
@@ -73,10 +71,10 @@ import {ActivatedRoute} from "@angular/router";
             <div style=" flex: 2; flex-wrap: wrap;
                     align-content: space-evenly; flex-direction: row;">
               <ion-title>
-                MIN CO2 Level
+                MIN air quality
               </ion-title>
               <ion-title>
-                MAX CO2 Level
+                MAX air quality
               </ion-title>
             </div>
             <div style=" flex: 2; flex-wrap: wrap;
@@ -146,7 +144,7 @@ export class RoomSensorSetPage {
 
 
     await this.wsService.socketConnection.sendDto(new ClientWantsToUpdateRoomConf({
-      roomId: this.wsService.currentRoomId,
+      roomId: this.wsService.currentRoom?.roomId,
       updatedMinTemperature : parseFloat(this.minTemp.toString()),
       updatedMaxTemperature : parseFloat(this.maxTemp.toString()),
       updatedMaxHumidity : parseFloat(this.maxHum.toString()),

@@ -49,15 +49,11 @@ const routes: Routes = [
     component: RegisterAccountPage,
   },
   {
-    path: "account",
-    component: AccountPage,
-  },
-  {
     path: "account/settings",
     component: AccountSettingsPage,
   },
   {
-    path: "RoomInfo/:id/:room_name",
+    path: "RoomInfo/:id",
     component: RoomInfoPage,
   },
 ];

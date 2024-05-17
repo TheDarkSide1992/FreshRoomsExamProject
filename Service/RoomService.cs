@@ -81,7 +81,6 @@ public class RoomService
                 dModel = dInfo;
                 if (roomConfig.roomId == dInfo.roomId)
                 {
-                    Console.WriteLine("this is room stats: " + roomStatus.roomId);
                     if (roomStatus.roomId == 0 || roomStatus.roomId == null)
                     {
                         roomStatus.roomId = roomConfig.roomId;
@@ -89,19 +88,6 @@ public class RoomService
                         roomStatus.basicAqSetting = roomConfig.minAq + " - " + roomConfig.maxAq;
                         roomStatus.basicHumSetting = roomConfig.minHumidity + " - " + roomConfig.maxHumidity;
                         roomStatus.basicTempSetting = roomConfig.minTemparature + " - " + roomConfig.maxTemparature;
-                    }
-                    
-                    if (roomStatus.basicCurrentAq == null)
-                    {
-                        roomStatus.basicCurrentAq = dInfo.avgAq;
-                        roomStatus.basicCurrentHum = dInfo.avgHum;
-                        roomStatus.basicCurrentTemp = dInfo.avgTemp;
-                    }
-                    else
-                    {
-                        roomStatus.basicCurrentAq += dInfo.avgAq;
-                        roomStatus.basicCurrentHum += dInfo.avgHum;
-                        roomStatus.basicCurrentTemp += dInfo.avgTemp;
                     }
 
                     if (dInfo.deviceType == "Window Motor")
@@ -119,12 +105,17 @@ public class RoomService
                             output = "Closed";
                         }
                     }
+                    if (dInfo.deviceType == "Sensor")
+                    {
+                        roomStatus.basicCurrentAq += dInfo.avgAq;
+                        roomStatus.basicCurrentHum += dInfo.avgHum;
+                        roomStatus.basicCurrentTemp += dInfo.avgTemp;
+                        
+                        countD++;
+                    }
                 }
 
-                if (dInfo.deviceType == "Sensor")
-                {
-                    countD++;
-                }
+                
                 
             }
             basicDeviceDList.Remove(dModel);

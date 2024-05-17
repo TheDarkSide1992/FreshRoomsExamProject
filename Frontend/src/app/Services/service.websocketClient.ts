@@ -36,7 +36,6 @@ export class WebsocketClientService
   city?: string;
   sensorlist: Array<DeviceModel> = [];
   sensorTypeList: Array<DeviceTypesModel> = [];
-  roomList: Array<RoomModel> = [];
   roomStatusList: Array<BasicRoomStatusModel> = [];
   roomConfig?: RoomConfig;
   currentRoomId?: number;
@@ -147,30 +146,6 @@ export class WebsocketClientService
       }
     )
     t.present();
-  }
-
-  async ServerReturnsRoomList(dto: ServerReturnsRoomList) {
-    this.roomList = []
-    dto.roomList?.forEach(room => {
-      if (room != undefined){
-        let tempRoom: RoomModel = {
-          roomId: room.roomId,
-          name: room.name,
-          creatorId: room.creatorId
-        }
-        this.roomList.push(tempRoom);
-      }
-    }
-    )}
-
-  async ServerReturnsCreatedRoom(dto: ServerReturnsCreatedRoom){
-    let tempRoom: RoomModel = {
-      roomId: dto.roomId,
-      name: dto.name,
-      creatorId: dto.creatorId,
-      deviceList: dto.deviceList,
-    }
-    this.roomList.push(tempRoom);
   }
 
   async ServerReturnsBasicRoomStatus(dto: ServerReturnsBasicRoomStatus){

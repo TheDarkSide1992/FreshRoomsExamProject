@@ -17,19 +17,18 @@ public class ClientWantsToCreateRoom(RoomService roomService) : BaseEventHandler
         RoomModel room = roomService.CreateRoom(dto.deviceList, dto.name, socket.GetMetadata().userInfo.userId);
         if (room != null)
         {
-            var tempRoom = new ServerReturnsCreatedRoom()
-            {
-                roomId = room.roomId,
-                name = room.name,
-                creatorId = room.creatorId,
-            };
             
+            //TODO make this return one room to add to frontend list instead of override
+            var mess = new ServerReturnsBasicRoomStatus()
+            {
+                basicRoomListData = roomService.getBasicRoomWindowStatus(),
+            };
             
             var echo = new ServerRespondsToUser()
             {
                 message = "You successfully create room: " + dto.name,
             };
-            var roomToClient = JsonSerializer.Serialize(tempRoom);
+            var roomToClient = JsonSerializer.Serialize(mess);
             var messageToClient = JsonSerializer.Serialize(echo);
             socket.Send(roomToClient);
             socket.Send(messageToClient);

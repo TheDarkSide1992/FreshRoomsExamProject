@@ -6,6 +6,7 @@ import {ClientWantsRoomList} from "../Models/ClientWantsRoomList";
 import {ClientWantsToDeleteRoom} from "../Models/ClientWantsToDeleteRoom";
 import {RoomModel} from "../Models/RoomModel";
 import {ClientWantsBasicRoomStatus} from "../Models/ClientWantsBasicRoomStatus";
+import {Router} from "@angular/router";
 
 @Component({
   template:
@@ -68,7 +69,7 @@ import {ClientWantsBasicRoomStatus} from "../Models/ClientWantsBasicRoomStatus";
             </div>
 
             <div style="width: 100%; height: 30%; justify-content: center">
-              <ion-button style=" margin: 4%;  width: 35%; --border-radius: 25px;">
+              <ion-button (click)="openRoom(room.roomId!)" style=" margin: 4%;  width: 35%; --border-radius: 25px;">
                 <ion-icon name="play-outline"></ion-icon>
               </ion-button>
             </div>
@@ -81,7 +82,7 @@ import {ClientWantsBasicRoomStatus} from "../Models/ClientWantsBasicRoomStatus";
 })
 export class ManageRoomsPage implements OnInit {
 
-  constructor(protected ws: WebsocketClientService, private modalcontroller: ModalController){}
+  constructor(protected ws: WebsocketClientService, private modalcontroller: ModalController, private router: Router) {}
 
   ngOnInit(): void {
         this.setup();
@@ -108,7 +109,7 @@ export class ManageRoomsPage implements OnInit {
         roomId: room.roomId,
         roomName: room.name,
       }))
-      this.ws.roomList.splice(this.ws.roomList.indexOf(room), 1)
+      this.ws.roomStatusList.splice(this.ws.roomStatusList.indexOf(room), 1)
     }
   }
 
@@ -116,6 +117,10 @@ export class ManageRoomsPage implements OnInit {
     this.ws.socketConnection.sendDto(new ClientWantsBasicRoomStatus({
       eventType: "ClientWantsBasicRoomStatusDto",
     }))
+  }
+
+  openRoom(roomdId:number){
+    this.router.navigate(["RoomInfo/"+roomdId+"/Kitchen"])
   }
 
 

@@ -28,9 +28,9 @@ public class DeviceService
         _deviceRepository.createOrUpdateData(sensorModel);
     }
 
-    public bool createOrUpdateMotorStatus(MotorModel motorModel)
+    public void createOrUpdateMotorStatus(MotorModel motorModel)
     {
-        return _deviceRepository.createOrUpdateMoterStatus(motorModel);
+        _deviceRepository.createOrUpdateMoterStatus(motorModel);
     }
 
     public RoomAvrageSensorData getAvrageRoomSensorData(string sensorId)
@@ -38,9 +38,9 @@ public class DeviceService
         return _deviceRepository.getAvrageSensordataforRoom(sensorId);
     }
 
-    public List<MotorModel> getMotersForRoom(int roomId)
+    public List<MotorModel> getMotorsForRoom(int roomId)
     {
-        return (List<MotorModel>)_deviceRepository.getMotersForRoom(roomId);
+        return (List<MotorModel>)_deviceRepository.getMotorsForRoom(roomId);
     }
 
     public int getRoomIdFromDeviceId(string id)
@@ -51,5 +51,10 @@ public class DeviceService
     public List<SensorModel> getSensorsForRoom(int roomid)
     {
         return _deviceRepository.getSensorsForRoom(roomid);
+    }
+
+    public void updateMoterstatus(MotorModel motorModel)
+    {
+        _deviceRepository.UpdateMoterModel(motorModel);
     }
 }

@@ -28,6 +28,8 @@ import {ServerReturnsDetailedRoomToUser} from "../Models/ServerReturnsDetailedRo
 import {ServerReturnsNewestSensorData} from "../Models/ServerReturnsNewestSensorData";
 import {ServerReturnsBasicRoomStatus} from "../Models/ServerReturnsBasicRoomStatus";
 import {BasicRoomStatusModel} from "../Models/objects/BasicRoomStatusModel";
+import {ServerReturnsNewMotorStatusForAllMotorsInRoom} from "../Models/ServerReturnsNewMotorStatusForAllMotorsInRoom";
+import {ServerReturnsNewMotorStatusForOneMotor} from "../Models/ServerReturnsNewMotorStatusForOneMotor";
 
 
 @Injectable({providedIn: 'root'})
@@ -170,20 +172,17 @@ export class WebsocketClientService {
   ServerReturnsNewestSensorData(dto: ServerReturnsNewestSensorData) {
     console.log(this.currentRoom?.sensors);
     var index = this.currentRoom?.sensors?.findIndex(function (item) {
-      return item.sensorId == dto.data.sensorId
+      return item.sensorId == dto.data?.sensorId
     });
-    this.currentRoom?.sensors?.splice(0, 1, dto.data);
+    this.currentRoom?.sensors?.splice(0, 1, dto.data!);
     console.log(this.currentRoom?.sensors);
     let temp = 0;
     let hum = 0;
     let aq = 0;
     for (var sensor of this.currentRoom?.sensors!) {
       temp = temp + sensor.Temperature
-      console.log(temp);
       hum = hum + sensor.Humidity
-      console.log(hum);
       aq = aq + sensor.CO2
-      console.log(aq);
     }
 
     this.currentaq = aq / this.currentRoom?.sensors?.length!
@@ -195,5 +194,42 @@ export class WebsocketClientService {
     if (dto.basicRoomListData != undefined) {
       this.roomStatusList = dto.basicRoomListData;
     }
+  }
+
+  async ServerReturnsNewMotorStatusForAllMotorsInRoom(dto: ServerReturnsNewMotorStatusForAllMotorsInRoom)
+  {
+    for(let m of dto.motors)
+    {
+      var index = this.currentRoom?.motors?.findIndex(function (item) {
+        return item.motorId == m.motorId
+      });
+      this.currentRoom?.motors?.splice(0, 1, m);
+    }
+    this.currentRoom?.motors == dto.motors;
+    var t = await this.toast.create(
+      {
+        color: "success",
+        duration: 2000,
+        message: dto.message,
+      }
+    )
+    t.present();
+  }
+
+  async ServerReturnsNewMotorStatusForOneMotor(dto: ServerReturnsNewMotorStatusForOneMotor)
+  {
+    var index = this.currentRoom?.motors?.findIndex(function (item) {
+      return item.motorId == dto.motor?.motorId
+    });
+    this.currentRoom?.motors?.splice(0, 1, dto.motor!);
+
+    var t = await this.toast.create(
+      {
+        color: "success",
+        duration: 2000,
+        message: dto.message,
+      }
+    )
+    t.present();
   }
 }

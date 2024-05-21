@@ -5,15 +5,23 @@ import {WebsocketClientService} from "../Services/service.websocketClient";
 import {RoomSensorSetPage} from "./RoomSensorSet.page";
 import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurations";
 import {ClientWantsDetailedRoom} from "../Models/ClientWantsDetailedRoom";
+import {ClientWantsToOpenOrCloseAllWindowsInRoom} from "../Models/ClientWantsToOpenOrCloseAllWindowsInRoom";
+import {MotorModel} from "../Models/objects/MotorModel";
+import {ClientWantsToOpenOrCloseWindow} from "../Models/ClientWantsToOpenOrCloseWindow";
+import {ClientWantsToDisableOrEnableOneMotor} from "../Models/ClientWantsToDisableOrEnableOneMotor";
+import {ClientWantsToDisableOrEnableAllMotorsFromRoom} from "../Models/ClientWantsToDisableOrEnableAllMotorsFromRoom";
+
 
 
 @Component({
   template: `
-    <div style="flex-direction: column;">
+    <ion-content>
+      <div style="flex-direction: column;">
       <ion-toolbar>
         <ion-title mode="ios">
           ROOM_PAGE : {{ this.wsService.currentRoom?.name }} ({{ roomId }})
         </ion-title>
+
       </ion-toolbar>
 
       <br>
@@ -49,8 +57,17 @@ import {ClientWantsDetailedRoom} from "../Models/ClientWantsDetailedRoom";
 
         <div style="display: flex; flex: 4; flex-wrap: wrap;
               align-content: space-evenly; flex-direction: column;">
-          <br>
-          <ion-card *ngFor="let m of this.wsService.currentRoom?.motors">
+          <ion-content>
+            <ion-toolbar>
+              <ion-buttons>
+                <ion-button *ngIf="!checkallIsOpen()" (click)="OpenAllWindows()">Open all windows</ion-button>
+                <ion-button *ngIf="checkallIsOpen()" (click)="closeAllWindows()">Close all windows</ion-button>
+                <ion-button *ngIf="checkallIsDisabled()" (click)="EnableAllWindows()">Enable all windows</ion-button>
+                <ion-button *ngIf="!checkallIsDisabled()" (click)="DisableAllWindows()">Disable all windows</ion-button>
+              </ion-buttons>
+            </ion-toolbar>
+            <br>
+            <ion-card *ngFor="let m of this.wsService.currentRoom?.motors">
 
 
               <div *ngIf="m.isOpen">
@@ -58,10 +75,12 @@ import {ClientWantsDetailedRoom} from "../Models/ClientWantsDetailedRoom";
                   <ion-title>Window: Open</ion-title>
                 </ion-card-header>
                 <ion-card-content style="display: flex; flex-direction: column; flex-wrap: wrap;">
-                <ion-button>
-                  <ion-icon name="stopwatch-outline"></ion-icon>
-                  Close
-                </ion-button>
+                  <ion-button (click)="closeWindow(m)">
+                    <ion-icon name="stopwatch-outline"></ion-icon>
+                    Close
+                  </ion-button>
+                  <ion-button *ngIf="m.isDisabled" (click)="EnableWindow(m)">Enable</ion-button>
+                  <ion-button *ngIf="!m.isDisabled" (click)="DisableWindow(m)">Disable</ion-button>
                 </ion-card-content>
               </div>
 
@@ -70,17 +89,20 @@ import {ClientWantsDetailedRoom} from "../Models/ClientWantsDetailedRoom";
                   <ion-title>Window: Closed</ion-title>
                 </ion-card-header>
                 <ion-card-content style="display: flex; flex-direction: column;">
-                <div>
-                <ion-button>
-                  <ion-icon name="stopwatch-outline"></ion-icon>
-                  Open
-                </ion-button>
-                </div>
+                  <div>
+                    <ion-button (click)="openWindow(m)">
+                      <ion-icon name="stopwatch-outline"></ion-icon>
+                      Open
+                    </ion-button>
+                    <ion-button *ngIf="m.isDisabled" (click)="EnableWindow(m)">Enable</ion-button>
+                    <ion-button *ngIf="!m.isDisabled" (click)="DisableWindow(m)">Disable</ion-button>
+                  </div>
                 </ion-card-content>
               </div>
               <br>
 
-          </ion-card>
+            </ion-card>
+          </ion-content>
         </div>
 
         <br>
@@ -161,6 +183,7 @@ import {ClientWantsDetailedRoom} from "../Models/ClientWantsDetailedRoom";
         <div style="flex: 1;"></div>
       </div>
     </div>
+    </ion-content>
   `,
   styleUrls: ['roomInfo.page.scss'],
 })
@@ -226,4 +249,61 @@ export class RoomInfoPage implements OnInit {
   {
     this.wsService.socketConnection.sendDto(new ClientWantsDetailedRoom({roomId : this.roomId}))
   }
+
+  OpenAllWindows() {
+    this.wsService.socketConnection.sendDto(new ClientWantsToOpenOrCloseAllWindowsInRoom({id : this.wsService.currentRoom?.roomId, open : true}))
+  }
+
+  closeAllWindows()
+  {
+    this.wsService.socketConnection.sendDto(new ClientWantsToOpenOrCloseAllWindowsInRoom({id : this.wsService.currentRoom?.roomId, open : false}))
+  }
+
+  openWindow(motor:MotorModel)
+  {
+    this.wsService.socketConnection.sendDto(new ClientWantsToOpenOrCloseWindow({roomId: this.wsService.currentRoom?.roomId, motor: motor, open: true}))
+  }
+  closeWindow(motor: MotorModel)
+  {
+    this.wsService.socketConnection.sendDto(new ClientWantsToOpenOrCloseWindow({roomId: this.wsService.currentRoom?.roomId, motor: motor, open: false}))
+  }
+
+  DisableWindow(motor:MotorModel) {
+    this.wsService.socketConnection.sendDto(new ClientWantsToDisableOrEnableOneMotor({roomId: this.wsService.currentRoom?.roomId, motor: motor, disable: true}))
+  }
+
+  EnableWindow(motor: MotorModel) {
+    this.wsService.socketConnection.sendDto(new ClientWantsToDisableOrEnableOneMotor({roomId: this.wsService.currentRoom?.roomId, motor: motor, disable: false}))
+  }
+
+  EnableAllWindows() {
+    this.wsService.socketConnection.sendDto(new ClientWantsToDisableOrEnableAllMotorsFromRoom({roomId: this.wsService.currentRoom?.roomId, disable: false}))
+  }
+
+  DisableAllWindows() {
+    this.wsService.socketConnection.sendDto(new ClientWantsToDisableOrEnableAllMotorsFromRoom({roomId: this.wsService.currentRoom?.roomId, disable: true}))
+  }
+
+ checkallIsOpen() {
+    if(!this.wsService.currentRoom?.motors?.every(motor => motor.isOpen == true))
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  checkallIsDisabled() {
+    if(!this.wsService.currentRoom?.motors?.every(motor => motor.isDisabled == true))
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+
 }

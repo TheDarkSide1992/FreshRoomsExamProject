@@ -2,6 +2,7 @@ using System.Collections;
 using System.Text.Json;
 using api.CostumExeptions;
 using api.Dtos;
+using api.EventFilters;
 using Fleck;
 using Infastructure.DataModels;
 using lib;
@@ -10,6 +11,7 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
 public class ClientWantsSensorTypes(DeviceService deviceService) : BaseEventHandler<ClientWantsSensorTypesDto>
 {
     public override Task Handle(ClientWantsSensorTypesDto dto, IWebSocketConnection socket)

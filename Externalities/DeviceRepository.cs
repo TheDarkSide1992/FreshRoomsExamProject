@@ -283,5 +283,47 @@ public class DeviceRepository
             }
         }
     }
+
+    public bool DeleteCurrentDataForRoom(int roomId)
+    {
+        const string sql =
+            $@"DELETE FROM freshrooms.devicedata
+               USING freshrooms.devices
+               WHERE devices.deviceid = devicedata.sensorId and devices.roomId = @roomId;";
+        
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) != 0;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete current device data for room");
+            }
+        }
+    }
+
+    public bool DeleteHistoricDataForRoom(int roomId)
+    {
+        const string sql =
+            $@"DELETE FROM freshrooms.historicData
+               USING freshrooms.devices
+               WHERE devices.deviceid = historicData.sensorId and devices.roomId = @roomId;";
+        
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) != 0;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete historic device data for room");
+            }
+        }
+    }
 }
 

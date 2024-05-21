@@ -31,14 +31,21 @@ public class RoomService
 
     public bool DeleteRoom(int roomId)
     {
-        if (_roomRepository.DeleteRoomConfig(roomId) && _deviceRepository.DeleteRoomIdOnDevices(roomId))
+        if (_roomRepository.DeleteRoomConfig(roomId))
         {
-            return _roomRepository.DeleteRoom(roomId);
+            _deviceRepository.DeleteHistoricDataForRoom(roomId);
+            _deviceRepository.DeleteCurrentDataForRoom(roomId);
+            if (_deviceRepository.DeleteRoomIdOnDevices(roomId))
+            {
+                return _roomRepository.DeleteRoom(roomId);
+            }
         }
         else
         {
             throw new Exception("Could not delete room");
         }
+
+        return false;
     }
     
     public IEnumerable<RoomModel> GetAllRooms()
@@ -75,15 +82,12 @@ public class RoomService
         
         foreach (var roomConfig in roomConfigModels)
         {
-            Console.WriteLine("Roomconfig here: " + roomConfig.roomName + ", " + roomConfig.roomId);
             BasicRoomStatus roomStatus = new BasicRoomStatus();
             int countD = 0;
             string output = "";
             BasicDeviceDModel dModel = null;
             foreach (var dInfo in basicDeviceDList)
             {
-                
-                
                 if (roomConfig.roomId == dInfo.roomId)
                 {
                     dModel = dInfo;
@@ -111,18 +115,14 @@ public class RoomService
                             output = "Closed";
                         }
                     }
-                    if (dInfo.deviceType == "Sensor")
+                    if (dInfo.deviceType == "Sensor" && dInfo.cTemp != null)
                     {
                         roomStatus.basicCurrentAq += dInfo.cAq;
                         roomStatus.basicCurrentHum += dInfo.cHum;
                         roomStatus.basicCurrentTemp += dInfo.cTemp;
-                        
                         countD++;
                     }
                 }
-
-                
-                
             }
             basicDeviceDList.Remove(dModel);
 
@@ -132,9 +132,9 @@ public class RoomService
             }
             if (countD!= 0)
             {
-                roomStatus.basicCurrentAq /= countD;
-                roomStatus.basicCurrentHum /= countD;
-                roomStatus.basicCurrentTemp /= countD;
+                roomStatus.basicCurrentTemp = Math.Round(roomStatus.basicCurrentTemp/countD, 2);
+                roomStatus.basicCurrentHum = Math.Round(roomStatus.basicCurrentHum/countD, 2);
+                roomStatus.basicCurrentAq = Math.Round(roomStatus.basicCurrentAq/countD, 2);
             }
             else
             {

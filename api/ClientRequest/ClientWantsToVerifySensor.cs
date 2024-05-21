@@ -12,12 +12,13 @@ public class ClientWantsToVerifySensor(DeviceService deviceService) : BaseEventH
 {
     public override Task Handle(ClientWantsToVerifySensorDto dto, IWebSocketConnection socket)
     {
+        string deviceType = deviceService.VerifySensorGuid(dto.sensorGuid);
 
-        if (deviceService.VerifySensorGuid(dto.sensorGuid))
+        if (deviceType != null && deviceType != "")
         {
             socket.Send(JsonSerializer.Serialize(new ServerRespondsToSensorVeryficationDto
             {
-                deviceTypeName = dto.deviceTypeName,
+                deviceTypeName = deviceType,
                 foundSensor = true,
                 sensorGuid = dto.sensorGuid
             }));

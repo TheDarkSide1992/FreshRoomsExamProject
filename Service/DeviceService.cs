@@ -12,7 +12,7 @@ public class DeviceService
         _deviceRepository = deviceRepository;
     }
 
-    public bool VerifySensorGuid(String sensorGuid)
+    public string VerifySensorGuid(String sensorGuid)
     {
         return _deviceRepository.VerifySensorGuid(sensorGuid);
     }

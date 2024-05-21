@@ -15,12 +15,12 @@ public class DeviceRepository
         _dataSource = dataSource;
     }
 
-    public bool VerifySensorGuid(string sensorGuid)
+    public string VerifySensorGuid(string sensorGuid)
     {
-        const string sql = $@"SELECT COUNT(deviceId) from freshrooms.devices WHERE deviceId = @sensorGuid;";
+        const string sql = $@"SELECT deviceType from freshrooms.devices WHERE deviceId = @sensorGuid;";
         using (var connection = _dataSource.OpenConnection())
         {
-            return connection.ExecuteScalar<int>(sql, new { sensorGuid } ) > 0;
+            return connection.ExecuteScalar<string>(sql, new { sensorGuid } );
         }
     }
 

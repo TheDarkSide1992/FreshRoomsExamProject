@@ -124,19 +124,6 @@ export class WebsocketClientService {
     this.sensorlist.push(tempsensor);
   }
 
-  async ServerSendsDeviceTypes(dto: ServerSendsDeviceTypes) {
-    dto.deviceTypeList?.forEach(deviceType => {
-        if (deviceType != undefined) {
-          let tempDeviceType: DeviceTypesModel = {
-            deviceTypeId: deviceType.deviceTypeId,
-            deviceTypeName: deviceType.deviceTypeName,
-          }
-          this.sensorTypeList.push(tempDeviceType);
-        }
-      }
-    )
-  }
-
   async ServerRespondsToUser(dto: ServerRespondsToUser) {
     var t = await this.toast.create(
       {

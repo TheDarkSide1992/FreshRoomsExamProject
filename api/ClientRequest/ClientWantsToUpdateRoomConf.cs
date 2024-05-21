@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using api.StaticHelpers.ExtentionMethods;
 using Fleck;
 using lib;
@@ -8,6 +9,7 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
 public class ClientWantsToUpdateRoomConf(RoomService service) : BaseEventHandler<ClientWantsToUpdateRoomConfDto>
 {
     public override Task Handle(ClientWantsToUpdateRoomConfDto dto, IWebSocketConnection socket)

@@ -74,7 +74,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                    var roomid = _deviceService.getRoomIdFromDeviceId(e.ApplicationMessage.Topic.ToString().Split("/")[2]);
                    var obj = JsonConvert.DeserializeObject<SensorModel>(message);
                    obj.sensorId = e.ApplicationMessage.Topic.ToString().Split("/")[2];
-                   sendDataToAllUsersInRooms(roomid, obj);
+                   sendSensorDataToAllUsersInRooms(roomid, obj);
                    saveOrCreateSensordata(message, e.ApplicationMessage.Topic.ToString().Split("/")[2]);
                }
                else if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("motor") &&
@@ -123,7 +123,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
     {
         var avrage = _deviceService.getAvrageRoomSensorData(id);
         var pref = _roomService.getRoomPrefrencesConfiguration(avrage.roomId);
-        List<MotorModel> motors = _deviceService.getMotersForRoom(avrage.roomId);
+        List<MotorModel> motors = _deviceService.getMotorsForRoom(avrage.roomId);
         if (avrage.Humidity <= pref.minHumidity || avrage.Humidity >= pref.maxHumidity)
         {
             windowAction(motors);
@@ -142,26 +142,63 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
     {
         foreach (var m in motors)
         {
-            if (!m.isOpen)
+            if (!m.isDisabled)
             {
-                sendMessageToTopic("freshrooms/motor/action/" + m.MotorId, "open");
+                if (!m.isOpen)
+                {
+                    sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "open");
+                    m.isOpen = true;
+                    _deviceService.createOrUpdateMotorStatus(m);
+                }
+                else
+                {
+                    sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "close");
+                    m.isOpen = false;
+                    _deviceService.createOrUpdateMotorStatus(m);
+                }
             }
-            else
-            {
-                sendMessageToTopic("freshrooms/motor/action/" + m.MotorId, "close");
-            }
+            
         }
 
         timelastChecked = DateTime.Now;
+    }
+
+    public List<MotorModel> OpenAllWindowsWithUserInput(List<MotorModel> motors, bool open,int roomid)
+    {
+        var message = "";
+        foreach (var m in motors)
+        {
+            if (open)
+            {
+                sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "open");
+                m.isOpen = true;
+                m.isDisabled = true;
+                Console.WriteLine(m.motorId);
+                _deviceService.updateMoterstatus(m);
+                message = "all windows are open or are being opened";
+            }
+            else
+            {
+                sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "close");
+                m.isOpen = false;
+                m.isDisabled = false;
+                Console.WriteLine(m.motorId);
+                _deviceService.updateMoterstatus(m);
+                message = "all windows are closed or are being closed";
+            }
+        }
+        sendMotorDataForAllMotorsToAllUsersInRooms(roomid ,motors, message);
+        return motors;
     }
     
     private void saveOrCreateMotorStatus(string message, string id)
     {
         var obj = JsonSerializer.Deserialize<MotorModel>(message);
+        obj.motorId = id;
         _deviceService.createOrUpdateMotorStatus(obj);
     }
 
-    public void sendDataToAllUsersInRooms(int id, SensorModel model)
+    public void sendSensorDataToAllUsersInRooms(int id, SensorModel model)
     {
         if ( WebSocketConnections.usersInrooms.TryGetValue(id, out var guids))
         {
@@ -172,6 +209,32 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                     ws.Socket.Send(JsonSerializer.Serialize(new ServerReturnsNewestSensorData{data = model}));
                 }
             }
+        }
+    }
+    
+    public void sendMotorDataForAllMotorsToAllUsersInRooms(int id, List<MotorModel> motors, string message)
+    {
+        if ( WebSocketConnections.usersInrooms.TryGetValue(id, out var guids))
+        {
+            foreach (var guid in guids)
+            {
+                if(WebSocketConnections.connections.TryGetValue(guid, out var ws))
+                {
+                    ws.Socket.Send(JsonSerializer.Serialize(new ServerReturnsNewMotorStatusForAllMotorsInRoom(){motors = motors, message = message}));
+                }
+            }
+        }
+    }
+
+    public void openOrCloseAWindow(MotorModel motor, bool open)
+    {
+        if (open)
+        {
+            sendMessageToTopic("freshrooms/motor/action/" + motor.motorId, "open");
+        }
+        else
+        {
+            sendMessageToTopic("freshrooms/motor/action/" + motor.motorId, "close");
         }
     }
 }

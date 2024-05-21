@@ -1,6 +1,7 @@
 using System.Text.Json;
 using api.CostumExeptions;
 using api.Dtos;
+using api.EventFilters;
 using api.StaticHelpers.ExtentionMethods;
 using Fleck;
 using Infastructure.DataModels;
@@ -10,6 +11,7 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
 public class ClientWantsToCreateRoom(RoomService roomService) : BaseEventHandler<ClientWantsToCreateRoomDto>
 {
     public override Task Handle(ClientWantsToCreateRoomDto dto, IWebSocketConnection socket)

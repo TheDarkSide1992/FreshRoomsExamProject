@@ -162,9 +162,9 @@ public class DeviceRepository
         }
     }
 
-    public bool createOrUpdateMoterStatus(MotorModel motorModel)
+    public void createOrUpdateMoterStatus(MotorModel motorModel)
     {
-        var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isDisabled) values (@motorId,@isOpen,@isDisabled)
+        var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isdisabled) values (@motorId,@isOpen,false)
                         on conflict(motorId)
                         do update set isOpen = @isOpen;";
         
@@ -174,11 +174,9 @@ public class DeviceRepository
             {
                 conn.Execute(sql, new
                 {
-                    motorModel.MotorId,
+                    motorModel.motorId,
                     motorModel.isOpen,
-                    isDisabled = false
                 });
-                return true;
             }
             catch (Exception e)
             {
@@ -186,6 +184,32 @@ public class DeviceRepository
             }
         }
     }
+    
+    public void UpdateMoterModel(MotorModel motorModel)
+    {
+        var save = $@"insert into freshrooms.motorstatus (motorId, isOpen, isdisabled) values (@motorId,@isOpen,@isDisabled)
+                        on conflict(motorId)
+                        do update set isOpen = @isOpen, isdisabled = @isDisabled;";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                conn.Execute(save, new
+                {
+                    motorModel.motorId,
+                    motorModel.isOpen,
+                    motorModel.isDisabled
+                });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to save window status");
+            }
+        }
+    }
+    
+    
 
     public void saveOldData(string sensorId)
     {
@@ -233,9 +257,9 @@ public class DeviceRepository
         }
     }
 
-    public IEnumerable<MotorModel> getMotersForRoom(int roomId)
+    public IEnumerable<MotorModel> getMotorsForRoom(int roomId)
     {
-        var sql = $@"select * from freshrooms.motorstatus join freshrooms.devices d on d.deviceid = motorstatus.motorid where d.roomid = @roomId and isDisabled = @isdisabled;";
+        var sql = $@"select * from freshrooms.motorstatus join freshrooms.devices d on d.deviceid = motorstatus.motorid where d.roomid = @roomId";
         using (var conn = _dataSource.OpenConnection())
         {
             try

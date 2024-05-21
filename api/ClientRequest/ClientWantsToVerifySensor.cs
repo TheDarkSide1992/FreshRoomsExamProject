@@ -1,6 +1,7 @@
 using System.Text.Json;
 using api.CostumExeptions;
 using api.Dtos;
+using api.EventFilters;
 using Fleck;
 using lib;
 using Service;
@@ -8,6 +9,7 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
 public class ClientWantsToVerifySensor(DeviceService deviceService) : BaseEventHandler<ClientWantsToVerifySensorDto>
 {
     public override Task Handle(ClientWantsToVerifySensorDto dto, IWebSocketConnection socket)

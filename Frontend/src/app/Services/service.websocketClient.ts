@@ -221,7 +221,7 @@ export class WebsocketClientService {
     var index = this.currentRoom?.motors?.findIndex(function (item) {
       return item.motorId == dto.motor?.motorId
     });
-    this.currentRoom?.motors?.splice(0, 1, dto.motor!);
+    this.currentRoom?.motors?.splice(index!, 1, dto.motor!);
 
     var t = await this.toast.create(
       {

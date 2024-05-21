@@ -174,7 +174,7 @@ export class WebsocketClientService {
     var index = this.currentRoom?.sensors?.findIndex(function (item) {
       return item.sensorId == dto.data?.sensorId
     });
-    this.currentRoom?.sensors?.splice(0, 1, dto.data!);
+    this.currentRoom?.sensors?.splice(index!, 1, dto.data!);
     console.log(this.currentRoom?.sensors);
     let temp = 0;
     let hum = 0;
@@ -203,7 +203,7 @@ export class WebsocketClientService {
       var index = this.currentRoom?.motors?.findIndex(function (item) {
         return item.motorId == m.motorId
       });
-      this.currentRoom?.motors?.splice(0, 1, m);
+      this.currentRoom?.motors?.splice(index!, 1, m);
     }
     this.currentRoom?.motors == dto.motors;
     var t = await this.toast.create(

@@ -163,7 +163,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
         timelastChecked = DateTime.Now;
     }
 
-    public List<MotorModel> OpenAllWindowsWithUserInput(List<MotorModel> motors, bool open,int roomid)
+    public void OpenAllWindowsWithUserInput(List<MotorModel> motors, bool open,int roomid)
     {
         var message = "";
         foreach (var m in motors)
@@ -174,7 +174,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 m.isOpen = true;
                 m.isDisabled = true;
                 Console.WriteLine(m.motorId);
-                _deviceService.updateMoterstatus(m);
+                _deviceService.updateMoterstatusWithUsersInput(m);
                 message = "all windows are open or are being opened";
             }
             else
@@ -183,12 +183,11 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 m.isOpen = false;
                 m.isDisabled = false;
                 Console.WriteLine(m.motorId);
-                _deviceService.updateMoterstatus(m);
+                _deviceService.updateMoterstatusWithUsersInput(m);
                 message = "all windows are closed or are being closed";
             }
         }
         sendMotorDataForAllMotorsToAllUsersInRooms(roomid ,motors, message);
-        return motors;
     }
     
     private void saveOrCreateMotorStatus(string message, string id)

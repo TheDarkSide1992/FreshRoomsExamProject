@@ -24,7 +24,7 @@ public class ClientWantsToDisableOrEnableOneMotor(DeviceService _deviceService) 
             message = "The window is enabled";
         }
 
-        _deviceService.updateMoterstatus(dto.motor);
+        _deviceService.updateMoterstatusWithUsersInput(dto.motor);
         if ( WebSocketConnections.usersInrooms.TryGetValue(dto.roomId, out var guids))
         {
             foreach (var guid in guids)

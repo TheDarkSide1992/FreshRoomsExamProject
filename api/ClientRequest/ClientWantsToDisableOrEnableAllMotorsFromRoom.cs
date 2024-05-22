@@ -2,6 +2,7 @@
 using api.Dtos;
 using api.State;
 using Fleck;
+using Infastructure.DataModels;
 using lib;
 using Service;
 using socketAPIFirst.Dtos;
@@ -13,21 +14,17 @@ public class ClientWantsToDisableOrEnableAllMotorsFromRoom(DeviceService _device
     public override Task Handle(ClientWantsToDisableOrEnableAllMotorsFromRoomDto dto, IWebSocketConnection socket)
     {
         var message = "";
-        var motors = _deviceService.getMotorsForRoom(dto.roomId);
-        foreach (var motor in motors)
-        {
+        var motors = new List<MotorModel>();
             if (dto.disable)
             {
-                motor.isDisabled = true;
+                motors = _deviceService.updateAllMotorsInAroom(dto.roomId, false, dto.disable);
                 message = "All windows are disabled";
             }
             else
             {
-                motor.isDisabled = false;
+                motors = _deviceService.updateAllMotorsInAroom(dto.roomId, false, dto.disable);
                 message = "All windows are enabled";
             }
-            _deviceService.updateMoterstatus(motor);
-        }
         if ( WebSocketConnections.usersInrooms.TryGetValue(dto.roomId, out var guids))
         {
             foreach (var guid in guids)

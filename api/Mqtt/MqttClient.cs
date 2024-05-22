@@ -1,6 +1,7 @@
 ﻿using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using api.State;
+using api.StaticHelpers.ExtentionMethods;
 using Infastructure.DataModels;
 using MQTTnet;
 using MQTTnet.Client;
@@ -59,8 +60,12 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
        var mqttmotorsub = Factory.CreateSubscribeOptionsBuilder()
            .WithTopicFilter(f => f.WithTopic("freshrooms/motor/status/#"))
            .Build();
+       var mqttdeviceverification = Factory.CreateSubscribeOptionsBuilder()
+           .WithTopicFilter(f => f.WithTopic("freshrooms/verified/#"))
+           .Build();
        await _Client.SubscribeAsync(mqttsensorsub, CancellationToken.None);
        await _Client.SubscribeAsync(mqttmotorsub, CancellationToken.None);
+       await _Client.SubscribeAsync(mqttdeviceverification, CancellationToken.None);
        Console.WriteLine("mqtt connection successfull");
        _Client.ApplicationMessageReceivedAsync += async e =>
        {
@@ -81,6 +86,10 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                         e.ApplicationMessage.Topic.ToString().Split("/")[2].Equals("status"))
                {
                    saveOrCreateMotorStatus(message,e.ApplicationMessage.Topic.ToString().Split("/")[3] );
+               }
+               else if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("verified"))
+               {
+                   sendVerificationToUsers(e.ApplicationMessage.Topic.ToString().Split("/")[2], message);
                }
            }
            catch (Exception ex)
@@ -170,6 +179,32 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 if(WebSocketConnections.connections.TryGetValue(guid, out var ws))
                 {
                     ws.Socket.Send(JsonSerializer.Serialize(new ServerReturnsNewestSensorData{data = model}));
+                }
+            }
+        }
+    }
+
+    public void verifyDeviceGuid(string guid)
+    {
+        Console.WriteLine("testing mqtt verify device: " + guid);
+        sendMessageToTopic("freshrooms/verify/" + guid, "verify");
+    }
+    
+    public void sendVerificationToUsers(string deviceId, string deviceType)
+    {
+        if ( WebSocketConnections.deviceVerificationList.TryGetValue(deviceId, out var guids))
+        {
+            foreach (var guid in guids)
+            {
+                if(WebSocketConnections.connections.TryGetValue(guid, out var ws))
+                {
+                    ws.Socket.Send(JsonSerializer.Serialize(new ServerRespondsToSensorVeryficationDto
+                    {
+                        foundSensor = true,
+                        deviceTypeName = deviceType,
+                        sensorGuid = deviceId
+                    }));
+                    ws.Socket.RemoveDeviceId(deviceId);
                 }
             }
         }

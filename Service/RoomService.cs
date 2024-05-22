@@ -76,12 +76,15 @@ public class RoomService
 
     public IEnumerable<BasicRoomStatus> getBasicRoomWindowStatus()
     {
-        List<BasicRoomStatus> roomStatusList = new List<BasicRoomStatus>();
+        try
+        {
+            List<BasicRoomStatus> roomStatusList = new List<BasicRoomStatus>();
         IEnumerable<BasicRoomSettingModel> roomConfigModels = _roomRepository.GetALLRoomSettings();
         List<BasicDeviceDModel> basicDeviceDList = _deviceRepository.GetBasicDeviceData();
         
         foreach (var roomConfig in roomConfigModels)
         {
+            
             BasicRoomStatus roomStatus = new BasicRoomStatus();
             int countD = 0;
             string output = "";
@@ -141,10 +144,15 @@ public class RoomService
                 roomStatus.basicCurrentAq = 0;
                 roomStatus.basicCurrentHum = 0;
                 roomStatus.basicCurrentTemp = 0;
-                throw new Exception("Could not get proper average data for room");
+                
             }
             roomStatusList.Add(roomStatus);
         }
         return roomStatusList;
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Could not get proper average data for room");
+        }
     }
 }

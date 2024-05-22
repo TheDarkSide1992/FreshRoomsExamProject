@@ -33,13 +33,13 @@ import {Router} from "@angular/router";
 
             <div style="width: 100%; height: 60%; flex-direction: column; flex-wrap: wrap">
               <ion-item>
-                <ion-label style="width: 100%;">Temperature: {{ room.basicCurrentTemp }}</ion-label>
+                <ion-label style="width: 100%;">Temperature: {{ room.basicCurrentTemp }} °C</ion-label>
               </ion-item>
               <ion-item>
-                <ion-label style="width: 100%">Humidity: {{ room.basicCurrentHum }}</ion-label>
+                <ion-label style="width: 100%">Humidity: {{ room.basicCurrentHum }} %</ion-label>
               </ion-item>
               <ion-item>
-                <ion-label style="width: 100%">Air Quality: {{ room.basicCurrentAq }}</ion-label>
+                <ion-label style="width: 100%">Air Quality: {{ room.basicCurrentAq }} ppm</ion-label>
               </ion-item>
             </div>
 
@@ -58,13 +58,13 @@ import {Router} from "@angular/router";
             <div style="width: 100%; height: 60%; flex-direction: column; flex-wrap: wrap">
               <ion-title style="display: flex; text-align: center; width: 100%">Room Settings</ion-title>
               <ion-item>
-                <ion-label style="width: 100%;">Temperature: {{ room.basicTempSetting }}</ion-label>
+                <ion-label style="width: 100%;">Temperature: {{ room.basicTempSetting }} °C</ion-label>
               </ion-item>
               <ion-item>
-                <ion-label style="width: 100%">Humidity: {{ room.basicHumSetting }}</ion-label>
+                <ion-label style="width: 100%">Humidity: {{ room.basicHumSetting }} %</ion-label>
               </ion-item>
               <ion-item>
-                <ion-label style="width: 100%">Air Quality: {{ room.basicAqSetting }}</ion-label>
+                <ion-label style="width: 100%">Air Quality: {{ room.basicAqSetting }} ppm</ion-label>
               </ion-item>
             </div>
 

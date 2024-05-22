@@ -80,8 +80,9 @@ public class DeviceRepository
     {
         using (var conn = _dataSource.OpenConnection())
         {
-            const string sql =
-                $@"UPDATE freshrooms.devices SET roomId = @roomId, deviceType = @tempDeviceType WHERE deviceId = @tempGuid";
+            const string sql = $@"insert into freshrooms.devices (deviceId, roomId, deviceType) values (@tempGuid, @roomId, @tempDeviceType)
+                        on conflict(deviceId)
+                        do UPDATE SET roomId = @roomId, deviceType = @tempDeviceType;";
             
             var transaction = conn.BeginTransaction();
             try
@@ -95,6 +96,9 @@ public class DeviceRepository
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.InnerException);
+                Console.WriteLine(e.StackTrace);
                 transaction.Rollback();
                 throw new Exception("Could not create devices");
             }

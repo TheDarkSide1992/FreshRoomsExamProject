@@ -25,6 +25,23 @@ public static class WSExtentions
         WebSocketConnections.usersInrooms[roomId].Add(ws.ConnectionInfo.Id);
     }
 
+    public static void AddDeviceId(this IWebSocketConnection ws, string deviceId)
+    {
+        if (!WebSocketConnections.deviceVerificationList.ContainsKey(deviceId))
+        {
+            WebSocketConnections.deviceVerificationList.TryAdd(deviceId, new HashSet<Guid>());
+        }
+        WebSocketConnections.deviceVerificationList[deviceId].Add(ws.ConnectionInfo.Id);
+    }
+
+    public static void RemoveDeviceId(this IWebSocketConnection ws ,string deviceId)
+    {
+        if (WebSocketConnections.deviceVerificationList.ContainsKey(deviceId))
+        {
+            WebSocketConnections.deviceVerificationList.TryRemove(deviceId, out _);
+        }
+    }
+
     public static void RemoveFromConnections(this IWebSocketConnection connection)
     {
         WebSocketConnections.connections.TryRemove(connection.ConnectionInfo.Id, out _);

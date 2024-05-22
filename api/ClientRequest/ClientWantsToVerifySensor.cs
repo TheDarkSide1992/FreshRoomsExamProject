@@ -1,32 +1,17 @@
-using System.Text.Json;
-using api.CostumExeptions;
 using api.Dtos;
+using api.StaticHelpers.ExtentionMethods;
 using Fleck;
 using lib;
-using Service;
-using socketAPIFirst.Dtos;
+using MqttClient = api.Mqtt.MqttClient;
 
 namespace api.ClientRequest;
 
-public class ClientWantsToVerifySensor(DeviceService deviceService) : BaseEventHandler<ClientWantsToVerifySensorDto>
+public class ClientWantsToVerifySensor(MqttClient mqttClient) : BaseEventHandler<ClientWantsToVerifySensorDto>
 {
     public override Task Handle(ClientWantsToVerifySensorDto dto, IWebSocketConnection socket)
     {
-        string deviceType = deviceService.VerifySensorGuid(dto.sensorGuid);
-
-        if (deviceType != null && deviceType != "")
-        {
-            socket.Send(JsonSerializer.Serialize(new ServerRespondsToSensorVeryficationDto
-            {
-                deviceTypeName = deviceType,
-                foundSensor = true,
-                sensorGuid = dto.sensorGuid
-            }));
-        }
-        else
-        {
-            throw new SensorGuidNotValidException("Sensor Guid not found");
-        }
+        socket.AddDeviceId(dto.sensorGuid);
+        mqttClient.verifyDeviceGuid(dto.sensorGuid);
         return Task.CompletedTask;
     }
 }

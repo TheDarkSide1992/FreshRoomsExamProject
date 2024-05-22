@@ -185,7 +185,7 @@ public class DeviceRepository
         }
     }
     
-    public void UpdateMoterModel(MotorModel motorModel)
+    public void UpdateMoterModelWithUsersInput(MotorModel motorModel)
     {
         var save = $@"insert into freshrooms.motorstatus (motorId, isOpen, isdisabled) values (@motorId,@isOpen,@isDisabled)
                         on conflict(motorId)
@@ -208,8 +208,29 @@ public class DeviceRepository
             }
         }
     }
-    
-    
+
+    public IEnumerable<MotorModel> updateAllMotersInARoom(int roomid, bool open, bool isDisabled)
+    {
+        var sql = $@"update freshrooms.motorstatus set isopen = @isopen, isdisabled = @isDisabled from freshrooms.devices where freshrooms.devices.deviceid = freshrooms.motorstatus.motorid and freshrooms.devices.roomid = @roomid
+                        returning
+                        motorid as {nameof(MotorModel.motorId)},
+                        isopen as {nameof(MotorModel.isOpen)},
+                        isdisabled as {nameof(MotorModel.isDisabled)};";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Query<MotorModel>(sql, new { roomid, isopen = open, isDisabled });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.InnerException);
+                Console.WriteLine(e.StackTrace);
+                throw new MotorUpdateExeption("Failed to update window status");
+            }
+        }
+    }
 
     public void saveOldData(string sensorId)
     {

@@ -28,7 +28,7 @@ public class ClientWantsToOpenOrCloseWindow(DeviceService _deviceService, MqttCl
             dto.motor.isOpen = false;
             dto.motor.isDisabled = false;
         }
-        _deviceService.updateMoterstatus(dto.motor);
+        _deviceService.updateMoterstatusWithUsersInput(dto.motor);
         if ( WebSocketConnections.usersInrooms.TryGetValue(dto.roomId, out var guids))
         {
             foreach (var guid in guids)

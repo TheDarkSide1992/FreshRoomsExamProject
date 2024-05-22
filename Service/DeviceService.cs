@@ -53,8 +53,13 @@ public class DeviceService
         return _deviceRepository.getSensorsForRoom(roomid);
     }
 
-    public void updateMoterstatus(MotorModel motorModel)
+    public void updateMoterstatusWithUsersInput(MotorModel motorModel)
     {
-        _deviceRepository.UpdateMoterModel(motorModel);
+        _deviceRepository.UpdateMoterModelWithUsersInput(motorModel);
+    }
+
+    public List<MotorModel> updateAllMotorsInAroom(int roomid, bool open, bool isDisabled)
+    {
+        return (List<MotorModel>)_deviceRepository.updateAllMotersInARoom(roomid, open, isDisabled);
     }
 }

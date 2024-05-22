@@ -13,10 +13,14 @@ public class ClientWantsToOpenOrCloseAllWindowsInRoom(DeviceService _deviceServi
     public override Task Handle(ClientWantsToOpenOrCloseAllWindowsInRoomDto dto, IWebSocketConnection socket)
     {
         var motors = _deviceService.getMotorsForRoom(dto.id);
-        var newMotors = mqttClient.OpenAllWindowsWithUserInput(motors,dto.open,dto.id);
-        foreach (var motor in newMotors)
+        mqttClient.OpenAllWindowsWithUserInput(motors,dto.open,dto.id);
+        if (dto.open)
         {
-            _deviceService.updateMoterstatus(motor);
+            _deviceService.updateAllMotorsInAroom(dto.id,dto.open, true);
+        }
+        else
+        {
+            _deviceService.updateAllMotorsInAroom(dto.id,dto.open, false);
         }
         return Task.CompletedTask;
     }

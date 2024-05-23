@@ -166,7 +166,7 @@ public class DeviceRepository
         }
     }
 
-    public bool createOrUpdateMoterStatus(MotorModel motorModel)
+    public bool updateMoterStatusMQTT(MotorModel motorModel)
     {
         var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isDisabled) values (@motorId,@isOpen,@isDisabled)
                         on conflict(motorId)
@@ -187,6 +187,31 @@ public class DeviceRepository
             catch (Exception e)
             {
                 throw new Exception("Failed to save window status");
+            }
+        }
+    }
+    
+    public bool createOrUpdateMoterStatusList(IEnumerable<DeviceModel> motorModels)
+    {
+        var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isDisabled) values (@motorId,@isOpen,@isDisabled)
+                        on conflict(motorId)
+                        do update set isOpen = @isOpen;";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            var transaction = conn.BeginTransaction();
+            try
+            {
+                foreach (var motor in motorModels)
+                {
+                    conn.Query(sql, new { motorId = motor.sensorGuid, isOpen = false,  isDisabled = false});
+                }
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to create window status");
             }
         }
     }

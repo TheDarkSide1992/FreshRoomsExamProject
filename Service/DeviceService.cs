@@ -28,9 +28,9 @@ public class DeviceService
         _deviceRepository.createOrUpdateData(sensorModel);
     }
 
-    public bool createOrUpdateMotorStatus(MotorModel motorModel)
+    public bool updateMotorStatusMQTT(MotorModel motorModel)
     {
-        return _deviceRepository.createOrUpdateMoterStatus(motorModel);
+        return _deviceRepository.updateMoterStatusMQTT(motorModel);
     }
 
     public RoomAvrageSensorData getAvrageRoomSensorData(string sensorId)

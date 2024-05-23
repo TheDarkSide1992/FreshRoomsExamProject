@@ -24,6 +24,7 @@ public class RoomService
         {
             _roomRepository.CreateRoomConfig(roomModel.roomId);
             _deviceRepository.UpdateDevices(deviceList, roomModel.roomId);
+            _deviceRepository.createOrUpdateMoterStatusList(deviceList);
             return roomModel;
         }
         return null;

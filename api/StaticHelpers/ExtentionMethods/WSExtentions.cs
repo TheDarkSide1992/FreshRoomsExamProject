@@ -31,7 +31,8 @@ public static class WSExtentions
         {
             WebSocketConnections.deviceVerificationList.TryAdd(deviceId, new HashSet<Guid>());
         }
-        WebSocketConnections.deviceVerificationList[deviceId].Add(ws.ConnectionInfo.Id);
+        if(!WebSocketConnections.deviceVerificationList[deviceId].Contains(ws.ConnectionInfo.Id))
+            WebSocketConnections.deviceVerificationList[deviceId].Add(ws.ConnectionInfo.Id);
     }
 
     public static void RemoveDeviceId(this IWebSocketConnection ws ,string deviceId)

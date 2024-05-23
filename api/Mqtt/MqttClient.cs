@@ -85,7 +85,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                else if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("motor") &&
                         e.ApplicationMessage.Topic.ToString().Split("/")[2].Equals("status"))
                {
-                   saveOrCreateMotorStatus(message,e.ApplicationMessage.Topic.ToString().Split("/")[3] );
+                   createMotorStatus(message,e.ApplicationMessage.Topic.ToString().Split("/")[3] );
                }
                else if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("verified"))
                {
@@ -164,10 +164,10 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
         timelastChecked = DateTime.Now;
     }
     
-    private void saveOrCreateMotorStatus(string message, string id)
+    private void createMotorStatus(string message, string id)
     {
         var obj = JsonSerializer.Deserialize<MotorModel>(message);
-        _deviceService.createOrUpdateMotorStatus(obj);
+        _deviceService.updateMotorStatusMQTT(obj);
     }
 
     public void sendDataToAllUsersInRooms(int id, SensorModel model)

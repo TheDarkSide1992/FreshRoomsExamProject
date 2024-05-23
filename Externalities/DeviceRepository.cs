@@ -15,15 +15,6 @@ public class DeviceRepository
         _dataSource = dataSource;
     }
 
-    public string VerifySensorGuid(string sensorGuid)
-    {
-        const string sql = $@"SELECT deviceType from freshrooms.devices WHERE deviceId = @sensorGuid;";
-        using (var connection = _dataSource.OpenConnection())
-        {
-            return connection.ExecuteScalar<string>(sql, new { sensorGuid } );
-        }
-    }
-
     public DeviceTypeModel createDeviceType(string deviceType)
     {
         const string sql =
@@ -57,22 +48,6 @@ public class DeviceRepository
             {
                 throw new Exception("Could not delete devicetype");
             }
-        }
-    }
-
-    public IEnumerable<DeviceTypeModel> getDeviceTypes()
-    {
-        
-        var sql = $@"
-        select 
-             deviceTypeId as {nameof(DeviceTypeModel.deviceTypeId)},
-             deviceTypeName as {nameof(DeviceTypeModel.deviceTypeName)}
-        from freshrooms.devicetypes WHERE isDeleted = false;
-        ";
-        
-        using (var conn = _dataSource.OpenConnection())
-        {
-            return conn.Query<DeviceTypeModel>(sql, new { });
         }
     }
 

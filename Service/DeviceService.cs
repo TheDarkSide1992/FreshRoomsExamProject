@@ -12,16 +12,6 @@ public class DeviceService
         _deviceRepository = deviceRepository;
     }
 
-    public string VerifySensorGuid(String sensorGuid)
-    {
-        return _deviceRepository.VerifySensorGuid(sensorGuid);
-    }
-
-    public IEnumerable<DeviceTypeModel> getSensorTypes()
-    {
-        return _deviceRepository.getDeviceTypes();
-    }
-
     public void createOrUpdateSensorData(SensorModel sensorModel)
     {
         if (_deviceRepository.checkIfSensorDataExist(sensorModel.sensorId))

@@ -49,11 +49,6 @@ public class RoomService
         return false;
     }
     
-    public IEnumerable<RoomModel> GetAllRooms()
-    {
-        return _roomRepository.GetAllRooms();
-    }
-    
     public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
     {
         return _roomRepository.getRoomPrefrencesConfiguration(dtoRoomId);

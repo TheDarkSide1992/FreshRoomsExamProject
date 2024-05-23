@@ -55,29 +55,6 @@ public class RoomRepository
         }
     }
     
-    public IEnumerable<RoomModel> GetAllRooms()
-    {
-        
-        var sql =
-            $@"SELECT 
-        roomId as {nameof(RoomModel.roomId)}, 
-        roomName as {nameof(RoomModel.name)},
-        userId as {nameof(RoomModel.creatorId)} 
-            FROM freshrooms.rooms";
-
-        using (var conn = _dataSource.OpenConnection())
-        {
-            try
-            {
-                return conn.Query<RoomModel>(sql, new {});
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Could not get rooms");
-            }
-        }
-    }
-    
     public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
     {
         var sql = $@"SELECT 

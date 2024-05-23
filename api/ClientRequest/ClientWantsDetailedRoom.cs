@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using api.StaticHelpers.ExtentionMethods;
 using Fleck;
 using Infastructure.DataModels;
@@ -9,6 +10,7 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
 public class ClientWantsDetailedRoom(RoomService _roomService, DeviceService _deviceService) : BaseEventHandler<ClientWantsDetailedRoomDto>
 {
     public override Task Handle(ClientWantsDetailedRoomDto dto, IWebSocketConnection socket)
@@ -16,7 +18,7 @@ public class ClientWantsDetailedRoom(RoomService _roomService, DeviceService _de
         socket.AddClientToRoom(dto.roomId);
         var roomName = _roomService.getRoomName(dto.roomId);
         var sensors = _deviceService.getSensorsForRoom(dto.roomId);
-        var windowmotors = _deviceService.getMotersForRoom(dto.roomId);
+        var windowmotors = _deviceService.getMotorsForRoom(dto.roomId);
         socket.Send(JsonSerializer.Serialize(new ServerReturnsDetailedRoomToUser
         {
             room = new DetailedRoomModel

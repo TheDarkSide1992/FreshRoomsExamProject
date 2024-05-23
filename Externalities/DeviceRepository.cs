@@ -96,9 +96,6 @@ public class DeviceRepository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.InnerException);
-                Console.WriteLine(e.StackTrace);
                 transaction.Rollback();
                 throw new Exception("Could not create devices");
             }
@@ -166,9 +163,9 @@ public class DeviceRepository
         }
     }
 
-    public bool updateMoterStatusMQTT(MotorModel motorModel)
+    public void updateMoterStatusMQTT(MotorModel motorModel)
     {
-        var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isDisabled) values (@motorId,@isOpen,@isDisabled)
+        var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isdisabled) values (@motorId,@isOpen,false)
                         on conflict(motorId)
                         do update set isOpen = @isOpen;";
         
@@ -178,11 +175,9 @@ public class DeviceRepository
             {
                 conn.Execute(sql, new
                 {
-                    motorModel.MotorId,
+                    motorModel.motorId,
                     motorModel.isOpen,
-                    isDisabled = false
                 });
-                return true;
             }
             catch (Exception e)
             {
@@ -212,6 +207,53 @@ public class DeviceRepository
             catch (Exception e)
             {
                 throw new Exception("Failed to create window status");
+            }
+        }
+    }
+    
+    public void UpdateMoterModelWithUsersInput(MotorModel motorModel)
+    {
+        var save = $@"insert into freshrooms.motorstatus (motorId, isOpen, isdisabled) values (@motorId,@isOpen,@isDisabled)
+                        on conflict(motorId)
+                        do update set isOpen = @isOpen, isdisabled = @isDisabled;";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                conn.Execute(save, new
+                {
+                    motorModel.motorId,
+                    motorModel.isOpen,
+                    motorModel.isDisabled
+                });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to save window status");
+            }
+        }
+    }
+
+    public IEnumerable<MotorModel> updateAllMotersInARoom(int roomid, bool open, bool isDisabled)
+    {
+        var sql = $@"update freshrooms.motorstatus set isopen = @isopen, isdisabled = @isDisabled from freshrooms.devices where freshrooms.devices.deviceid = freshrooms.motorstatus.motorid and freshrooms.devices.roomid = @roomid
+                        returning
+                        motorid as {nameof(MotorModel.motorId)},
+                        isopen as {nameof(MotorModel.isOpen)},
+                        isdisabled as {nameof(MotorModel.isDisabled)};";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Query<MotorModel>(sql, new { roomid, isopen = open, isDisabled });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.InnerException);
+                Console.WriteLine(e.StackTrace);
+                throw new MotorUpdateExeption("Failed to update window status");
             }
         }
     }
@@ -262,9 +304,9 @@ public class DeviceRepository
         }
     }
 
-    public IEnumerable<MotorModel> getMotersForRoom(int roomId)
+    public IEnumerable<MotorModel> getMotorsForRoom(int roomId)
     {
-        var sql = $@"select * from freshrooms.motorstatus join freshrooms.devices d on d.deviceid = motorstatus.motorid where d.roomid = @roomId and isDisabled = @isdisabled;";
+        var sql = $@"select * from freshrooms.motorstatus join freshrooms.devices d on d.deviceid = motorstatus.motorid where d.roomid = @roomId";
         using (var conn = _dataSource.OpenConnection())
         {
             try

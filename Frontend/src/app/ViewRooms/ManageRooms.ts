@@ -6,7 +6,7 @@ import {ClientWantsRoomList} from "../Models/ClientWantsRoomList";
 import {ClientWantsToDeleteRoom} from "../Models/ClientWantsToDeleteRoom";
 import {RoomModel} from "../Models/RoomModel";
 import {ClientWantsBasicRoomStatus} from "../Models/ClientWantsBasicRoomStatus";
-import {Router} from "@angular/router";
+import {NavigationStart, Router} from "@angular/router";
 
 @Component({
   template:
@@ -82,7 +82,16 @@ import {Router} from "@angular/router";
 })
 export class ManageRoomsPage implements OnInit {
 
-  constructor(protected ws: WebsocketClientService, private modalcontroller: ModalController, private router: Router) {}
+  constructor(protected ws: WebsocketClientService, private modalcontroller: ModalController, private router: Router)
+  {
+    this.router.events.subscribe(event =>
+    {
+      if(event instanceof NavigationStart)
+      {
+        this.setup();
+      }
+    });
+  }
 
   ngOnInit(): void {
         this.setup();

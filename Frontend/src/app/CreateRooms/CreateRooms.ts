@@ -2,8 +2,8 @@ import {Component, OnInit} from "@angular/core";
 import {ModalController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {DeviceModel, SensorModelDto} from "../Models/DeviceModel";
-import {RoomModelDto} from "../Models/RoomModel";
+import {DeviceModel, SensorModelDto} from "../Models/objects/DeviceModel";
+import {RoomModelDto} from "../Models/objects/RoomModel";
 
 
 
@@ -66,7 +66,7 @@ import {RoomModelDto} from "../Models/RoomModel";
 
         <ion-card style="display: flex; justify-content: space-around; flex-direction: row; background: transparent;"
                   *ngFor="let sensor of this.ws.deviceList">
-          <ion-card-content>{{ sensor.deviceTypeName }}: {{ sensor.sensorGuid }}</ion-card-content>
+          <ion-card-content>{{ sensor.deviceTypeName }}: {{ sensor.deviceGuid }}</ion-card-content>
           <ion-button (click)="removeTempSensor(sensor.valueOf())">
             <ion-icon name="remove-outline"></ion-icon>
           </ion-button>

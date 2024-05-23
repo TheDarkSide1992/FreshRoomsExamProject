@@ -4,7 +4,7 @@ import {ModalController} from "@ionic/angular";
 import {CreateRoomsModalPage} from "../CreateRooms/CreateRooms";
 import {ClientWantsRoomList} from "../Models/ClientWantsRoomList";
 import {ClientWantsToDeleteRoom} from "../Models/ClientWantsToDeleteRoom";
-import {RoomModel} from "../Models/RoomModel";
+import {RoomModel} from "../Models/objects/RoomModel";
 import {ClientWantsBasicRoomStatus} from "../Models/ClientWantsBasicRoomStatus";
 import {NavigationStart, Router} from "@angular/router";
 

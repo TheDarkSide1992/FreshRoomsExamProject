@@ -4,23 +4,19 @@ import {environment} from "../../environments/environment";
 import {BaseDto} from "../Models/baseDto";
 import {Injectable} from "@angular/core";
 import {ServerAuthenticatesUserFromJwt} from "../Models/ServerAuthenticatesUserFromJwt";
-import { ServerLogsInUser } from "../Models/ServerLogsInUser";
+import {ServerLogsInUser} from "../Models/ServerLogsInUser";
 import {ToastController} from "@ionic/angular";
-import { ServerSendsAccountData } from "../Models/ServerSendsAccountData";
+import {ServerSendsAccountData} from "../Models/ServerSendsAccountData";
 import {accountModdel} from "../Models/objects/accountModdel";
 import {ServerReturnsForecast} from "../Models/ServerReturnsDailyForecast";
 import {DailyWeatherModel} from "../Models/objects/DailyForcastModels";
 import {TodayWeatherModel} from "../Models/objects/TodaysForcastModels";
-import { ServerLogsoutUser } from "../Models/ServerLogsoutUser";
-import { ServerReturnsCity } from "../Models/ServerReturnsCity";
+import {ServerLogsoutUser} from "../Models/ServerLogsoutUser";
+import {ServerReturnsCity} from "../Models/ServerReturnsCity";
 import {ServerSendsErrorMessageToClient} from "../Models/ServerSendsErrorMessageToClient";
-import {DeviceModel, DeviceTypesModel} from "../Models/DeviceModel";
+import {DeviceModel} from "../Models/objects/DeviceModel";
 import {ServerRespondsToSensorVeryfication} from "../Models/ServerRespondsToSensorVeryfication";
-import { ServerSendsDeviceTypes } from "../Models/ServerSendsDeviceTypes";
 import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
-import {ServerReturnsRoomList} from "../Models/ServerReturnsRoomList";
-import {RoomModel, RoomModelDto} from "../Models/RoomModel";
-import {ServerReturnsCreatedRoom} from "../Models/ServerReturnsCreatedRoom";
 import {ServerSendsRoomConfigurations} from "../Models/ServerSendsRoomConfigurations";
 import {RoomConfig} from "../Models/objects/roomConfig";
 import {DetailedRoomModel} from "../Models/objects/DetailedRoomModel";
@@ -120,7 +116,7 @@ export class WebsocketClientService {
   async ServerRespondsToSensorVeryfication(dto: ServerRespondsToSensorVeryfication) {
     let tempDevice: DeviceModel = {
       deviceTypeName: dto.deviceTypeName,
-      sensorGuid: dto.sensorGuid,
+      deviceGuid: dto.sensorGuid,
     }
     this.deviceList.push(tempDevice);
   }
@@ -145,9 +141,9 @@ export class WebsocketClientService {
     let hum = 0;
     let aq = 0;
     for (var sensor of this.currentRoom?.sensors!) {
-      temp = temp + sensor.Temperature
-      hum = hum + sensor.Humidity
-      aq = aq + sensor.CO2
+      temp = temp + sensor.temperature
+      hum = hum + sensor.humidity
+      aq = aq + sensor.co2
     }
 
     this.currentaq = aq / this.currentRoom?.sensors?.length!
@@ -166,9 +162,9 @@ export class WebsocketClientService {
     let hum = 0;
     let aq = 0;
     for (var sensor of this.currentRoom?.sensors!) {
-      temp = temp + sensor.Temperature
-      hum = hum + sensor.Humidity
-      aq = aq + sensor.CO2
+      temp = temp + sensor.temperature
+      hum = hum + sensor.humidity
+      aq = aq + sensor.co2
     }
 
     this.currentaq = aq / this.currentRoom?.sensors?.length!

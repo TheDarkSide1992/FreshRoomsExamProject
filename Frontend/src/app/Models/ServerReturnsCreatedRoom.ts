@@ -1,5 +1,5 @@
 import {BaseDto} from "./baseDto";
-import {DeviceModel} from "./DeviceModel";
+import {DeviceModel} from "./objects/DeviceModel";
 
 export class ServerReturnsCreatedRoom extends BaseDto<ServerReturnsCreatedRoom> {
   roomId?: number;

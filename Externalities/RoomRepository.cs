@@ -40,7 +40,7 @@ public class RoomRepository
     {
         
         var sql =
-            $@"INSERT INTO freshrooms.roomConfig(roomid, mintemparature, maxtemparature, minhumidity, maxhumidity, minaq, maxaq) VALUES (@roomId, 17,25,40,60,0.4,1)";
+            $@"INSERT INTO freshrooms.roomConfig(roomid, mintemparature, maxtemparature, minhumidity, maxhumidity, minaq, maxaq) VALUES (@roomId, 20,26,30,60,2,5)";
 
         using (var conn = _dataSource.OpenConnection())
         {

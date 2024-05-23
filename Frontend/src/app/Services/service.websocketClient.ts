@@ -1,31 +1,31 @@
 import {WebSocketSuperClass} from "../Models/WebSocketSuperClass";
 import {Router} from "@angular/router";
 import {environment} from "../../environments/environment";
-import {BaseDto} from "../Models/baseDto";
+import {BaseDto} from "../Models/objects/baseDto";
 import {Injectable} from "@angular/core";
-import {ServerAuthenticatesUserFromJwt} from "../Models/ServerAuthenticatesUserFromJwt";
-import {ServerLogsInUser} from "../Models/ServerLogsInUser";
+import {ServerAuthenticatesUserFromJwt} from "../Models/Server/ServerAuthenticatesUserFromJwt";
+import {ServerLogsInUser} from "../Models/Server/ServerLogsInUser";
 import {ToastController} from "@ionic/angular";
-import {ServerSendsAccountData} from "../Models/ServerSendsAccountData";
+import {ServerSendsAccountData} from "../Models/Server/ServerSendsAccountData";
 import {accountModdel} from "../Models/objects/accountModdel";
-import {ServerReturnsForecast} from "../Models/ServerReturnsDailyForecast";
+import {ServerReturnsForecast} from "../Models/Server/ServerReturnsDailyForecast";
 import {DailyWeatherModel} from "../Models/objects/DailyForcastModels";
 import {TodayWeatherModel} from "../Models/objects/TodaysForcastModels";
-import {ServerLogsoutUser} from "../Models/ServerLogsoutUser";
-import {ServerReturnsCity} from "../Models/ServerReturnsCity";
-import {ServerSendsErrorMessageToClient} from "../Models/ServerSendsErrorMessageToClient";
+import {ServerLogsoutUser} from "../Models/Server/ServerLogsoutUser";
+import {ServerReturnsCity} from "../Models/Server/ServerReturnsCity";
+import {ServerSendsErrorMessageToClient} from "../Models/Server/ServerSendsErrorMessageToClient";
 import {DeviceModel} from "../Models/objects/DeviceModel";
-import {ServerRespondsToSensorVeryfication} from "../Models/ServerRespondsToSensorVeryfication";
-import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
-import {ServerSendsRoomConfigurations} from "../Models/ServerSendsRoomConfigurations";
+import {ServerRespondsToDeviceVerification} from "../Models/Server/ServerRespondsToDeviceVerification";
+import {ServerRespondsToUser} from "../Models/Server/ServerRespondsToUser";
+import {ServerSendsRoomConfigurations} from "../Models/Server/ServerSendsRoomConfigurations";
 import {RoomConfig} from "../Models/objects/roomConfig";
 import {DetailedRoomModel} from "../Models/objects/DetailedRoomModel";
-import {ServerReturnsDetailedRoomToUser} from "../Models/ServerReturnsDetailedRoomToUser";
-import {ServerReturnsNewestSensorData} from "../Models/ServerReturnsNewestSensorData";
-import {ServerReturnsBasicRoomStatus} from "../Models/ServerReturnsBasicRoomStatus";
+import {ServerReturnsDetailedRoomToUser} from "../Models/Server/ServerReturnsDetailedRoomToUser";
+import {ServerReturnsNewestSensorData} from "../Models/Server/ServerReturnsNewestSensorData";
+import {ServerReturnsBasicRoomStatus} from "../Models/Server/ServerReturnsBasicRoomStatus";
 import {BasicRoomStatusModel} from "../Models/objects/BasicRoomStatusModel";
-import {ServerReturnsNewMotorStatusForAllMotorsInRoom} from "../Models/ServerReturnsNewMotorStatusForAllMotorsInRoom";
-import {ServerReturnsNewMotorStatusForOneMotor} from "../Models/ServerReturnsNewMotorStatusForOneMotor";
+import {ServerReturnsNewMotorStatusForAllMotorsInRoom} from "../Models/Server/ServerReturnsNewMotorStatusForAllMotorsInRoom";
+import {ServerReturnsNewMotorStatusForOneMotor} from "../Models/Server/ServerReturnsNewMotorStatusForOneMotor";
 
 
 @Injectable({providedIn: 'root'})
@@ -113,7 +113,7 @@ export class WebsocketClientService {
     t.present();
   }
 
-  async ServerRespondsToSensorVeryfication(dto: ServerRespondsToSensorVeryfication) {
+  async ServerRespondsToDeviceVerification(dto: ServerRespondsToDeviceVerification) {
     let tempDevice: DeviceModel = {
       deviceTypeName: dto.deviceTypeName,
       deviceGuid: dto.sensorGuid,

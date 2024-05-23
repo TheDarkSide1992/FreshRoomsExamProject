@@ -2,10 +2,10 @@ import {Component, OnInit} from "@angular/core";
 import {WebsocketClientService} from "../Services/service.websocketClient";
 import {ModalController} from "@ionic/angular";
 import {CreateRoomsModalPage} from "../CreateRooms/CreateRooms";
-import {ClientWantsRoomList} from "../Models/ClientWantsRoomList";
-import {ClientWantsToDeleteRoom} from "../Models/ClientWantsToDeleteRoom";
+import {ClientWantsRoomList} from "../Models/Client/ClientWantsRoomList";
+import {ClientWantsToDeleteRoom} from "../Models/Client/ClientWantsToDeleteRoom";
 import {RoomModel} from "../Models/objects/RoomModel";
-import {ClientWantsBasicRoomStatus} from "../Models/ClientWantsBasicRoomStatus";
+import {ClientWantsBasicRoomStatus} from "../Models/Client/ClientWantsBasicRoomStatus";
 import {NavigationStart, Router} from "@angular/router";
 
 @Component({

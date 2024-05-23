@@ -1,6 +1,6 @@
 import ReconnectingWebSocket from "reconnecting-websocket";
-import {BaseDto} from "./baseDto";
-import {ClientWantsToAuthenticateWithJwt} from "./ClientWantsToAuthenticateWithJwt";
+import {BaseDto} from "./objects/baseDto";
+import {ClientWantsToAuthenticateWithJwt} from "./Client/ClientWantsToAuthenticateWithJwt";
 
 export class WebSocketSuperClass extends ReconnectingWebSocket
 {

@@ -112,7 +112,7 @@ export class CreateRoomsModalPage implements OnInit {
   async verifySensorId(){
 
     this.ws.socketConnection.sendDto(new SensorModelDto({
-      eventType: "ClientWantsToVerifySensor",
+      eventType: "ClientWantsToVerifyDevice",
       sensorGuid: this.RSensorId.value?.toString(),
     }))
     this.RSensorId.reset();

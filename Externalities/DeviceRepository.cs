@@ -44,7 +44,7 @@ public class DeviceRepository
     public bool DeleteRoomIdOnDevices(int roomId)
     {
         const string sql =
-            $@"UPDATE freshrooms.devices SET roomId = null WHERE roomId = @roomId";
+            $@"DELETE FROM freshrooms.devices WHERE roomId = @roomId";
         
         using (var conn = _dataSource.OpenConnection())
         {
@@ -55,6 +55,27 @@ public class DeviceRepository
             catch (Exception e)
             {
                 throw new Exception("Could not delete device to room relation");
+            }
+        }
+    }
+    
+    public bool DeleteMotorStatus(int roomId)
+    {
+        const string sql =
+            $@"DELETE FROM freshrooms.motorstatus
+               USING freshrooms.devices
+               WHERE devices.deviceid = motorstatus.motorId and devices.roomId = @roomId;";
+        
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) != 0;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete motors status for devices in room");
             }
         }
     }
@@ -123,7 +144,7 @@ public class DeviceRepository
         }
     }
     
-    public bool createOrUpdateMoterStatusList(IEnumerable<DeviceModel> motorModels)
+    public bool createMoterStatusList(IEnumerable<DeviceModel> motorModels)
     {
         var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isDisabled) values (@motorId,@isOpen,@isDisabled)
                         on conflict(motorId)
@@ -136,7 +157,11 @@ public class DeviceRepository
             {
                 foreach (var motor in motorModels)
                 {
-                    conn.Query(sql, new { motorId = motor.deviceGuid, isOpen = false,  isDisabled = false});
+                    if (motor.deviceTypeName == "Window Motor")
+                    {
+                        conn.Query(sql, new { motorId = motor.deviceGuid, isOpen = false,  isDisabled = false});
+                    }
+                    
                 }
                 transaction.Commit();
                 return true;

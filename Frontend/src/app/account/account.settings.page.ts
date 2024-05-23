@@ -4,9 +4,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {IonContent} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
+import {ClientWantsAccountInfo} from "../Models/Client/ClientWantsAccountInfo";
 import {navigate} from "ionicons/icons";
-import {ClientWantsToChangeSettings} from "../Models/ClientWantsToChangeSettings";
+import {ClientWantsToChangeSettings} from "../Models/Client/ClientWantsToChangeSettings";
 
 
 @Component({

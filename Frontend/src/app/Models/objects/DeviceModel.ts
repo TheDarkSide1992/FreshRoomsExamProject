@@ -1,4 +1,4 @@
-import {BaseDto} from "../baseDto";
+import {BaseDto} from "./baseDto";
 
 
 export class DeviceModel {

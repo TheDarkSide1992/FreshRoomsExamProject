@@ -24,7 +24,7 @@ public class RoomService
         {
             _roomRepository.CreateRoomConfig(roomModel.roomId);
             _deviceRepository.UpdateDevices(deviceList, roomModel.roomId);
-            _deviceRepository.createOrUpdateMoterStatusList(deviceList);
+            _deviceRepository.createMoterStatusList(deviceList);
             return roomModel;
         }
         return null;
@@ -36,6 +36,7 @@ public class RoomService
         {
             _deviceRepository.DeleteHistoricDataForRoom(roomId);
             _deviceRepository.DeleteCurrentDataForRoom(roomId);
+            _deviceRepository.DeleteMotorStatus(roomId);
             if (_deviceRepository.DeleteRoomIdOnDevices(roomId))
             {
                 return _roomRepository.DeleteRoom(roomId);

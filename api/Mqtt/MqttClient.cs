@@ -259,15 +259,14 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
             {
                 if(WebSocketConnections.connections.TryGetValue(guid, out var ws))
                 {
-                    ws.Socket.Send(JsonSerializer.Serialize(new ServerRespondsToSensorVeryficationDto
+                    Console.WriteLine("testing mqtt verify device return : " + guid);
+                    ws.Socket.Send(JsonSerializer.Serialize(new ServerRespondsToDeviceVerificationDto
                     {
                         foundSensor = true,
                         deviceTypeName = deviceType,
                         sensorGuid = deviceId
                     }));
-                    Console.WriteLine("Before clear: " +WebSocketConnections.deviceVerificationList);
                     ws.Socket.RemoveDeviceId(deviceId);
-                    Console.WriteLine("After clear: " +WebSocketConnections.deviceVerificationList.Values);
                 }
             }
         }

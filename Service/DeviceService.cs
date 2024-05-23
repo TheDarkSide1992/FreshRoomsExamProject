@@ -27,7 +27,7 @@ public class DeviceService
         _deviceRepository.updateMoterStatusMQTT(motorModel);
     }
 
-    public RoomAvrageSensorData getAvrageRoomSensorData(string sensorId)
+    public RoomAverageSensorData getAvrageRoomSensorData(string sensorId)
     {
         return _deviceRepository.getAvrageSensordataforRoom(sensorId);
     }

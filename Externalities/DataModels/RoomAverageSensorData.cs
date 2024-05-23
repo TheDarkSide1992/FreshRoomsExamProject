@@ -1,6 +1,6 @@
 ﻿namespace Infastructure.DataModels;
 
-public class RoomAvrageSensorData
+public class RoomAverageSensorData
 {
     public double Temperature { get; set; }
     public double Humidity { get; set; }

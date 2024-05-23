@@ -15,42 +15,6 @@ public class DeviceRepository
         _dataSource = dataSource;
     }
 
-    public DeviceTypeModel createDeviceType(string deviceType)
-    {
-        const string sql =
-            $@"INSERT INTO freshrooms.devicetypes(deviceTypeName) VALUES (@deviceType) RETURNING 
-        deviceTypeId as {nameof(DeviceTypeModel.deviceTypeId)},
-        deviceTypeName as {nameof(DeviceTypeModel.deviceTypeName)};";
-        using (var conn = _dataSource.OpenConnection())
-        {
-            try
-            {
-                return conn.QueryFirst<DeviceTypeModel>(sql, new { deviceType });
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Could not create devicetype");
-            }
-        }
-    }
-
-    public bool deleteDeviceType(int deviceTypeId)
-    {
-        const string sql =
-            $@"UPDATE freshrooms.devicetypes SET isDeleted = false WHERE deviceTypeId = @deviceTypeid";
-        using (var conn = _dataSource.OpenConnection())
-        {
-            try
-            {
-                return conn.Execute(sql, new { deviceTypeId }) == 1;
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Could not delete devicetype");
-            }
-        }
-    }
-
     public void UpdateDevices(IEnumerable<DeviceModel> deviceList, int roomId)
     {
         using (var conn = _dataSource.OpenConnection())
@@ -275,10 +239,10 @@ public class DeviceRepository
         }
     }
 
-    public RoomAvrageSensorData getAvrageSensordataforRoom(string sensorId)
+    public RoomAverageSensorData getAvrageSensordataforRoom(string sensorId)
     {
         var getRoomid = $@"select roomid from freshrooms.devices where deviceid = @sensorId";
-        var getAvrage = $@"select avg(hum) as {nameof(RoomAvrageSensorData.Humidity)}, avg(temp) as {nameof(RoomAvrageSensorData.Temperature)}, avg(aq) as {nameof(RoomAvrageSensorData.CO2)}, d.roomid as {nameof(RoomAvrageSensorData.roomId)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid
+        var getAvrage = $@"select avg(hum) as {nameof(RoomAverageSensorData.Humidity)}, avg(temp) as {nameof(RoomAverageSensorData.Temperature)}, avg(aq) as {nameof(RoomAverageSensorData.CO2)}, d.roomid as {nameof(RoomAverageSensorData.roomId)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid
                             group by d.roomid;";
 
         using (var conn = _dataSource.OpenConnection())
@@ -286,7 +250,7 @@ public class DeviceRepository
             try
             {
                 var roomid = conn.QueryFirst<int>(getRoomid, new { sensorId });
-                return conn.QueryFirst<RoomAvrageSensorData>(getAvrage, new { roomid });
+                return conn.QueryFirst<RoomAverageSensorData>(getAvrage, new { roomid });
             }
             catch (Exception e)
             {

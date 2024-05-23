@@ -3,8 +3,8 @@
 public class SensorModel
 {
     public string? sensorId { get; set; }
-    public double Temperature { get; set; }
-    public double Humidity { get; set; }
-    public double CO2 { get; set; }
+    public double temperature { get; set; }
+    public double humidity { get; set; }
+    public double co2 { get; set; }
     public DateTime? timestamp { get; set; }
 }

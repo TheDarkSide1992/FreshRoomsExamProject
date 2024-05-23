@@ -28,7 +28,7 @@ public class DeviceRepository
             {
                 foreach (var device in deviceList)
                 {
-                    conn.Query(sql, new { roomId, tempGuid = device.sensorGuid, tempDeviceType = device.deviceTypeName });
+                    conn.Query(sql, new { roomId, tempGuid = device.deviceGuid, tempDeviceType = device.deviceTypeName });
                 }
 
                 transaction.Commit();
@@ -88,9 +88,9 @@ public class DeviceRepository
                 conn.Execute(sql, new
                 {
                     sensorModel.sensorId,
-                    temp = sensorModel.Temperature,
-                    hum = sensorModel.Humidity,
-                    aq = sensorModel.CO2,
+                    temp = sensorModel.temperature,
+                    hum = sensorModel.humidity,
+                    aq = sensorModel.co2,
                     timestamp = DateTime.Now
                 });
                 return sensorModel;
@@ -104,9 +104,7 @@ public class DeviceRepository
 
     public void updateMoterStatusMQTT(MotorModel motorModel)
     {
-        var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isdisabled) values (@motorId,@isOpen,false)
-                        on conflict(motorId)
-                        do update set isOpen = @isOpen;";
+        var sql = $@"update freshrooms.motorstatus set isOpen = @isOpen where motorid = @motorId;";
         
         using (var conn = _dataSource.OpenConnection())
         {
@@ -138,7 +136,7 @@ public class DeviceRepository
             {
                 foreach (var motor in motorModels)
                 {
-                    conn.Query(sql, new { motorId = motor.sensorGuid, isOpen = false,  isDisabled = false});
+                    conn.Query(sql, new { motorId = motor.deviceGuid, isOpen = false,  isDisabled = false});
                 }
                 transaction.Commit();
                 return true;
@@ -150,11 +148,9 @@ public class DeviceRepository
         }
     }
     
-    public void UpdateMoterModelWithUsersInput(MotorModel motorModel)
+    public void UpdateMotorModelWithUsersInput(MotorModel motorModel)
     {
-        var save = $@"insert into freshrooms.motorstatus (motorId, isOpen, isdisabled) values (@motorId,@isOpen,@isDisabled)
-                        on conflict(motorId)
-                        do update set isOpen = @isOpen, isdisabled = @isDisabled;";
+        var save = $@"update freshrooms.motorstatus set isOpen = @isOpen, isdisabled = @isDisabled where motorid = @motorId;";
         
         using (var conn = _dataSource.OpenConnection())
         {
@@ -215,7 +211,7 @@ public class DeviceRepository
 
     public void saveOldData(string sensorId)
     {
-        var selectOldData = $@"select sensorId, temp as {nameof(SensorModel.Temperature)}, hum as {nameof(SensorModel.Humidity)}, aq as {nameof(SensorModel.CO2)}, timestamp from freshrooms.devicedata where sensorId = @sensorId";
+        var selectOldData = $@"select sensorId, temp as {nameof(SensorModel.temperature)}, hum as {nameof(SensorModel.humidity)}, aq as {nameof(SensorModel.co2)}, timestamp from freshrooms.devicedata where sensorId = @sensorId";
         var save =
             $@"insert into freshrooms.historicdata (sensorId, temp, hum, aq, timestamp) values (@sensorId,@temp,@hum,@aq,@timestamp);";
 
@@ -227,8 +223,8 @@ public class DeviceRepository
                 conn.Execute(save,
                     new
                     {
-                        oldData.sensorId, hum = oldData.Humidity,
-                        temp = oldData.Temperature, aq = oldData.CO2,
+                        oldData.sensorId, hum = oldData.humidity,
+                        temp = oldData.temperature, aq = oldData.co2,
                         oldData.timestamp
                     });
             }
@@ -239,7 +235,7 @@ public class DeviceRepository
         }
     }
 
-    public RoomAverageSensorData getAvrageSensordataforRoom(string sensorId)
+    public RoomAverageSensorData getAverageSensordataforRoom(string sensorId)
     {
         var getRoomid = $@"select roomid from freshrooms.devices where deviceid = @sensorId";
         var getAvrage = $@"select avg(hum) as {nameof(RoomAverageSensorData.Humidity)}, avg(temp) as {nameof(RoomAverageSensorData.Temperature)}, avg(aq) as {nameof(RoomAverageSensorData.CO2)}, d.roomid as {nameof(RoomAverageSensorData.roomId)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid
@@ -295,7 +291,7 @@ public class DeviceRepository
 
     public List<SensorModel> getSensorsForRoom(int roomid)
     {
-        var sql = $@"select sensorid as {nameof(SensorModel.sensorId)}, hum as {nameof(SensorModel.Humidity)}, temp as {nameof(SensorModel.Temperature)}, aq as {nameof(SensorModel.CO2)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid;";
+        var sql = $@"select sensorid as {nameof(SensorModel.sensorId)}, hum as {nameof(SensorModel.humidity)}, temp as {nameof(SensorModel.temperature)}, aq as {nameof(SensorModel.co2)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid;";
 
         using (var conn = _dataSource.OpenConnection())
         {

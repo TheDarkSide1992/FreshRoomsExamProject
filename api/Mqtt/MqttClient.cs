@@ -130,7 +130,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
 
     public void openWindows(string id)
     {
-        var avrage = _deviceService.getAvrageRoomSensorData(id);
+        var avrage = _deviceService.getAverageRoomSensorData(id);
         var pref = _roomService.getRoomPrefrencesConfiguration(avrage.roomId);
         List<MotorModel> motors = _deviceService.getMotorsForRoom(avrage.roomId);
         if (avrage.Humidity <= pref.minHumidity || avrage.Humidity >= pref.maxHumidity)
@@ -182,7 +182,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 m.isOpen = true;
                 m.isDisabled = true;
                 Console.WriteLine(m.motorId);
-                _deviceService.updateMoterstatusWithUsersInput(m);
+                _deviceService.updateMotorstatusWithUsersInput(m);
                 message = "all windows are open or are being opened";
             }
             else
@@ -191,7 +191,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 m.isOpen = false;
                 m.isDisabled = false;
                 Console.WriteLine(m.motorId);
-                _deviceService.updateMoterstatusWithUsersInput(m);
+                _deviceService.updateMotorstatusWithUsersInput(m);
                 message = "all windows are closed or are being closed";
             }
         }

@@ -65,7 +65,7 @@ import {RoomModelDto} from "../Models/RoomModel";
                    [scrollEvents]="true">
 
         <ion-card style="display: flex; justify-content: space-around; flex-direction: row; background: transparent;"
-                  *ngFor="let sensor of this.ws.sensorlist">
+                  *ngFor="let sensor of this.ws.deviceList">
           <ion-card-content>{{ sensor.deviceTypeName }}: {{ sensor.sensorGuid }}</ion-card-content>
           <ion-button (click)="removeTempSensor(sensor.valueOf())">
             <ion-icon name="remove-outline"></ion-icon>
@@ -74,7 +74,7 @@ import {RoomModelDto} from "../Models/RoomModel";
       </ion-content>
 
 
-      <ion-button (click)="createRoom()" [disabled]="!(this.ws.sensorlist.length>=1 && RName.valid)"
+      <ion-button (click)="createRoom()" [disabled]="!(this.ws.deviceList.length>=1 && RName.valid)"
                   style="margin-bottom: 5%; margin-left: 5%; width: 25%">Create Room
       </ion-button>
 
@@ -97,8 +97,7 @@ export class CreateRoomsModalPage implements OnInit {
 
   ngOnInit(): void {this.setup()}
   setup(){
-    this.ws.sensorlist = [];
-    this.ws.sensorTypeList = [];
+    this.ws.deviceList = [];
   }
 
   dismissModal() {
@@ -107,7 +106,7 @@ export class CreateRoomsModalPage implements OnInit {
 
 
   removeTempSensor(sensor: Object){
-    this.ws.sensorlist.splice(this.ws.sensorlist.indexOf(sensor), 1)
+    this.ws.deviceList.splice(this.ws.deviceList.indexOf(sensor), 1)
   }
 
   async verifySensorId(){
@@ -123,7 +122,7 @@ export class CreateRoomsModalPage implements OnInit {
     this.ws.socketConnection.sendDto(new RoomModelDto({
       eventType: "ClientWantsToCreateRoom",
       name: this.RName.value?.toString(),
-      deviceList: this.ws.sensorlist,
+      deviceList: this.ws.deviceList,
     }))
     this.dismissModal();
   }

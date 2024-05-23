@@ -258,6 +258,22 @@ public class DeviceRepository
         }
     }
 
+    public bool checkIfSensorDataExist(string sensorGuid)
+    {
+        var sql = $@"SELECT count(*) FROM freshrooms.devicedata WHERE sensorid = @sensorGuid;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.ExecuteScalar<int>(sql, new { sensorGuid }) != 0;
+            }
+            catch (Exception e)
+            {
+                throw new DataNotFoundExeption("No sensor found");
+            }
+        }
+    }
+
     public void saveOldData(string sensorId)
     {
         var selectOldData = $@"select sensorId, temp as {nameof(SensorModel.Temperature)}, hum as {nameof(SensorModel.Humidity)}, aq as {nameof(SensorModel.CO2)}, timestamp from freshrooms.devicedata where sensorId = @sensorId";

@@ -157,13 +157,13 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 {
                     sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "open");
                     m.isOpen = true;
-                    _deviceService.createOrUpdateMotorStatus(m);
+                    _deviceService.updateMotorStatusMQTT(m);
                 }
                 else
                 {
                     sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "close");
                     m.isOpen = false;
-                    _deviceService.createOrUpdateMotorStatus(m);
+                    _deviceService.updateMotorStatusMQTT(m);
                 }
             }
         }
@@ -265,7 +265,9 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                         deviceTypeName = deviceType,
                         sensorGuid = deviceId
                     }));
+                    Console.WriteLine("Before clear: " +WebSocketConnections.deviceVerificationList);
                     ws.Socket.RemoveDeviceId(deviceId);
+                    Console.WriteLine("After clear: " +WebSocketConnections.deviceVerificationList.Values);
                 }
             }
         }

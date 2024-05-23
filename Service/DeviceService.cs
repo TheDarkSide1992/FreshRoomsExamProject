@@ -24,7 +24,11 @@ public class DeviceService
 
     public void createOrUpdateSensorData(SensorModel sensorModel)
     {
-        _deviceRepository.saveOldData(sensorModel.sensorId);
+        if (_deviceRepository.checkIfSensorDataExist(sensorModel.sensorId))
+        {
+            _deviceRepository.saveOldData(sensorModel.sensorId);
+        }
+        
         _deviceRepository.createOrUpdateData(sensorModel);
     }
 

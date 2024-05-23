@@ -39,8 +39,7 @@ export class WebsocketClientService {
   dailyForecast?: DailyWeatherModel;
   todaysForecast?: TodayWeatherModel;
   city?: string;
-  sensorlist: Array<DeviceModel> = [];
-  sensorTypeList: Array<DeviceTypesModel> = [];
+  deviceList: Array<DeviceModel> = [];
   roomStatusList: Array<BasicRoomStatusModel> = [];
   roomConfig?: RoomConfig;
   currentRoom?: DetailedRoomModel;
@@ -119,11 +118,11 @@ export class WebsocketClientService {
   }
 
   async ServerRespondsToSensorVeryfication(dto: ServerRespondsToSensorVeryfication) {
-    let tempsensor: DeviceModel = {
+    let tempDevice: DeviceModel = {
       deviceTypeName: dto.deviceTypeName,
       sensorGuid: dto.sensorGuid,
     }
-    this.sensorlist.push(tempsensor);
+    this.deviceList.push(tempDevice);
   }
 
   async ServerRespondsToUser(dto: ServerRespondsToUser) {

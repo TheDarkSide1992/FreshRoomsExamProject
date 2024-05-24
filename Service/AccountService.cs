@@ -18,6 +18,9 @@ public class AccountService
         _hashRepository = hashRepository;
     }
 
+    /*
+     * this method creates a new account code that can be used to create an account
+     */
     public string createAccountCode()
     {
         Guid guid;
@@ -103,6 +106,12 @@ public class AccountService
         }
     }
 
+    
+    /*
+     * updates fields in database for the fields in the dto which is not N/A.
+     * N/A should be set for the unchanged fields.
+     * every other fields will get their values set to the new value in DB
+     */
     public bool changeAccountInfo(int userInfoUserId, string? dtoNewNameDto, string? dtoNewEmailDto, string? dtoNewCityDto, string? dtoNewPasswordDto)
     {
         bool couldUpdate = false;

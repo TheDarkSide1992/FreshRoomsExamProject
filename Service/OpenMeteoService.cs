@@ -18,6 +18,10 @@ public class OpenMeteoService
         return new Location{longitude = loc.results[0].longitude, latitude = loc.results[0].latitude};
     }
 
+    /*
+     * this method takes in a Location object and uses it to get the weather forecast for 5 days and does a little bit of data handling
+     * by removing the day with the date of the date the method is called and reformating the time string so it fits the format day/month year
+     */
     public async Task<DailyWeatherModel> getDailyForecast(Location location)
     {
         var newtime = new List<string>();
@@ -37,6 +41,9 @@ public class OpenMeteoService
         return forecast;
     }
 
+    /*
+     * this method takes in a Location object and gets an hourly weather forecast for the location 
+     */
     public async Task<TodayWeatherModel> getTodaysForecast(Location location)
     {
         var unfilteredForecast = await _openMeteo.getTodaysForecast(location);
@@ -44,6 +51,9 @@ public class OpenMeteoService
         return filteredforecast;
     }
 
+    /*
+     * This method takes in a TodayWeatherModel and does a bit of data handling where it removes data for hours that have already passed
+     */
     public TodayWeatherModel filterTodaysforcast(TodayWeatherModel model)
     {
         var indexes = new List<int>();

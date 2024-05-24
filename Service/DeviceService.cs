@@ -49,7 +49,7 @@ public class DeviceService
 
     public void updateMotorstatusWithUsersInput(MotorModel motorModel)
     {
-        _deviceRepository.UpdateMotorModelWithUsersInput(motorModel);
+        _deviceRepository.updateMotorModelWithUsersInput(motorModel);
     }
 
     public List<MotorModel> updateAllMotorsInAroom(int roomid, bool open, bool isDisabled)

@@ -46,7 +46,15 @@ public static class WSExtentions
     public static void RemoveFromConnections(this IWebSocketConnection connection)
     {
         WebSocketConnections.connections.TryRemove(connection.ConnectionInfo.Id, out _);
-        
+        RemoveUserFromRoom(connection);
+    }
+
+    public static void RemoveUserFromRoom(this IWebSocketConnection connection)
+    {
+        foreach (var usersinroom in WebSocketConnections.usersInrooms.Values)
+        {
+            usersinroom.Remove(connection.ConnectionInfo.Id);
+        }
     }
 
     public static void Authenticate(this IWebSocketConnection connection, User userinfo)

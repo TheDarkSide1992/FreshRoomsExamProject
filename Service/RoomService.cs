@@ -52,7 +52,7 @@ public class RoomService
     
     public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
     {
-        return _roomRepository.getRoomPrefrencesConfiguration(dtoRoomId);
+        return _roomRepository.getRoomPreferencesConfiguration(dtoRoomId);
     }
 
 
@@ -60,7 +60,7 @@ public class RoomService
     {
         if (_accountRepository.isAdmin(userInfoUserId))
         {
-            return _roomRepository.updateRoomPrefrencesConfiguration( dtoRoomId, dtoUpdatedMinTemperature, dtoUpdatedMaxTemperature, dtoUpdatedMinHumidity, dtoUpdatedMaxHumidity, dtoUpdatedMinAq, dtoUpdatedMaxAq);
+            return _roomRepository.updateRoomPreferencesConfiguration( dtoRoomId, dtoUpdatedMinTemperature, dtoUpdatedMaxTemperature, dtoUpdatedMinHumidity, dtoUpdatedMaxHumidity, dtoUpdatedMinAq, dtoUpdatedMaxAq);
         }
         
         throw new NotImplementedException();

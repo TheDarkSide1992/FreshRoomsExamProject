@@ -14,6 +14,9 @@ public class RoomRepository
         _dataSource = dataSource;
     }
 
+    /**
+     *This is used to create a room in the DB
+     */
     public RoomModel CreateRoom(string name, int createdBy)
     {
         
@@ -36,6 +39,9 @@ public class RoomRepository
         }
     }
     
+    /**
+     *This is used to create a roomConfig related to a specific room in the DB
+     */
     public bool CreateRoomConfig(int roomId)
     {
         
@@ -55,7 +61,10 @@ public class RoomRepository
         }
     }
     
-    public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
+    /**
+     *This returns a RoomConfigModel for a specific room
+     */
+    public RoomConfigModel getRoomPreferencesConfiguration(int dtoRoomId)
     {
         var sql = $@"SELECT 
     mintemparature as {nameof(RoomConfigModel.minTemparature)}, 
@@ -79,8 +88,10 @@ public class RoomRepository
         }
     }
 
-
-    public RoomConfigModel updateRoomPrefrencesConfiguration(int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, 
+    /**
+     *This updates a roomconfig in the db, for a specific room.
+     */
+    public RoomConfigModel updateRoomPreferencesConfiguration(int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, 
         double dtoUpdatedMinHumidity, double dtoUpdatedMaxHumidity, double dtoUpdatedMinAq, double dtoUpdatedMaxAq)
     {
         var sql = $@"UPDATE freshrooms.roomConfig
@@ -109,6 +120,9 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
         }
     }
 
+    /**
+     *This deletes a roomconfig in the db for a specific room
+     */
     public bool DeleteRoomConfig(int roomId)
     {
         var sql = $@"DELETE FROM freshrooms.roomConfig WHERE roomId = @roomId;";
@@ -125,6 +139,9 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
         }
     }
 
+    /**
+     *This deletes a specific room in the db.
+     */
     public bool DeleteRoom(int roomId)
     {
         var sql = $@"DELETE FROM freshrooms.rooms WHERE roomId = @roomId;";
@@ -141,6 +158,9 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
         }
     }
 
+    /**
+     *This returns a list of BasicRoomSettingModel
+     */
     public IEnumerable<BasicRoomSettingModel> GetALLRoomSettings()
     {
         var sql = $@"select r.roomid,
@@ -168,6 +188,9 @@ from freshrooms.rooms r
         
     }
 
+    /**
+     * This returns the roomName from the db for a specific room
+     */
     public string getRoomName(int roomid)
     {
         var sql = $@"select roomname from freshrooms.rooms where roomid = @roomid";

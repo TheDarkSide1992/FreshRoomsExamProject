@@ -14,7 +14,9 @@ public class AccountRepository
         _dataSource = dataSource;
     }
 
-
+    /**
+     * This method is used to create a user in the DB
+     */
     public User CreateUser(int id, string userDisplayName, string userEmail, bool isDeleted)
     {
         var sql =
@@ -37,6 +39,9 @@ public class AccountRepository
     }
 
 
+    /**
+     * This method is used to get a user object from the DB, by using the user id.
+     */
     public User? GetById(int id)
     {
         try
@@ -55,6 +60,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     * This is used to check if a user is deleted, by checking if it exist in the DB
+     */
     public int CheckIfUserIsDeleted(int id)
     {
         try
@@ -73,7 +81,10 @@ public class AccountRepository
         }
     }
 
-    public AccountInfo getAccountIngo(int id)
+    /**
+     *This is used to get account info for the user from DB
+     */
+    public AccountInfo getAccountInfo(int id)
     {
         var sql = $@"select
                    name as {nameof(AccountInfo.realname)},
@@ -96,6 +107,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *This is used to get the city tied to the user from DB
+     */
     public string getCityFromUser(int id)
     {
         var sql = $@"select city from freshrooms.users where userId = @id";
@@ -112,6 +126,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *this is used to update the users name in the DB
+     */
     public void updateName(int userInfoUserId, string? dtoNewNameDto)
     {
         var sql = $@"
@@ -132,6 +149,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *This is used to update the users email in the DB
+     */
     public void updateEmail(int userInfoUserId, string? dtoNewEmailDto)
     {
         var sql = $@"
@@ -151,6 +171,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *This is used to update the city tied to the user in the DB
+     */
     public void updateCity(int userInfoUserId, string? dtoNewCityDto)
     {
         var sql = $@"
@@ -171,6 +194,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *This is used to check in the DB, if the user is an Admin
+     */
     public bool isAdmin(int userInfoUserId)
     {
         var sql = $@"SELECT id FROM freshrooms.accountcode WHERE id = @userInfoUserId AND accperm = 'admin'";

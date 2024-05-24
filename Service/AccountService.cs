@@ -83,7 +83,7 @@ public class AccountService
     {
         try
         {
-            return _accountRepository.getAccountIngo(id);
+            return _accountRepository.getAccountInfo(id);
         }
         catch (Exception e)
         {

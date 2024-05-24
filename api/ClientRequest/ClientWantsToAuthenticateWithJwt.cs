@@ -11,15 +11,18 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 [ValidateDataAnnotations]
-public class ClientWantsToAuthenticateWithJwt(AccountService accountService, MqttClient mqtt) : BaseEventHandler<ClientWantsToAuthenticateWithJwtDto>
+public class ClientWantsToAuthenticateWithJwt(AccountService accountService, MqttClient mqttClient) : BaseEventHandler<ClientWantsToAuthenticateWithJwtDto>
 {
-    public override async Task Handle(ClientWantsToAuthenticateWithJwtDto dto, IWebSocketConnection socket)
+    public override Task Handle(ClientWantsToAuthenticateWithJwtDto dto, IWebSocketConnection socket)
     {
         var claims = SecurityUtilities.ValidateJwtAndReturnClaims(dto.jwt!);
         var user = accountService.FindUserfromId(int.Parse(claims["u"]));
         socket.Authenticate(user);
-        await mqtt.communicateWithMqttBroker();
+        if (mqttClient._Client == null)
+        {
+            mqttClient.communicateWithMqttBroker();
+        }
         socket.Send(JsonSerializer.Serialize(new ServerAuthenticatesUserFromJwt()));
-        //return Task.CompletedTask;
+        return Task.CompletedTask;
     }
 }

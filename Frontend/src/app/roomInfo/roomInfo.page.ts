@@ -10,6 +10,7 @@ import {MotorModel} from "../Models/objects/MotorModel";
 import {ClientWantsToOpenOrCloseWindow} from "../Models/Client/ClientWantsToOpenOrCloseWindow";
 import {ClientWantsToDisableOrEnableOneMotor} from "../Models/Client/ClientWantsToDisableOrEnableOneMotor";
 import {ClientWantsToDisableOrEnableAllMotorsFromRoom} from "../Models/Client/ClientWantsToDisableOrEnableAllMotorsFromRoom";
+import {ClientWantsToLeaveRoom} from "../Models/Client/ClientWantsToLeaveRoom";
 
 
 
@@ -201,11 +202,11 @@ export class RoomInfoPage implements OnInit {
     {
       if(event instanceof NavigationStart)
       {
+        this.removeFromPreviousRoom();
         this.getRoomInfo();
         this.getConfig();
-      }
+      };
     });
-
 
 
 
@@ -306,4 +307,7 @@ export class RoomInfoPage implements OnInit {
     }
   }
 
+  private removeFromPreviousRoom() {
+    this.wsService.socketConnection.sendDto(new ClientWantsToLeaveRoom());
+  }
 }

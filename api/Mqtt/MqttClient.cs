@@ -89,6 +89,8 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                }
                else if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("verified"))
                {
+                   Console.WriteLine("This is e: " + e);
+                   Console.WriteLine("Got a return from device");
                    sendVerificationToUsers(e.ApplicationMessage.Topic.ToString().Split("/")[2], message);
                }
            }
@@ -253,13 +255,13 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
     
     public void sendVerificationToUsers(string deviceId, string deviceType)
     {
-        if ( WebSocketConnections.deviceVerificationList.TryGetValue(deviceId, out var guids))
+        
+        if ( WebSocketConnections.deviceVerificationList.TryGetValue(deviceId, out var guid))
         {
-            foreach (var guid in guids)
-            {
                 if(WebSocketConnections.connections.TryGetValue(guid, out var ws))
                 {
                     Console.WriteLine("testing mqtt verify device return : " + guid);
+                    Console.WriteLine("this is my ws guid: " + guid);
                     ws.Socket.Send(JsonSerializer.Serialize(new ServerRespondsToDeviceVerificationDto
                     {
                         foundSensor = true,
@@ -268,7 +270,6 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                     }));
                     ws.Socket.RemoveDeviceId(deviceId);
                 }
-            }
         }
     }
 }

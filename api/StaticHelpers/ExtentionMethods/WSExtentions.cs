@@ -29,10 +29,10 @@ public static class WSExtentions
     {
         if (!WebSocketConnections.deviceVerificationList.ContainsKey(deviceId))
         {
-            WebSocketConnections.deviceVerificationList.TryAdd(deviceId, new HashSet<Guid>());
+            WebSocketConnections.deviceVerificationList.TryAdd(deviceId, new Guid());
         }
-        if(!WebSocketConnections.deviceVerificationList[deviceId].Contains(ws.ConnectionInfo.Id))
-            WebSocketConnections.deviceVerificationList[deviceId].Add(ws.ConnectionInfo.Id);
+        if(WebSocketConnections.deviceVerificationList[deviceId] != ws.ConnectionInfo.Id)
+            WebSocketConnections.deviceVerificationList[deviceId] = (ws.ConnectionInfo.Id);
     }
 
     public static void RemoveDeviceId(this IWebSocketConnection ws ,string deviceId)

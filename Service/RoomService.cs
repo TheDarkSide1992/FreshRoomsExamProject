@@ -1,3 +1,4 @@
+using System.Security.Authentication;
 using Infastructure;
 using Infastructure.DataModels;
 
@@ -56,21 +57,25 @@ public class RoomService
     }
 
 
+   
     public RoomConfigModel updateRoomPrefrencesConfiguration(int userInfoUserId, int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, double dtoUpdatedMinHumidity, double dtoUpdatedMaxHumidity, double dtoUpdatedMinAq, double dtoUpdatedMaxAq)
     {
         if (_accountRepository.isAdmin(userInfoUserId))
         {
             return _roomRepository.updateRoomPreferencesConfiguration( dtoRoomId, dtoUpdatedMinTemperature, dtoUpdatedMaxTemperature, dtoUpdatedMinHumidity, dtoUpdatedMaxHumidity, dtoUpdatedMinAq, dtoUpdatedMaxAq);
         }
-        
-        throw new NotImplementedException();
+        throw new AuthenticationException("You are not admin, how did you even get this exception???");
     }
-
+    
     public string getRoomName(int roomid)
     {
         return _roomRepository.getRoomName(roomid);
     }
 
+    /**
+     * This method handles the data returned from the DB and merges it into one object for each room,
+     * then returns a list of BasicRoomStatus objects for all rooms found in the DB 
+     */
     public IEnumerable<BasicRoomStatus> getBasicRoomWindowStatus()
     {
         try

@@ -14,7 +14,10 @@ public class RoomRepository
         _dataSource = dataSource;
     }
 
-    public RoomModel CreateRoom(string name, int createdBy)
+    /**
+     *This is used to create a room in the DB
+     */
+    public RoomModel createRoom(string name, int createdBy)
     {
         
         var sql =
@@ -36,11 +39,14 @@ public class RoomRepository
         }
     }
     
-    public bool CreateRoomConfig(int roomId)
+    /**
+     *This is used to create a roomConfig related to a specific room in the DB
+     */
+    public bool createRoomConfig(int roomId)
     {
         
         var sql =
-            $@"INSERT INTO freshrooms.roomConfig(roomid, mintemparature, maxtemparature, minhumidity, maxhumidity, minaq, maxaq) VALUES (@roomId, 17,25,40,60,0.4,1)";
+            $@"INSERT INTO freshrooms.roomConfig(roomid, mintemparature, maxtemparature, minhumidity, maxhumidity, minaq, maxaq) VALUES (@roomId, 20,26,30,60,2,5)";
 
         using (var conn = _dataSource.OpenConnection())
         {
@@ -55,30 +61,10 @@ public class RoomRepository
         }
     }
     
-    public IEnumerable<RoomModel> GetAllRooms()
-    {
-        
-        var sql =
-            $@"SELECT 
-        roomId as {nameof(RoomModel.roomId)}, 
-        roomName as {nameof(RoomModel.name)},
-        userId as {nameof(RoomModel.creatorId)} 
-            FROM freshrooms.rooms";
-
-        using (var conn = _dataSource.OpenConnection())
-        {
-            try
-            {
-                return conn.Query<RoomModel>(sql, new {});
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Could not get rooms");
-            }
-        }
-    }
-    
-    public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
+    /**
+     *This returns a RoomConfigModel for a specific room
+     */
+    public RoomConfigModel getRoomPreferencesConfiguration(int dtoRoomId)
     {
         var sql = $@"SELECT 
     mintemparature as {nameof(RoomConfigModel.minTemparature)}, 
@@ -102,8 +88,10 @@ public class RoomRepository
         }
     }
 
-
-    public RoomConfigModel updateRoomPrefrencesConfiguration(int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, 
+    /**
+     *This updates a roomconfig in the db, for a specific room.
+     */
+    public RoomConfigModel updateRoomPreferencesConfiguration(int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, 
         double dtoUpdatedMinHumidity, double dtoUpdatedMaxHumidity, double dtoUpdatedMinAq, double dtoUpdatedMaxAq)
     {
         var sql = $@"UPDATE freshrooms.roomConfig
@@ -132,7 +120,10 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
         }
     }
 
-    public bool DeleteRoomConfig(int roomId)
+    /**
+     *This deletes a roomconfig in the db for a specific room
+     */
+    public bool deleteRoomConfig(int roomId)
     {
         var sql = $@"DELETE FROM freshrooms.roomConfig WHERE roomId = @roomId;";
         using (var conn = _dataSource.OpenConnection())
@@ -148,7 +139,10 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
         }
     }
 
-    public bool DeleteRoom(int roomId)
+    /**
+     *This deletes a specific room in the db.
+     */
+    public bool deleteRoom(int roomId)
     {
         var sql = $@"DELETE FROM freshrooms.rooms WHERE roomId = @roomId;";
         using (var conn = _dataSource.OpenConnection())
@@ -164,7 +158,10 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
         }
     }
 
-    public IEnumerable<BasicRoomSettingModel> GetALLRoomSettings()
+    /**
+     *This returns a list of BasicRoomSettingModel
+     */
+    public IEnumerable<BasicRoomSettingModel> getAllRoomSettings()
     {
         var sql = $@"select r.roomid,
        roomname as {nameof(BasicRoomSettingModel.roomName)},
@@ -191,6 +188,9 @@ from freshrooms.rooms r
         
     }
 
+    /**
+     * This returns the roomName from the db for a specific room
+     */
     public string getRoomName(int roomid)
     {
         var sql = $@"select roomname from freshrooms.rooms where roomid = @roomid";

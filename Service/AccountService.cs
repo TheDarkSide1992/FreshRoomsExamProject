@@ -18,15 +18,18 @@ public class AccountService
         _hashRepository = hashRepository;
     }
 
+    /*
+     * this method creates a new account code that can be used to create an account
+     */
     public string createAccountCode()
     {
         Guid guid;
         while (true)
         {
             guid = Guid.NewGuid();
-            if (!_hashRepository.CheckIfGuidExist(guid.ToString()))
+            if (!_hashRepository.checkIfGuidExist(guid.ToString()))
             {
-                _hashRepository.CreateGuid(guid.ToString(), "user");
+                _hashRepository.createGuid(guid.ToString(), "user");
                 return guid.ToString();
             }
         }
@@ -34,16 +37,15 @@ public class AccountService
 
     public User CreateUser(string userDisplayName, string userEmail, string password, string guid)
     {
-        int userId = _hashRepository.GetIdFromGuid(guid);
-        Console.WriteLine("first succes");
+        int userId = _hashRepository.getIdFromGuid(guid);
         if (userId != null && userId > 0)
         {
-            var hashAlgorithm = PasswordHashAlgorithm.Create();
-            var salt = hashAlgorithm.GenerateSalt();
-            var hash = hashAlgorithm.HashPassword(password, salt);
+            var hashAlgorithm = PasswordHashAlgorithm.create();
+            var salt = hashAlgorithm.generateSalt();
+            var hash = hashAlgorithm.hashPassword(password, salt);
 
-            var user = _accountRepository.CreateUser(userId, userDisplayName, userEmail, false);
-            _hashRepository.CreatePasswordHash(userId, hash, salt, hashAlgorithm.GetName());
+            var user = _accountRepository.createUser(userId, userDisplayName, userEmail, false);
+            _hashRepository.createPasswordHash(userId, hash, salt, hashAlgorithm.getName());
             return user;
         }
 
@@ -52,10 +54,10 @@ public class AccountService
 
     public User? Login(string email, string password)
     {
-        var passwordHash = _hashRepository.GetByEmail(email);
-        var hashAlgorithm = PasswordHashAlgorithm.Create(passwordHash.Algorithm);
-        var isValid = hashAlgorithm.VerifyHashedPassword(password, passwordHash.Hash, passwordHash.Salt);
-        if (isValid) return _accountRepository.GetById(passwordHash.id);
+        var passwordHash = _hashRepository.getByEmail(email);
+        var hashAlgorithm = PasswordHashAlgorithm.create(passwordHash.Algorithm);
+        var isValid = hashAlgorithm.verifyHashedPassword(password, passwordHash.Hash, passwordHash.Salt);
+        if (isValid) return _accountRepository.getById(passwordHash.id);
 
         return null;
     }
@@ -64,11 +66,10 @@ public class AccountService
     {
         try
         {
-            var userexists = _accountRepository.CheckIfUserIsDeleted(id);
-            Console.WriteLine(userexists);
+            var userexists = _accountRepository.checkIfUserIsDeleted(id);
             if (userexists == 0)
             {
-                return _accountRepository.GetById(id);
+                return _accountRepository.getById(id);
             }
         }
         catch (Exception e)
@@ -83,7 +84,7 @@ public class AccountService
     {
         try
         {
-            return _accountRepository.getAccountIngo(id);
+            return _accountRepository.getAccountInfo(id);
         }
         catch (Exception e)
         {
@@ -103,6 +104,12 @@ public class AccountService
         }
     }
 
+    
+    /*
+     * updates fields in database for the fields in the dto which is not N/A.
+     * N/A should be set for the unchanged fields.
+     * every other fields will get their values set to the new value in DB
+     */
     public bool changeAccountInfo(int userInfoUserId, string? dtoNewNameDto, string? dtoNewEmailDto, string? dtoNewCityDto, string? dtoNewPasswordDto)
     {
         bool couldUpdate = false;
@@ -126,11 +133,10 @@ public class AccountService
         }        
         if (dtoNewPasswordDto != null)
         {
-            //TODO HASH PASSWROD
-            var hashAlgorithm = PasswordHashAlgorithm.Create();
-            var salt = hashAlgorithm.GenerateSalt();
-            var hash = hashAlgorithm.HashPassword(dtoNewPasswordDto, salt);
-            _hashRepository.UpdatePasswordHash(userInfoUserId, hash, salt, hashAlgorithm.GetName());
+            var hashAlgorithm = PasswordHashAlgorithm.create();
+            var salt = hashAlgorithm.generateSalt();
+            var hash = hashAlgorithm.hashPassword(dtoNewPasswordDto, salt);
+            _hashRepository.updatePasswordHash(userInfoUserId, hash, salt, hashAlgorithm.getName());
             
             couldUpdate = true;
         }

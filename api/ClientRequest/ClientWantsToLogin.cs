@@ -17,24 +17,25 @@ namespace api.ClientRequest;
 [ValidateDataAnnotations]
 public class ClientWantsToLogin(AccountService accountService, MqttClient mqttClient) : BaseEventHandler<ClientWantsToLoginDto>
 {
-    public override Task Handle(ClientWantsToLoginDto dto, IWebSocketConnection socket)
+    public override  Task Handle(ClientWantsToLoginDto dto, IWebSocketConnection socket)
     {
         try
         {
             User user = accountService.Login(dto.email, dto.password);
             if (user != null)
                 {
-                    socket.Authenticate(user);
-                    mqttClient.communicateWithMqttBroker();
-                    socket.Send(JsonSerializer.Serialize(new ServerLogsInUser { jwt = SecurityUtilities.IssueJwt(user.userId) }));
+                    socket.authenticate(user);
+                    if (mqttClient._client == null)
+                    {
+                        mqttClient.communicateWithMqttBroker();
+                    }
+                    socket.Send(JsonSerializer.Serialize(new ServerLogsInUser { jwt = SecurityUtilities.issueJwt(user.userId) }));
                 }
         }
         catch (Exception e)
         {
             throw new AuthenticationException("Wrong password or email, please try again");
         }
-       
-
         return Task.CompletedTask;
     }
 }

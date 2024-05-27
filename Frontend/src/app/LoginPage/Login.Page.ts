@@ -1,8 +1,7 @@
 import {Component} from "@angular/core";
 import {WebsocketClientService} from "../Services/service.websocketClient";
 import {FormControl, Validators} from "@angular/forms";
-import {validateContent} from "ionicons/dist/types/components/icon/validate";
-import {ClientWantsToLogin} from "../Models/ClientWantsToLogin";
+import {ClientWantsToLogin} from "../Models/Client/ClientWantsToLogin";
 import {NavigationStart, Router} from "@angular/router";
 
 @Component({

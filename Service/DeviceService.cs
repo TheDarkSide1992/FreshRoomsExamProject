@@ -12,30 +12,24 @@ public class DeviceService
         _deviceRepository = deviceRepository;
     }
 
-    public bool VerifySensorGuid(String sensorGuid)
-    {
-        return _deviceRepository.VerifySensorGuid(sensorGuid);
-    }
-
-    public IEnumerable<DeviceTypeModel> getSensorTypes()
-    {
-        return _deviceRepository.getDeviceTypes();
-    }
-
     public void createOrUpdateSensorData(SensorModel sensorModel)
     {
-        _deviceRepository.saveOldData(sensorModel.sensorId);
+        if (_deviceRepository.checkIfSensorDataExist(sensorModel.sensorId))
+        {
+            _deviceRepository.saveOldData(sensorModel.sensorId);
+        }
+        
         _deviceRepository.createOrUpdateData(sensorModel);
     }
 
-    public void createOrUpdateMotorStatus(MotorModel motorModel)
+    public void updateMotorStatusMQTT(MotorModel motorModel)
     {
-        _deviceRepository.createOrUpdateMoterStatus(motorModel);
+        _deviceRepository.updateMoterStatusMQTT(motorModel);
     }
 
-    public RoomAvrageSensorData getAvrageRoomSensorData(string sensorId)
+    public RoomAverageSensorData getAverageRoomSensorData(string sensorId)
     {
-        return _deviceRepository.getAvrageSensordataforRoom(sensorId);
+        return _deviceRepository.getAverageSensordataforRoom(sensorId);
     }
 
     public List<MotorModel> getMotorsForRoom(int roomId)
@@ -53,9 +47,9 @@ public class DeviceService
         return _deviceRepository.getSensorsForRoom(roomid);
     }
 
-    public void updateMoterstatusWithUsersInput(MotorModel motorModel)
+    public void updateMotorstatusWithUsersInput(MotorModel motorModel)
     {
-        _deviceRepository.UpdateMoterModelWithUsersInput(motorModel);
+        _deviceRepository.updateMotorModelWithUsersInput(motorModel);
     }
 
     public List<MotorModel> updateAllMotorsInAroom(int roomid, bool open, bool isDisabled)

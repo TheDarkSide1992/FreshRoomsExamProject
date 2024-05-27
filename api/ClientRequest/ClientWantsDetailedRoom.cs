@@ -15,7 +15,7 @@ public class ClientWantsDetailedRoom(RoomService _roomService, DeviceService _de
 {
     public override Task Handle(ClientWantsDetailedRoomDto dto, IWebSocketConnection socket)
     {
-        socket.AddClientToRoom(dto.roomId);
+        socket.addClientToRoom(dto.roomId);
         var roomName = _roomService.getRoomName(dto.roomId);
         var sensors = _deviceService.getSensorsForRoom(dto.roomId);
         var windowmotors = _deviceService.getMotorsForRoom(dto.roomId);

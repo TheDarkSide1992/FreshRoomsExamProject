@@ -3,14 +3,16 @@ import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
 import {ModalController} from "@ionic/angular";
 import {WebsocketClientService} from "../Services/service.websocketClient";
 import {RoomSensorSetPage} from "./RoomSensorSet.page";
-import {ClientWantsRoomConfigurations} from "../Models/ClientWantsRoomConfigurations";
-import {ClientWantsDetailedRoom} from "../Models/ClientWantsDetailedRoom";
-import {ClientWantsToOpenOrCloseAllWindowsInRoom} from "../Models/ClientWantsToOpenOrCloseAllWindowsInRoom";
+import {ClientWantsRoomConfigurations} from "../Models/Client/ClientWantsRoomConfigurations";
+import {ClientWantsDetailedRoom} from "../Models/Client/ClientWantsDetailedRoom";
+import {ClientWantsToOpenOrCloseAllWindowsInRoom} from "../Models/Client/ClientWantsToOpenOrCloseAllWindowsInRoom";
 import {MotorModel} from "../Models/objects/MotorModel";
-import {ClientWantsToOpenOrCloseWindow} from "../Models/ClientWantsToOpenOrCloseWindow";
-import {ClientWantsToDisableOrEnableOneMotor} from "../Models/ClientWantsToDisableOrEnableOneMotor";
-import {ClientWantsToDisableOrEnableAllMotorsFromRoom} from "../Models/ClientWantsToDisableOrEnableAllMotorsFromRoom";
-
+import {ClientWantsToOpenOrCloseWindow} from "../Models/Client/ClientWantsToOpenOrCloseWindow";
+import {ClientWantsToDisableOrEnableOneMotor} from "../Models/Client/ClientWantsToDisableOrEnableOneMotor";
+import {
+  ClientWantsToDisableOrEnableAllMotorsFromRoom
+} from "../Models/Client/ClientWantsToDisableOrEnableAllMotorsFromRoom";
+import {ClientWantsToLeaveRoom} from "../Models/Client/ClientWantsToLeaveRoom";
 
 
 @Component({
@@ -201,11 +203,11 @@ export class RoomInfoPage implements OnInit {
     {
       if(event instanceof NavigationStart)
       {
+        this.removeFromPreviousRoom();
         this.getRoomInfo();
         this.getConfig();
       }
     });
-
 
 
 
@@ -306,4 +308,7 @@ export class RoomInfoPage implements OnInit {
     }
   }
 
+  private removeFromPreviousRoom() {
+    this.wsService.socketConnection.sendDto(new ClientWantsToLeaveRoom());
+  }
 }

@@ -14,81 +14,24 @@ public class DeviceRepository
     {
         _dataSource = dataSource;
     }
-
-    public bool VerifySensorGuid(string sensorGuid)
-    {
-        const string sql = $@"SELECT COUNT(deviceId) from freshrooms.devices WHERE deviceId = @sensorGuid;";
-        using (var connection = _dataSource.OpenConnection())
-        {
-            return connection.ExecuteScalar<int>(sql, new { sensorGuid } ) > 0;
-        }
-    }
-
-    public DeviceTypeModel createDeviceType(string deviceType)
-    {
-        const string sql =
-            $@"INSERT INTO freshrooms.devicetypes(deviceTypeName) VALUES (@deviceType) RETURNING 
-        deviceTypeId as {nameof(DeviceTypeModel.deviceTypeId)},
-        deviceTypeName as {nameof(DeviceTypeModel.deviceTypeName)};";
-        using (var conn = _dataSource.OpenConnection())
-        {
-            try
-            {
-                return conn.QueryFirst<DeviceTypeModel>(sql, new { deviceType });
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Could not create devicetype");
-            }
-        }
-    }
-
-    public bool deleteDeviceType(int deviceTypeId)
-    {
-        const string sql =
-            $@"UPDATE freshrooms.devicetypes SET isDeleted = false WHERE deviceTypeId = @deviceTypeid";
-        using (var conn = _dataSource.OpenConnection())
-        {
-            try
-            {
-                return conn.Execute(sql, new { deviceTypeId }) == 1;
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Could not delete devicetype");
-            }
-        }
-    }
-
-    public IEnumerable<DeviceTypeModel> getDeviceTypes()
-    {
-        
-        var sql = $@"
-        select 
-             deviceTypeId as {nameof(DeviceTypeModel.deviceTypeId)},
-             deviceTypeName as {nameof(DeviceTypeModel.deviceTypeName)}
-        from freshrooms.devicetypes WHERE isDeleted = false;
-        ";
-        
-        using (var conn = _dataSource.OpenConnection())
-        {
-            return conn.Query<DeviceTypeModel>(sql, new { });
-        }
-    }
-
-    public void UpdateDevices(IEnumerable<DeviceModel> deviceList, int roomId)
+    
+    /*
+     * This method takes in a IEnumerable<DeviceModel> object and an int to update devices for the room that has the given int as it's id
+     */
+    public void updateDevices(IEnumerable<DeviceModel> deviceList, int roomId)
     {
         using (var conn = _dataSource.OpenConnection())
         {
-            const string sql =
-                $@"UPDATE freshrooms.devices SET roomId = @roomId, deviceType = @tempDeviceType WHERE deviceId = @tempGuid";
+            const string sql = $@"insert into freshrooms.devices (deviceId, roomId, deviceType) values (@tempGuid, @roomId, @tempDeviceType)
+                        on conflict(deviceId)
+                        do UPDATE SET roomId = @roomId, deviceType = @tempDeviceType;";
             
             var transaction = conn.BeginTransaction();
             try
             {
                 foreach (var device in deviceList)
                 {
-                    conn.Query(sql, new { roomId, tempGuid = device.sensorGuid, tempDeviceType = device.deviceTypeName });
+                    conn.Query(sql, new { roomId, tempGuid = device.deviceGuid, tempDeviceType = device.deviceTypeName });
                 }
 
                 transaction.Commit();
@@ -101,10 +44,13 @@ public class DeviceRepository
         }
     }
 
-    public bool DeleteRoomIdOnDevices(int roomId)
+    /*
+     * This method takes in an int which is the id of a room and removes it from devices where it appears 
+     */
+    public bool deleteRoomIdOnDevices(int roomId)
     {
         const string sql =
-            $@"UPDATE freshrooms.devices SET roomId = null WHERE roomId = @roomId";
+            $@"DELETE FROM freshrooms.devices WHERE roomId = @roomId";
         
         using (var conn = _dataSource.OpenConnection())
         {
@@ -118,8 +64,36 @@ public class DeviceRepository
             }
         }
     }
-
-    public List<BasicDeviceDModel> GetBasicDeviceData()
+    
+    
+    /*
+     * this method deletes a motor's status where the given int is present as the roomId
+     */
+    public bool deleteMotorStatus(int roomId)
+    {
+        const string sql =
+            $@"DELETE FROM freshrooms.motorstatus
+               USING freshrooms.devices
+               WHERE devices.deviceid = motorstatus.motorId and devices.roomId = @roomId;";
+        
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) != 0;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete motors status for devices in room");
+            }
+        }
+    }
+    
+    /*
+     * this method returns a list of BasicDeviceDModel
+     */
+    public List<BasicDeviceDModel> getBasicDeviceData()
     {
         const string sql = $@"select roomid as {nameof(BasicDeviceDModel.roomId)}, temp as {nameof(BasicDeviceDModel.cTemp)}, 
        hum as {nameof(BasicDeviceDModel.cHum)}, aq as {nameof(BasicDeviceDModel.cAq)}, isopen as {nameof(BasicDeviceDModel.isOpen)},
@@ -135,6 +109,9 @@ public class DeviceRepository
         }
     }
 
+    /*
+     * this method takes in a SensorModel object and uses an upsert to either create or update the data in the database table
+     */
     public SensorModel createOrUpdateData(SensorModel sensorModel)
     {
         var sql = $@"insert into freshrooms.devicedata (sensorId, temp, hum, aq, timestamp) values (@sensorId,@temp,@hum,@aq,@timestamp)
@@ -148,9 +125,9 @@ public class DeviceRepository
                 conn.Execute(sql, new
                 {
                     sensorModel.sensorId,
-                    temp = sensorModel.Temperature,
-                    hum = sensorModel.Humidity,
-                    aq = sensorModel.CO2,
+                    temp = sensorModel.temperature,
+                    hum = sensorModel.humidity,
+                    aq = sensorModel.co2,
                     timestamp = DateTime.Now
                 });
                 return sensorModel;
@@ -161,12 +138,13 @@ public class DeviceRepository
             }
         }
     }
-
-    public void createOrUpdateMoterStatus(MotorModel motorModel)
+    
+    /*
+     * This method takes in a MotorModel object to update the motor's isOpen in the database table 
+     */
+    public void updateMoterStatusMQTT(MotorModel motorModel)
     {
-        var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isdisabled) values (@motorId,@isOpen,false)
-                        on conflict(motorId)
-                        do update set isOpen = @isOpen;";
+        var sql = $@"update freshrooms.motorstatus set isOpen = @isOpen where motorid = @motorId;";
         
         using (var conn = _dataSource.OpenConnection())
         {
@@ -185,11 +163,44 @@ public class DeviceRepository
         }
     }
     
-    public void UpdateMoterModelWithUsersInput(MotorModel motorModel)
+    /*
+     * this method takes in an IEnumerable<DeviceModel> object and uses a transaction to create all motors in the list in the database table
+     */
+    public bool createMoterStatusList(IEnumerable<DeviceModel> motorModels)
     {
-        var save = $@"insert into freshrooms.motorstatus (motorId, isOpen, isdisabled) values (@motorId,@isOpen,@isDisabled)
+        var sql = $@"insert into freshrooms.motorstatus (motorId, isOpen, isDisabled) values (@motorId,@isOpen,@isDisabled)
                         on conflict(motorId)
-                        do update set isOpen = @isOpen, isdisabled = @isDisabled;";
+                        do update set isOpen = @isOpen;";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            var transaction = conn.BeginTransaction();
+            try
+            {
+                foreach (var motor in motorModels)
+                {
+                    if (motor.deviceTypeName == "Window Motor")
+                    {
+                        conn.Query(sql, new { motorId = motor.deviceGuid, isOpen = false,  isDisabled = false});
+                    }
+                    
+                }
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to create window status");
+            }
+        }
+    }
+    
+    /*
+     * This method takes in a MotorModel object to update the motor's isOpen and isDisabled in the database table
+     */
+    public void updateMotorModelWithUsersInput(MotorModel motorModel)
+    {
+        var save = $@"update freshrooms.motorstatus set isOpen = @isOpen, isdisabled = @isDisabled where motorid = @motorId;";
         
         using (var conn = _dataSource.OpenConnection())
         {
@@ -208,7 +219,10 @@ public class DeviceRepository
             }
         }
     }
-
+    
+    /*
+     * This method takes in a roomId and two bools object to update the motor's isOpen and isDisabled in the database table
+     */
     public IEnumerable<MotorModel> updateAllMotersInARoom(int roomid, bool open, bool isDisabled)
     {
         var sql = $@"update freshrooms.motorstatus set isopen = @isopen, isdisabled = @isDisabled from freshrooms.devices where freshrooms.devices.deviceid = freshrooms.motorstatus.motorid and freshrooms.devices.roomid = @roomid
@@ -224,17 +238,36 @@ public class DeviceRepository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.InnerException);
-                Console.WriteLine(e.StackTrace);
                 throw new MotorUpdateExeption("Failed to update window status");
             }
         }
     }
 
+    /*
+     * this method returns a bool true if a sensor's data exits and false if it does not exist
+     */
+    public bool checkIfSensorDataExist(string sensorGuid)
+    {
+        var sql = $@"SELECT count(*) FROM freshrooms.devicedata WHERE sensorid = @sensorGuid;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.ExecuteScalar<int>(sql, new { sensorGuid }) != 0;
+            }
+            catch (Exception e)
+            {
+                throw new DataNotFoundExeption("No sensor found");
+            }
+        }
+    }
+
+    /*
+     * this method takes in a sensorId and finds the old data from the devicedata table and saves it in the historicdata table
+     */
     public void saveOldData(string sensorId)
     {
-        var selectOldData = $@"select sensorId, temp as {nameof(SensorModel.Temperature)}, hum as {nameof(SensorModel.Humidity)}, aq as {nameof(SensorModel.CO2)}, timestamp from freshrooms.devicedata where sensorId = @sensorId";
+        var selectOldData = $@"select sensorId, temp as {nameof(SensorModel.temperature)}, hum as {nameof(SensorModel.humidity)}, aq as {nameof(SensorModel.co2)}, timestamp from freshrooms.devicedata where sensorId = @sensorId";
         var save =
             $@"insert into freshrooms.historicdata (sensorId, temp, hum, aq, timestamp) values (@sensorId,@temp,@hum,@aq,@timestamp);";
 
@@ -246,8 +279,8 @@ public class DeviceRepository
                 conn.Execute(save,
                     new
                     {
-                        oldData.sensorId, hum = oldData.Humidity,
-                        temp = oldData.Temperature, aq = oldData.CO2,
+                        oldData.sensorId, hum = oldData.humidity,
+                        temp = oldData.temperature, aq = oldData.co2,
                         oldData.timestamp
                     });
             }
@@ -257,11 +290,14 @@ public class DeviceRepository
             }
         }
     }
-
-    public RoomAvrageSensorData getAvrageSensordataforRoom(string sensorId)
+    
+    /*
+     * this method gets average sensor data for a room
+     */
+    public RoomAverageSensorData getAverageSensordataforRoom(string sensorId)
     {
         var getRoomid = $@"select roomid from freshrooms.devices where deviceid = @sensorId";
-        var getAvrage = $@"select avg(hum) as {nameof(RoomAvrageSensorData.Humidity)}, avg(temp) as {nameof(RoomAvrageSensorData.Temperature)}, avg(aq) as {nameof(RoomAvrageSensorData.CO2)}, d.roomid as {nameof(RoomAvrageSensorData.roomId)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid
+        var getAvrage = $@"select avg(hum) as {nameof(RoomAverageSensorData.Humidity)}, avg(temp) as {nameof(RoomAverageSensorData.Temperature)}, avg(aq) as {nameof(RoomAverageSensorData.CO2)}, d.roomid as {nameof(RoomAverageSensorData.roomId)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid
                             group by d.roomid;";
 
         using (var conn = _dataSource.OpenConnection())
@@ -269,7 +305,7 @@ public class DeviceRepository
             try
             {
                 var roomid = conn.QueryFirst<int>(getRoomid, new { sensorId });
-                return conn.QueryFirst<RoomAvrageSensorData>(getAvrage, new { roomid });
+                return conn.QueryFirst<RoomAverageSensorData>(getAvrage, new { roomid });
             }
             catch (Exception e)
             {
@@ -278,6 +314,9 @@ public class DeviceRepository
         }
     }
 
+    /*
+     * This method gets all users from the given roomId parameters and returns a list of MotorModels
+     */
     public IEnumerable<MotorModel> getMotorsForRoom(int roomId)
     {
         var sql = $@"select * from freshrooms.motorstatus join freshrooms.devices d on d.deviceid = motorstatus.motorid where d.roomid = @roomId";
@@ -294,6 +333,9 @@ public class DeviceRepository
         }
     }
 
+    /*
+     * this method takes in a string called id and uses it to get the id of the room the device is connected to and returns the room's id which is an int
+     */
     public int getRoomIdFromDeviceId(string id)
     {
         var sql = $@"select roomid from freshrooms.devices where deviceid = @id;";
@@ -312,9 +354,12 @@ public class DeviceRepository
         }
     }
 
+    /*
+     * this method takes in a int called roomid and returns a list of SensorModel objects which are the sensors that are connected to the room
+     */
     public List<SensorModel> getSensorsForRoom(int roomid)
     {
-        var sql = $@"select sensorid as {nameof(SensorModel.sensorId)}, hum as {nameof(SensorModel.Humidity)}, temp as {nameof(SensorModel.Temperature)}, aq as {nameof(SensorModel.CO2)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid;";
+        var sql = $@"select sensorid as {nameof(SensorModel.sensorId)}, hum as {nameof(SensorModel.humidity)}, temp as {nameof(SensorModel.temperature)}, aq as {nameof(SensorModel.co2)} from freshrooms.devicedata join freshrooms.devices d on d.deviceid = devicedata.sensorid where d.roomid = @roomid;";
 
         using (var conn = _dataSource.OpenConnection())
         {
@@ -325,6 +370,54 @@ public class DeviceRepository
             catch (Exception e)
             {
                 throw new DataNotFoundExeption("Failed to get sensors for the room");
+            }
+        }
+    }
+
+    /*
+     * this method takes in an int called roomId and deletes data from the devicedata table where the given roomId is present
+     */
+    public bool deleteCurrentDataForRoom(int roomId)
+    {
+        const string sql =
+            $@"DELETE FROM freshrooms.devicedata
+               USING freshrooms.devices
+               WHERE devices.deviceid = devicedata.sensorId and devices.roomId = @roomId;";
+        
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) != 0;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete current device data for room");
+            }
+        }
+    }
+
+    /*
+     * this method takes in an int called roomId and deletes data from the devicedata table where the given roomId is present
+     */
+    public bool deleteHistoricDataForRoom(int roomId)
+    {
+        const string sql =
+            $@"DELETE FROM freshrooms.historicData
+               USING freshrooms.devices
+               WHERE devices.deviceid = historicData.sensorId and devices.roomId = @roomId;";
+        
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.Execute(sql, new { roomId }) != 0;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not delete historic device data for room");
             }
         }
     }

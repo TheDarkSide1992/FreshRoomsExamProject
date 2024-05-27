@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {ModalController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {ClientWantsToUpdateRoomConf} from "../Models/ClientWantsToUpdateRoomConf";
+import {ClientWantsToUpdateRoomConf} from "../Models/Client/ClientWantsToUpdateRoomConf";
 
 
 

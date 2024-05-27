@@ -1,6 +1,6 @@
 export interface SensorModel {
   sensorId: string | null;
-  Temperature: number;
-  Humidity: number;
-  CO2: number;
+  temperature: number;
+  humidity: number;
+  co2: number;
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {ClientWantsToLogout} from "../Models/ClientWantsToLogout";
+import {ClientWantsToLogout} from "../Models/Client/ClientWantsToLogout";
 
 @Component({
   template: `<ion-app>

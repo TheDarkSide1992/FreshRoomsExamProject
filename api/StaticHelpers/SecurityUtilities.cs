@@ -10,7 +10,7 @@ namespace api.StaticHelpers;
 
 public static class SecurityUtilities
 {
-    public static Dictionary<string, string> ValidateJwtAndReturnClaims(string jwt)
+    public static Dictionary<string, string> validateJwtAndReturnClaims(string jwt)
     {
         try
         {
@@ -29,7 +29,7 @@ public static class SecurityUtilities
         }
     }
 
-    public static string IssueJwt(int userId)
+    public static string issueJwt(int userId)
     {
         try
         {

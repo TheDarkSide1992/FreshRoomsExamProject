@@ -1,8 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import { openWeatherWMOToEmoji } from '@akaguny/open-meteo-wmo-to-emoji';
-import {clientWantsToGetWeatherForcast} from "../Models/clientWantsToGetWeatherForcast";
-import {ClientWantsCity} from "../Models/ClientWantsCity";
+import {openWeatherWMOToEmoji} from '@akaguny/open-meteo-wmo-to-emoji';
+import {clientWantsToGetWeatherForcast} from "../Models/Client/clientWantsToGetWeatherForcast";
+import {ClientWantsCity} from "../Models/Client/ClientWantsCity";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   template: `
@@ -88,7 +89,10 @@ import {ClientWantsCity} from "../Models/ClientWantsCity";
 export class HomePage implements OnInit{
 
 
-  constructor(public websocketservice: WebsocketClientService) {
+  constructor(public websocketservice: WebsocketClientService, public  route : ActivatedRoute) {
+    this.route.params.subscribe(params => {
+      this.getforecasts();
+    });
   }
   getforecasts() {
       this.websocketservice.socketConnection.sendDto(new clientWantsToGetWeatherForcast);

@@ -2,10 +2,8 @@ import {Component, OnInit} from "@angular/core";
 import {ModalController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {DeviceModel, SensorModelDto} from "../Models/DeviceModel";
-import {ClientWantsSensorTypes} from "../Models/ClientWantsSensorTypes";
-import {RoomModelDto} from "../Models/RoomModel";
-
+import {SensorModelDto} from "../Models/objects/DeviceModel";
+import {RoomModelDto} from "../Models/objects/RoomModel";
 
 
 @Component({
@@ -41,22 +39,12 @@ import {RoomModelDto} from "../Models/RoomModel";
             Must enter a name
           </div>
 
-
-          <ion-item style="margin-top: 8%">
-            <ion-select [formControl]="RDeviceType" aria-label="DeviceType" interface="popover"
-                        placeholder="Select DeviceType">
-              <ion-select-option *ngFor="let tempDeviceType of this.ws.sensorTypeList"
-                                 value="{{tempDeviceType.deviceTypeName}}">{{ tempDeviceType.deviceTypeName }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-
           <div style="flex-direction: row;  align-content: space-evenly;">
             <ion-input [formControl]="RSensorId" label-placement="floating"
                        label="Device Id" placeholder="Device Id">
             </ion-input>
 
-            <ion-button (click)="verifySensorId()" [disabled]="!(RSensorId.valid && RDeviceType.valid)"
+            <ion-button (click)="verifySensorId()" [disabled]="!(RSensorId.valid)"
                         style=" margin-top: 10%; height: 20px">Create Sensor
             </ion-button>
 
@@ -76,8 +64,8 @@ import {RoomModelDto} from "../Models/RoomModel";
                    [scrollEvents]="true">
 
         <ion-card style="display: flex; justify-content: space-around; flex-direction: row; background: transparent;"
-                  *ngFor="let sensor of this.ws.sensorlist">
-          <ion-card-content>{{ sensor.deviceTypeName }}: {{ sensor.sensorGuid }}</ion-card-content>
+                  *ngFor="let sensor of this.ws.deviceList">
+          <ion-card-content>{{ sensor.deviceTypeName }}: {{ sensor.deviceGuid }}</ion-card-content>
           <ion-button (click)="removeTempSensor(sensor.valueOf())">
             <ion-icon name="remove-outline"></ion-icon>
           </ion-button>
@@ -85,7 +73,7 @@ import {RoomModelDto} from "../Models/RoomModel";
       </ion-content>
 
 
-      <ion-button (click)="createRoom()" [disabled]="!(this.ws.sensorlist.length>=1 && RName.valid)"
+      <ion-button (click)="createRoom()" [disabled]="!(this.ws.deviceList.length>=1 && RName.valid)"
                   style="margin-bottom: 5%; margin-left: 5%; width: 25%">Create Room
       </ion-button>
 
@@ -98,8 +86,6 @@ export class CreateRoomsModalPage implements OnInit {
 
   RName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
 
-  RDeviceType = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
-
   RSensorId = new FormControl("",[Validators.required,Validators.minLength(36),Validators.maxLength(36)]);
 
 
@@ -110,9 +96,7 @@ export class CreateRoomsModalPage implements OnInit {
 
   ngOnInit(): void {this.setup()}
   setup(){
-    this.ws.sensorlist = [];
-    this.ws.sensorTypeList = [];
-    this.getDeviceTypes();
+    this.ws.deviceList = [];
   }
 
   dismissModal() {
@@ -121,31 +105,23 @@ export class CreateRoomsModalPage implements OnInit {
 
 
   removeTempSensor(sensor: Object){
-    this.ws.sensorlist.splice(this.ws.sensorlist.indexOf(sensor), 1)
-  }
-
-  async getDeviceTypes(){
-    this.ws.socketConnection.sendDto(new ClientWantsSensorTypes({
-      eventType: "ClientWantsSensorTypes",
-    }))
+    this.ws.deviceList.splice(this.ws.deviceList.indexOf(sensor), 1)
   }
 
   async verifySensorId(){
 
     this.ws.socketConnection.sendDto(new SensorModelDto({
-      eventType: "ClientWantsToVerifySensor",
-      deviceTypeName: this.RDeviceType.value?.toString(),
+      eventType: "ClientWantsToVerifyDevice",
       sensorGuid: this.RSensorId.value?.toString(),
     }))
     this.RSensorId.reset();
-    this.RDeviceType.reset();
   }
 
   async createRoom(){
     this.ws.socketConnection.sendDto(new RoomModelDto({
       eventType: "ClientWantsToCreateRoom",
       name: this.RName.value?.toString(),
-      deviceList: this.ws.sensorlist,
+      deviceList: this.ws.deviceList,
     }))
     this.dismissModal();
   }

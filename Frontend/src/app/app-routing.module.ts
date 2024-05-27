@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {SidebarmenuPage} from "./SidebarMenu/sidebarmenu.page";
 import {LoginPage} from "./LoginPage/Login.Page";
 import {HomePage} from "./Home/Home.page";
@@ -8,7 +8,6 @@ import {ManageRoomsPage} from "./ViewRooms/ManageRooms";
 import {AccountPage} from "./account/account.page";
 import {AccountSettingsPage} from "./account/account.settings.page";
 import {RoomInfoPage} from "./roomInfo/roomInfo.page";
-
 
 
 const routes: Routes = [

@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using api.Mqtt;
 using api.State;
 using Fleck;
@@ -10,6 +11,7 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
 public class ClientWantsToOpenOrCloseWindow(DeviceService _deviceService, MqttClient mqttClient) : BaseEventHandler<ClientWantsToOpenOrCloseWindowDto>
 {
     public override Task Handle(ClientWantsToOpenOrCloseWindowDto dto, IWebSocketConnection socket)
@@ -28,7 +30,7 @@ public class ClientWantsToOpenOrCloseWindow(DeviceService _deviceService, MqttCl
             dto.motor.isOpen = false;
             dto.motor.isDisabled = false;
         }
-        _deviceService.updateMoterstatusWithUsersInput(dto.motor);
+        _deviceService.updateMotorstatusWithUsersInput(dto.motor);
         if ( WebSocketConnections.usersInrooms.TryGetValue(dto.roomId, out var guids))
         {
             foreach (var guid in guids)

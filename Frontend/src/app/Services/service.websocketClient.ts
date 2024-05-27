@@ -1,35 +1,33 @@
 import {WebSocketSuperClass} from "../Models/WebSocketSuperClass";
 import {Router} from "@angular/router";
 import {environment} from "../../environments/environment";
-import {BaseDto} from "../Models/baseDto";
+import {BaseDto} from "../Models/objects/baseDto";
 import {Injectable} from "@angular/core";
-import {ServerAuthenticatesUserFromJwt} from "../Models/ServerAuthenticatesUserFromJwt";
-import { ServerLogsInUser } from "../Models/ServerLogsInUser";
+import {ServerAuthenticatesUserFromJwt} from "../Models/Server/ServerAuthenticatesUserFromJwt";
+import {ServerLogsInUser} from "../Models/Server/ServerLogsInUser";
 import {ToastController} from "@ionic/angular";
-import { ServerSendsAccountData } from "../Models/ServerSendsAccountData";
+import {ServerSendsAccountData} from "../Models/Server/ServerSendsAccountData";
 import {accountModdel} from "../Models/objects/accountModdel";
-import {ServerReturnsForecast} from "../Models/ServerReturnsDailyForecast";
+import {ServerReturnsForecast} from "../Models/Server/ServerReturnsDailyForecast";
 import {DailyWeatherModel} from "../Models/objects/DailyForcastModels";
 import {TodayWeatherModel} from "../Models/objects/TodaysForcastModels";
-import { ServerLogsoutUser } from "../Models/ServerLogsoutUser";
-import { ServerReturnsCity } from "../Models/ServerReturnsCity";
-import {ServerSendsErrorMessageToClient} from "../Models/ServerSendsErrorMessageToClient";
-import {DeviceModel, DeviceTypesModel} from "../Models/DeviceModel";
-import {ServerRespondsToSensorVeryfication} from "../Models/ServerRespondsToSensorVeryfication";
-import { ServerSendsDeviceTypes } from "../Models/ServerSendsDeviceTypes";
-import {ServerRespondsToUser} from "../Models/ServerRespondsToUser";
-import {ServerReturnsRoomList} from "../Models/ServerReturnsRoomList";
-import {RoomModel, RoomModelDto} from "../Models/RoomModel";
-import {ServerReturnsCreatedRoom} from "../Models/ServerReturnsCreatedRoom";
-import {ServerSendsRoomConfigurations} from "../Models/ServerSendsRoomConfigurations";
+import {ServerLogsoutUser} from "../Models/Server/ServerLogsoutUser";
+import {ServerReturnsCity} from "../Models/Server/ServerReturnsCity";
+import {ServerSendsErrorMessageToClient} from "../Models/Server/ServerSendsErrorMessageToClient";
+import {DeviceModel} from "../Models/objects/DeviceModel";
+import {ServerRespondsToDeviceVerification} from "../Models/Server/ServerRespondsToDeviceVerification";
+import {ServerRespondsToUser} from "../Models/Server/ServerRespondsToUser";
+import {ServerSendsRoomConfigurations} from "../Models/Server/ServerSendsRoomConfigurations";
 import {RoomConfig} from "../Models/objects/roomConfig";
 import {DetailedRoomModel} from "../Models/objects/DetailedRoomModel";
-import {ServerReturnsDetailedRoomToUser} from "../Models/ServerReturnsDetailedRoomToUser";
-import {ServerReturnsNewestSensorData} from "../Models/ServerReturnsNewestSensorData";
-import {ServerReturnsBasicRoomStatus} from "../Models/ServerReturnsBasicRoomStatus";
+import {ServerReturnsDetailedRoomToUser} from "../Models/Server/ServerReturnsDetailedRoomToUser";
+import {ServerReturnsNewestSensorData} from "../Models/Server/ServerReturnsNewestSensorData";
+import {ServerReturnsBasicRoomStatus} from "../Models/Server/ServerReturnsBasicRoomStatus";
 import {BasicRoomStatusModel} from "../Models/objects/BasicRoomStatusModel";
-import {ServerReturnsNewMotorStatusForAllMotorsInRoom} from "../Models/ServerReturnsNewMotorStatusForAllMotorsInRoom";
-import {ServerReturnsNewMotorStatusForOneMotor} from "../Models/ServerReturnsNewMotorStatusForOneMotor";
+import {
+  ServerReturnsNewMotorStatusForAllMotorsInRoom
+} from "../Models/Server/ServerReturnsNewMotorStatusForAllMotorsInRoom";
+import {ServerReturnsNewMotorStatusForOneMotor} from "../Models/Server/ServerReturnsNewMotorStatusForOneMotor";
 
 
 @Injectable({providedIn: 'root'})
@@ -39,8 +37,7 @@ export class WebsocketClientService {
   dailyForecast?: DailyWeatherModel;
   todaysForecast?: TodayWeatherModel;
   city?: string;
-  sensorlist: Array<DeviceModel> = [];
-  sensorTypeList: Array<DeviceTypesModel> = [];
+  deviceList: Array<DeviceModel> = [];
   roomStatusList: Array<BasicRoomStatusModel> = [];
   roomConfig?: RoomConfig;
   currentRoom?: DetailedRoomModel;
@@ -118,25 +115,12 @@ export class WebsocketClientService {
     t.present();
   }
 
-  async ServerRespondsToSensorVeryfication(dto: ServerRespondsToSensorVeryfication) {
-    let tempsensor: DeviceModel = {
+  async ServerRespondsToDeviceVerification(dto: ServerRespondsToDeviceVerification) {
+    let tempDevice: DeviceModel = {
       deviceTypeName: dto.deviceTypeName,
-      sensorGuid: dto.sensorGuid,
+      deviceGuid: dto.deviceGuid,
     }
-    this.sensorlist.push(tempsensor);
-  }
-
-  async ServerSendsDeviceTypes(dto: ServerSendsDeviceTypes) {
-    dto.deviceTypeList?.forEach(deviceType => {
-        if (deviceType != undefined) {
-          let tempDeviceType: DeviceTypesModel = {
-            deviceTypeId: deviceType.deviceTypeId,
-            deviceTypeName: deviceType.deviceTypeName,
-          }
-          this.sensorTypeList.push(tempDeviceType);
-        }
-      }
-    )
+    this.deviceList.push(tempDevice);
   }
 
   async ServerRespondsToUser(dto: ServerRespondsToUser) {
@@ -159,9 +143,9 @@ export class WebsocketClientService {
     let hum = 0;
     let aq = 0;
     for (var sensor of this.currentRoom?.sensors!) {
-      temp = temp + sensor.Temperature
-      hum = hum + sensor.Humidity
-      aq = aq + sensor.CO2
+      temp = temp + sensor.temperature
+      hum = hum + sensor.humidity
+      aq = aq + sensor.co2
     }
 
     this.currentaq = aq / this.currentRoom?.sensors?.length!
@@ -180,9 +164,9 @@ export class WebsocketClientService {
     let hum = 0;
     let aq = 0;
     for (var sensor of this.currentRoom?.sensors!) {
-      temp = temp + sensor.Temperature
-      hum = hum + sensor.Humidity
-      aq = aq + sensor.CO2
+      temp = temp + sensor.temperature
+      hum = hum + sensor.humidity
+      aq = aq + sensor.co2
     }
 
     this.currentaq = aq / this.currentRoom?.sensors?.length!

@@ -7,7 +7,7 @@ namespace api.StaticHelpers.ExtentionMethods;
 
 public static class WSExtentions
 {
-    public static void AddConnection(this IWebSocketConnection ws)
+    public static void addConnection(this IWebSocketConnection ws)
     {
         WebSocketConnections.connections.TryAdd(ws.ConnectionInfo.Id,
             new WebSocketMetadata
@@ -16,7 +16,7 @@ public static class WSExtentions
             });
     }
 
-    public static void AddClientToRoom(this IWebSocketConnection ws, int roomId)
+    public static void addClientToRoom(this IWebSocketConnection ws, int roomId)
     {
         if (!WebSocketConnections.usersInrooms.ContainsKey(roomId))
         {
@@ -25,25 +25,52 @@ public static class WSExtentions
         WebSocketConnections.usersInrooms[roomId].Add(ws.ConnectionInfo.Id);
     }
 
-    public static void RemoveFromConnections(this IWebSocketConnection connection)
+    public static void addDeviceId(this IWebSocketConnection ws, string deviceId)
     {
-        WebSocketConnections.connections.TryRemove(connection.ConnectionInfo.Id, out _);
+        if (!WebSocketConnections.deviceVerificationList.ContainsKey(deviceId))
+        {
+            WebSocketConnections.deviceVerificationList.TryAdd(deviceId, new Guid());
+        }
+        if(WebSocketConnections.deviceVerificationList[deviceId] != ws.ConnectionInfo.Id)
+            WebSocketConnections.deviceVerificationList[deviceId] = (ws.ConnectionInfo.Id);
     }
 
-    public static void Authenticate(this IWebSocketConnection connection, User userinfo)
+    public static void removeDeviceId(this IWebSocketConnection ws ,string deviceId)
     {
-        var metadata = connection.GetMetadata();
+        if (WebSocketConnections.deviceVerificationList.ContainsKey(deviceId))
+        {
+            WebSocketConnections.deviceVerificationList.TryRemove(deviceId, out _);
+        }
+    }
+
+    public static void removeFromConnections(this IWebSocketConnection connection)
+    {
+        WebSocketConnections.connections.TryRemove(connection.ConnectionInfo.Id, out _);
+        removeUserFromRoom(connection);
+    }
+
+    public static void removeUserFromRoom(this IWebSocketConnection connection)
+    {
+        foreach (var usersinroom in WebSocketConnections.usersInrooms.Values)
+        {
+            usersinroom.Remove(connection.ConnectionInfo.Id);
+        }
+    }
+
+    public static void authenticate(this IWebSocketConnection connection, User userinfo)
+    {
+        var metadata = connection.getMetadata();
         metadata.isAuthenticated = true;
         metadata.userInfo = userinfo;
     }
     
-    public static void UnAuthenticate(this IWebSocketConnection connection)
+    public static void unAuthenticate(this IWebSocketConnection connection)
     {
-        var metadata = connection.GetMetadata();
+        var metadata = connection.getMetadata();
         metadata.isAuthenticated = false;
     }
 
-    public static WebSocketMetadata GetMetadata(this IWebSocketConnection connection)
+    public static WebSocketMetadata getMetadata(this IWebSocketConnection connection)
     {
         return WebSocketConnections.connections[connection.ConnectionInfo.Id];
     }

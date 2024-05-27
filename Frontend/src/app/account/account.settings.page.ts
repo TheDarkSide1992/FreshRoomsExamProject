@@ -1,12 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {IonContent} from "@ionic/angular";
+import {Router} from "@angular/router";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {ClientWantsAccountInfo} from "../Models/ClientWantsAccountInfo";
-import {navigate} from "ionicons/icons";
-import {ClientWantsToChangeSettings} from "../Models/ClientWantsToChangeSettings";
+import {ClientWantsAccountInfo} from "../Models/Client/ClientWantsAccountInfo";
+import {ClientWantsToChangeSettings} from "../Models/Client/ClientWantsToChangeSettings";
 
 
 @Component({
@@ -184,7 +181,6 @@ export class AccountSettingsPage implements OnInit{
       newCityDto: newCity,
       newPasswordDto: newPassword
     }))
-    //TODO SEND TO API
 
     await this.wsService.socketConnection.sendDto(new ClientWantsAccountInfo)
 

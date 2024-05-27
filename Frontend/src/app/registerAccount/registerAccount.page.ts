@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 import {FormControl, Validators} from "@angular/forms";
 import {WebsocketClientService} from "../Services/service.websocketClient";
-import {ClientWantsToCreateUserDTO} from "../Models/RegisterMessage.model";
+import {ClientWantsToCreateUserDTO} from "../Models/Client/ClientWantsToCreateUser";
 import {Router} from "@angular/router";
 
 @Component({

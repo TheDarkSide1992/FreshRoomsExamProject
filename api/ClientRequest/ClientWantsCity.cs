@@ -15,7 +15,7 @@ public class ClientWantsCity(AccountService accountService): BaseEventHandler<Cl
 {
     public override Task Handle(ClientWantsCityDto dto, IWebSocketConnection socket)
     {
-        var metadata = socket.GetMetadata();
+        var metadata = socket.getMetadata();
         var city = accountService.getCity(metadata.userInfo.userId);
         socket.Send(JsonSerializer.Serialize(new ServerReturnsCity { city = city }));
         return Task.CompletedTask;

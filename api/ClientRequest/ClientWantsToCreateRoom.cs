@@ -16,11 +16,10 @@ public class ClientWantsToCreateRoom(RoomService roomService) : BaseEventHandler
 {
     public override Task Handle(ClientWantsToCreateRoomDto dto, IWebSocketConnection socket)
     {
-        RoomModel room = roomService.CreateRoom(dto.deviceList, dto.name, socket.GetMetadata().userInfo.userId);
+        RoomModel room = roomService.CreateRoom(dto.deviceList, dto.name, socket.getMetadata().userInfo.userId);
         if (room != null)
         {
             
-            //TODO make this return one room to add to frontend list instead of override
             var mess = new ServerReturnsBasicRoomStatus()
             {
                 basicRoomListData = roomService.getBasicRoomWindowStatus(),

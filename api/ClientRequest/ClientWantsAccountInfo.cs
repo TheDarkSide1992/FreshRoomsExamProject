@@ -17,7 +17,7 @@ public class ClientWantsAccountInfo(AccountService accountService) : BaseEventHa
     public override Task Handle(ClientWantsAccountInfoDto dto, IWebSocketConnection socket)
     {
         
-        var metData = socket.GetMetadata();
+        var metData = socket.getMetadata();
         var accountInfo = accountService.getAccountnfo(metData.userInfo.userId);
 
         if (accountInfo != null)

@@ -1,6 +1,7 @@
 ﻿using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using api.State;
+using api.StaticHelpers.ExtentionMethods;
 using Infastructure.DataModels;
 using MQTTnet;
 using MQTTnet.Client;
@@ -16,14 +17,17 @@ namespace api.Mqtt;
 
 public class MqttClient(DeviceService _deviceService, RoomService _roomService)
 {
-   public IMqttClient _Client;
-   public MqttFactory Factory;
+   public IMqttClient _client;
+   public MqttFactory factory;
    public DateTime? timelastChecked = null;
 
+   /*
+    * this method handles all communication with the mqtt broker
+    */
    public async Task communicateWithMqttBroker()
    {
-       Factory = new MqttFactory();
-       _Client = Factory.CreateMqttClient();
+       factory = new MqttFactory();
+       _client = factory.CreateMqttClient();
 
        byte[]? caCertFile = null;
        X509Certificate2? caCert = null;
@@ -50,25 +54,27 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                    });
                })
            .Build();
-       await _Client.ConnectAsync(mqttClientOptions, CancellationToken.None);
+       await _client.ConnectAsync(mqttClientOptions, CancellationToken.None);
 
-       var mqttsensorsub = Factory.CreateSubscribeOptionsBuilder()
+       var mqttsensorsub = factory.CreateSubscribeOptionsBuilder()
            .WithTopicFilter(f => f.WithTopic("freshrooms/sensor/#"))
            .Build();
        
-       var mqttmotorsub = Factory.CreateSubscribeOptionsBuilder()
+       var mqttmotorsub = factory.CreateSubscribeOptionsBuilder()
            .WithTopicFilter(f => f.WithTopic("freshrooms/motor/status/#"))
            .Build();
-       await _Client.SubscribeAsync(mqttsensorsub, CancellationToken.None);
-       await _Client.SubscribeAsync(mqttmotorsub, CancellationToken.None);
+       var mqttdeviceverification = factory.CreateSubscribeOptionsBuilder()
+           .WithTopicFilter(f => f.WithTopic("freshrooms/verified/#"))
+           .Build();
+       await _client.SubscribeAsync(mqttsensorsub, CancellationToken.None);
+       await _client.SubscribeAsync(mqttmotorsub, CancellationToken.None);
+       await _client.SubscribeAsync(mqttdeviceverification, CancellationToken.None);
        Console.WriteLine("mqtt connection successfull");
-       _Client.ApplicationMessageReceivedAsync += async e =>
+       _client.ApplicationMessageReceivedAsync += async e =>
        {
            try
            {
                var message = e.ApplicationMessage.ConvertPayloadToString();
-               Console.WriteLine("topic: " + e.ApplicationMessage.Topic.ToString().Split("/")[2]);
-               Console.WriteLine("message: " + message);
                if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("sensor"))
                {
                    var roomid = _deviceService.getRoomIdFromDeviceId(e.ApplicationMessage.Topic.ToString().Split("/")[2]);
@@ -80,7 +86,11 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                else if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("motor") &&
                         e.ApplicationMessage.Topic.ToString().Split("/")[2].Equals("status"))
                {
-                   saveOrCreateMotorStatus(message,e.ApplicationMessage.Topic.ToString().Split("/")[3] );
+                   createMotorStatus(message,e.ApplicationMessage.Topic.ToString().Split("/")[3] );
+               }
+               else if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("verified"))
+               {
+                   sendVerificationToUsers(e.ApplicationMessage.Topic.ToString().Split("/")[2], message);
                }
            }
            catch (Exception ex)
@@ -100,7 +110,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
             .WithTopic(topic)
             .WithPayload(message)
             .Build();
-        await _Client.PublishAsync(pongMessage, CancellationToken.None);
+        await _client.PublishAsync(pongMessage, CancellationToken.None);
     }
 
     private void saveOrCreateSensordata(string message, string id)
@@ -110,7 +120,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
         _deviceService.createOrUpdateSensorData(obj);
         if (timelastChecked != null && DateTime.Now.Minute >= timelastChecked.Value.Minute + 5)
         {
-            openWindows(id);
+            autoOpenWindows(id);
         }
         if (timelastChecked == null)
         {
@@ -119,10 +129,10 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
         
     }
 
-    public void openWindows(string id)
+    public void autoOpenWindows(string id)
     {
-        var avrage = _deviceService.getAvrageRoomSensorData(id);
-        var pref = _roomService.getRoomPrefrencesConfiguration(avrage.roomId);
+        var avrage = _deviceService.getAverageRoomSensorData(id);
+        var pref = _roomService.getRoomPreferencesConfiguration(avrage.roomId);
         List<MotorModel> motors = _deviceService.getMotorsForRoom(avrage.roomId);
         if (avrage.Humidity <= pref.minHumidity || avrage.Humidity >= pref.maxHumidity)
         {
@@ -148,22 +158,21 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 {
                     sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "open");
                     m.isOpen = true;
-                    _deviceService.createOrUpdateMotorStatus(m);
+                    _deviceService.updateMotorStatusMQTT(m);
                 }
                 else
                 {
                     sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "close");
                     m.isOpen = false;
-                    _deviceService.createOrUpdateMotorStatus(m);
+                    _deviceService.updateMotorStatusMQTT(m);
                 }
             }
-            
         }
 
         timelastChecked = DateTime.Now;
     }
 
-    public void OpenAllWindowsWithUserInput(List<MotorModel> motors, bool open,int roomid)
+    public void openAllWindowsWithUserInput(List<MotorModel> motors, bool open,int roomid)
     {
         var message = "";
         foreach (var m in motors)
@@ -173,8 +182,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "open");
                 m.isOpen = true;
                 m.isDisabled = true;
-                Console.WriteLine(m.motorId);
-                _deviceService.updateMoterstatusWithUsersInput(m);
+                _deviceService.updateMotorstatusWithUsersInput(m);
                 message = "all windows are open or are being opened";
             }
             else
@@ -182,19 +190,18 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "close");
                 m.isOpen = false;
                 m.isDisabled = false;
-                Console.WriteLine(m.motorId);
-                _deviceService.updateMoterstatusWithUsersInput(m);
+                _deviceService.updateMotorstatusWithUsersInput(m);
                 message = "all windows are closed or are being closed";
             }
         }
         sendMotorDataForAllMotorsToAllUsersInRooms(roomid ,motors, message);
     }
     
-    private void saveOrCreateMotorStatus(string message, string id)
+    private void createMotorStatus(string message, string id)
     {
         var obj = JsonSerializer.Deserialize<MotorModel>(message);
         obj.motorId = id;
-        _deviceService.createOrUpdateMotorStatus(obj);
+        _deviceService.updateMotorStatusMQTT(obj);
     }
 
     public void sendSensorDataToAllUsersInRooms(int id, SensorModel model)
@@ -234,6 +241,29 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
         else
         {
             sendMessageToTopic("freshrooms/motor/action/" + motor.motorId, "close");
+        }
+    }
+
+    public void verifyDeviceGuid(string guid)
+    {
+        sendMessageToTopic("freshrooms/verify/" + guid, "verify");
+    }
+    
+    public void sendVerificationToUsers(string deviceId, string deviceType)
+    {
+        
+        if ( WebSocketConnections.deviceVerificationList.TryGetValue(deviceId, out var guid))
+        {
+                if(WebSocketConnections.connections.TryGetValue(guid, out var ws))
+                {
+                    ws.Socket.Send(JsonSerializer.Serialize(new ServerRespondsToDeviceVerificationDto
+                    {
+                        foundDevice = true,
+                        deviceTypeName = deviceType,
+                        deviceGuid = deviceId
+                    }));
+                    ws.Socket.removeDeviceId(deviceId);
+                }
         }
     }
 }

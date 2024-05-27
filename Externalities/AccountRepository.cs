@@ -14,8 +14,10 @@ public class AccountRepository
         _dataSource = dataSource;
     }
 
-
-    public User CreateUser(int id, string userDisplayName, string userEmail, bool isDeleted)
+    /**
+     * This method is used to create a user in the DB
+     */
+    public User createUser(int id, string userDisplayName, string userEmail, bool isDeleted)
     {
         var sql =
             $@"INSERT INTO freshrooms.users (userId, name, email, isDeleted) VALUES(@id, @userDisplayName, @userEmail, @isDeleted) RETURNING 
@@ -37,7 +39,10 @@ public class AccountRepository
     }
 
 
-    public User? GetById(int id)
+    /**
+     * This method is used to get a user object from the DB, by using the user id.
+     */
+    public User? getById(int id)
     {
         try
         {
@@ -55,7 +60,10 @@ public class AccountRepository
         }
     }
 
-    public int CheckIfUserIsDeleted(int id)
+    /**
+     * This is used to check if a user is deleted, by checking if it exist in the DB
+     */
+    public int checkIfUserIsDeleted(int id)
     {
         try
         {
@@ -73,7 +81,10 @@ public class AccountRepository
         }
     }
 
-    public AccountInfo getAccountIngo(int id)
+    /**
+     *This is used to get account info for the user from DB
+     */
+    public AccountInfo getAccountInfo(int id)
     {
         var sql = $@"select
                    name as {nameof(AccountInfo.realname)},
@@ -86,7 +97,6 @@ public class AccountRepository
         {
             using (var connection = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql get account info"); //TODO Remowe Before deployment
                 return connection.QueryFirst<AccountInfo>(sql, new { id });
             }
         }
@@ -96,6 +106,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *This is used to get the city tied to the user from DB
+     */
     public string getCityFromUser(int id)
     {
         var sql = $@"select city from freshrooms.users where userId = @id";
@@ -112,6 +125,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *this is used to update the users name in the DB
+     */
     public void updateName(int userInfoUserId, string? dtoNewNameDto)
     {
         var sql = $@"
@@ -122,7 +138,6 @@ public class AccountRepository
         {
             using (var conn = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql update Name"); //TODO Remowe Before deployment
                 conn.Execute(sql, new { dtoNewNameDto, userInfoUserId });
             }
         }
@@ -132,6 +147,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *This is used to update the users email in the DB
+     */
     public void updateEmail(int userInfoUserId, string? dtoNewEmailDto)
     {
         var sql = $@"
@@ -141,7 +159,6 @@ public class AccountRepository
         {
             using (var conn = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql update Email"); //TODO Remowe Before deployment
                 conn.Execute(sql, new { dtoNewEmailDto, userInfoUserId });
             }
         }
@@ -151,6 +168,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *This is used to update the city tied to the user in the DB
+     */
     public void updateCity(int userInfoUserId, string? dtoNewCityDto)
     {
         var sql = $@"
@@ -161,7 +181,6 @@ public class AccountRepository
         {
             using (var conn = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql update City"); //TODO Remowe Before deployment
                 conn.Execute(sql, new { dtoNewCityDto, userInfoUserId });
             }
         }
@@ -171,6 +190,9 @@ public class AccountRepository
         }
     }
 
+    /**
+     *This is used to check in the DB, if the user is an Admin
+     */
     public bool isAdmin(int userInfoUserId)
     {
         var sql = $@"SELECT id FROM freshrooms.accountcode WHERE id = @userInfoUserId AND accperm = 'admin'";

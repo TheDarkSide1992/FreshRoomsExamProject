@@ -142,30 +142,30 @@ export class AccountSettingsPage implements OnInit{
 
 
   async saveChanges() {
-    let newName: string = "";
-    let newEmail: string = "";
-    let newCity: string = "";
-    let newPassword: string = "";
+    let newName: string | null= "";
+    let newEmail: string | null = "";
+    let newCity: string | null = "";
+    let newPassword: string  | null = "";
 
     if (this.changeNameForm.value != null && this.changeNameForm.value?.trim() != "") {
-      newName = this.changeNameForm.value;
+      newName = this.changeNameForm.value.trim();
     } else {
-      newName = "N/A";
+      newName = null;
     }
     if (this.changeEmailForm.value != null && this.changeEmailForm.value?.trim() != "") {
-      newEmail = this.changeEmailForm.value;
+      newEmail = this.changeEmailForm.value.trim();
     } else {
-      newEmail = "N/A";
+      newEmail = null;
     }
     if (this.changeCityForm.value != null && this.changeCityForm.value?.trim() != "") {
-      newCity = this.changeCityForm.value;
+      newCity = this.changeCityForm.value.trim();
     } else {
-      newCity = "N/A";
+      newCity = null;
     }
     if (this.changePasswordForm.value != null && this.changePasswordForm.value?.trim() != "") {
-      newPassword = this.changePasswordForm.value;
+      newPassword = this.changePasswordForm.value.trim();
     } else {
-      newPassword = "N/A";
+      newPassword = null;
     }
 
 

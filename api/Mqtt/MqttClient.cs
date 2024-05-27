@@ -258,9 +258,9 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 {
                     ws.Socket.Send(JsonSerializer.Serialize(new ServerRespondsToDeviceVerificationDto
                     {
-                        foundSensor = true,
+                        foundDevice = true,
                         deviceTypeName = deviceType,
-                        sensorGuid = deviceId
+                        deviceGuid = deviceId
                     }));
                     ws.Socket.removeDeviceId(deviceId);
                 }

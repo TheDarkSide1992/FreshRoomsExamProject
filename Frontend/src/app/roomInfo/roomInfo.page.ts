@@ -206,7 +206,7 @@ export class RoomInfoPage implements OnInit {
         this.removeFromPreviousRoom();
         this.getRoomInfo();
         this.getConfig();
-      };
+      }
     });
 
 

@@ -1,8 +1,8 @@
 import {BaseDto} from "../objects/baseDto";
 
 export class ServerRespondsToDeviceVerification extends BaseDto<ServerRespondsToDeviceVerification>{
-  foundSensor? : Boolean;
+  foundDevice? : Boolean;
   deviceTypeName? : string;
-  sensorGuid? : string;
+  deviceGuid? : string;
 }
 

@@ -118,7 +118,7 @@ export class WebsocketClientService {
   async ServerRespondsToDeviceVerification(dto: ServerRespondsToDeviceVerification) {
     let tempDevice: DeviceModel = {
       deviceTypeName: dto.deviceTypeName,
-      deviceGuid: dto.sensorGuid,
+      deviceGuid: dto.deviceGuid,
     }
     this.deviceList.push(tempDevice);
   }

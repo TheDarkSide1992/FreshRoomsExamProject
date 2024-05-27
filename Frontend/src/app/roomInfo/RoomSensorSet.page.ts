@@ -90,7 +90,7 @@ import {ClientWantsToUpdateRoomConf} from "../Models/Client/ClientWantsToUpdateR
         <ion-card>
           <ion-button style="align-self: center" (click)="saveChanges()">
             <ion-icon name="save-outline"></ion-icon>
-            Edit
+            Save
           </ion-button>
         </ion-card>
       </div>
@@ -135,7 +135,7 @@ export class RoomSensorSetPage {
       return;
     }
 
-    this.minTemp = this.SensorTempMax.value!;
+    this.minTemp = this.SensorTempMin.value!;
     this.maxTemp = this.SensorTempMax.value!;
     this.minHum = this.SensorHumMin.value!;
     this.maxHum = this.SensorHumMax.value!;

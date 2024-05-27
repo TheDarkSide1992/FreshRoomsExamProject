@@ -1,8 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {IonContent} from "@ionic/angular";
-import {FormControl, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
 import {WebsocketClientService} from "../Services/service.websocketClient";
 import {ClientWantsAccountInfo} from "../Models/Client/ClientWantsAccountInfo";
 

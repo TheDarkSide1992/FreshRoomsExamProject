@@ -15,10 +15,10 @@ public class ClientWantsToAuthenticateWithJwt(AccountService accountService, Mqt
 {
     public override Task Handle(ClientWantsToAuthenticateWithJwtDto dto, IWebSocketConnection socket)
     {
-        var claims = SecurityUtilities.ValidateJwtAndReturnClaims(dto.jwt!);
+        var claims = SecurityUtilities.validateJwtAndReturnClaims(dto.jwt!);
         var user = accountService.FindUserfromId(int.Parse(claims["u"]));
-        socket.Authenticate(user);
-        if (mqttClient._Client == null)
+        socket.authenticate(user);
+        if (mqttClient._client == null)
         {
             mqttClient.communicateWithMqttBroker();
         }

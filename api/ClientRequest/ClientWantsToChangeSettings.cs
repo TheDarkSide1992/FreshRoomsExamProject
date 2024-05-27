@@ -17,7 +17,7 @@ public class ClientWantsToChangeSettings(AccountService accountService) : BaseEv
     public override Task Handle(ClientWantsToChangeSettingsDto dto, IWebSocketConnection socket)
     {
         
-        var metData = socket.GetMetadata();
+        var metData = socket.getMetadata();
         bool succes = accountService.changeAccountInfo(metData.userInfo.userId, dto.newNameDto, dto.newEmailDto, dto.newCityDto, dto.newPasswordDto);
 
 

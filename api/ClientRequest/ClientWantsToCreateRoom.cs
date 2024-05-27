@@ -16,7 +16,7 @@ public class ClientWantsToCreateRoom(RoomService roomService) : BaseEventHandler
 {
     public override Task Handle(ClientWantsToCreateRoomDto dto, IWebSocketConnection socket)
     {
-        RoomModel room = roomService.CreateRoom(dto.deviceList, dto.name, socket.GetMetadata().userInfo.userId);
+        RoomModel room = roomService.CreateRoom(dto.deviceList, dto.name, socket.getMetadata().userInfo.userId);
         if (room != null)
         {
             

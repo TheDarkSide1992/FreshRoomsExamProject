@@ -27,9 +27,9 @@ public class AccountService
         while (true)
         {
             guid = Guid.NewGuid();
-            if (!_hashRepository.CheckIfGuidExist(guid.ToString()))
+            if (!_hashRepository.checkIfGuidExist(guid.ToString()))
             {
-                _hashRepository.CreateGuid(guid.ToString(), "user");
+                _hashRepository.createGuid(guid.ToString(), "user");
                 return guid.ToString();
             }
         }
@@ -37,16 +37,16 @@ public class AccountService
 
     public User CreateUser(string userDisplayName, string userEmail, string password, string guid)
     {
-        int userId = _hashRepository.GetIdFromGuid(guid);
+        int userId = _hashRepository.getIdFromGuid(guid);
         Console.WriteLine("first succes");
         if (userId != null && userId > 0)
         {
-            var hashAlgorithm = PasswordHashAlgorithm.Create();
-            var salt = hashAlgorithm.GenerateSalt();
-            var hash = hashAlgorithm.HashPassword(password, salt);
+            var hashAlgorithm = PasswordHashAlgorithm.create();
+            var salt = hashAlgorithm.generateSalt();
+            var hash = hashAlgorithm.hashPassword(password, salt);
 
-            var user = _accountRepository.CreateUser(userId, userDisplayName, userEmail, false);
-            _hashRepository.CreatePasswordHash(userId, hash, salt, hashAlgorithm.GetName());
+            var user = _accountRepository.createUser(userId, userDisplayName, userEmail, false);
+            _hashRepository.createPasswordHash(userId, hash, salt, hashAlgorithm.getName());
             return user;
         }
 
@@ -55,10 +55,10 @@ public class AccountService
 
     public User? Login(string email, string password)
     {
-        var passwordHash = _hashRepository.GetByEmail(email);
-        var hashAlgorithm = PasswordHashAlgorithm.Create(passwordHash.Algorithm);
-        var isValid = hashAlgorithm.VerifyHashedPassword(password, passwordHash.Hash, passwordHash.Salt);
-        if (isValid) return _accountRepository.GetById(passwordHash.id);
+        var passwordHash = _hashRepository.getByEmail(email);
+        var hashAlgorithm = PasswordHashAlgorithm.create(passwordHash.Algorithm);
+        var isValid = hashAlgorithm.verifyHashedPassword(password, passwordHash.Hash, passwordHash.Salt);
+        if (isValid) return _accountRepository.getById(passwordHash.id);
 
         return null;
     }
@@ -67,11 +67,11 @@ public class AccountService
     {
         try
         {
-            var userexists = _accountRepository.CheckIfUserIsDeleted(id);
+            var userexists = _accountRepository.checkIfUserIsDeleted(id);
             Console.WriteLine(userexists);
             if (userexists == 0)
             {
-                return _accountRepository.GetById(id);
+                return _accountRepository.getById(id);
             }
         }
         catch (Exception e)
@@ -136,10 +136,10 @@ public class AccountService
         if (dtoNewPasswordDto != "N/A")
         {
             //TODO HASH PASSWROD
-            var hashAlgorithm = PasswordHashAlgorithm.Create();
-            var salt = hashAlgorithm.GenerateSalt();
-            var hash = hashAlgorithm.HashPassword(dtoNewPasswordDto, salt);
-            _hashRepository.UpdatePasswordHash(userInfoUserId, hash, salt, hashAlgorithm.GetName());
+            var hashAlgorithm = PasswordHashAlgorithm.create();
+            var salt = hashAlgorithm.generateSalt();
+            var hash = hashAlgorithm.hashPassword(dtoNewPasswordDto, salt);
+            _hashRepository.updatePasswordHash(userInfoUserId, hash, salt, hashAlgorithm.getName());
             
             couldUpdate = true;
         }

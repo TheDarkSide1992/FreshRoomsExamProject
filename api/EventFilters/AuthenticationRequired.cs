@@ -9,7 +9,7 @@ public class AuthenticationRequired: BaseEventFilter
 {
     public override Task Handle<T>(IWebSocketConnection socket, T dto)
     {
-        if (!socket.GetMetadata().isAuthenticated)
+        if (!socket.getMetadata().isAuthenticated)
         {
             throw new AuthenticationException("you are not logged in please login and try again");
         }

@@ -13,7 +13,7 @@ public class ClientWantsToOpenOrCloseAllWindowsInRoom(DeviceService _deviceServi
     public override Task Handle(ClientWantsToOpenOrCloseAllWindowsInRoomDto dto, IWebSocketConnection socket)
     {
         var motors = _deviceService.getMotorsForRoom(dto.id);
-        mqttClient.OpenAllWindowsWithUserInput(motors,dto.open,dto.id);
+        mqttClient.openAllWindowsWithUserInput(motors,dto.open,dto.id);
         if (dto.open)
         {
             _deviceService.updateAllMotorsInAroom(dto.id,dto.open, true);

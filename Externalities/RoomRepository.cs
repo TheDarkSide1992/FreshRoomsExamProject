@@ -17,7 +17,7 @@ public class RoomRepository
     /**
      *This is used to create a room in the DB
      */
-    public RoomModel CreateRoom(string name, int createdBy)
+    public RoomModel createRoom(string name, int createdBy)
     {
         
         var sql =
@@ -42,7 +42,7 @@ public class RoomRepository
     /**
      *This is used to create a roomConfig related to a specific room in the DB
      */
-    public bool CreateRoomConfig(int roomId)
+    public bool createRoomConfig(int roomId)
     {
         
         var sql =
@@ -123,7 +123,7 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
     /**
      *This deletes a roomconfig in the db for a specific room
      */
-    public bool DeleteRoomConfig(int roomId)
+    public bool deleteRoomConfig(int roomId)
     {
         var sql = $@"DELETE FROM freshrooms.roomConfig WHERE roomId = @roomId;";
         using (var conn = _dataSource.OpenConnection())
@@ -142,7 +142,7 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
     /**
      *This deletes a specific room in the db.
      */
-    public bool DeleteRoom(int roomId)
+    public bool deleteRoom(int roomId)
     {
         var sql = $@"DELETE FROM freshrooms.rooms WHERE roomId = @roomId;";
         using (var conn = _dataSource.OpenConnection())
@@ -161,7 +161,7 @@ SET mintemparature = @dtoUpdatedMinTemperature, maxtemparature = @dtoUpdatedMaxT
     /**
      *This returns a list of BasicRoomSettingModel
      */
-    public IEnumerable<BasicRoomSettingModel> GetALLRoomSettings()
+    public IEnumerable<BasicRoomSettingModel> getAllRoomSettings()
     {
         var sql = $@"select r.roomid,
        roomname as {nameof(BasicRoomSettingModel.roomName)},

@@ -20,10 +20,10 @@ public class RoomService
     
     public RoomModel CreateRoom(IEnumerable<DeviceModel> deviceList, string name, int createdBy)
     {
-        RoomModel roomModel = _roomRepository.CreateRoom(name, createdBy);
+        RoomModel roomModel = _roomRepository.createRoom(name, createdBy);
         if (roomModel != null)
         {
-            _roomRepository.CreateRoomConfig(roomModel.roomId);
+            _roomRepository.createRoomConfig(roomModel.roomId);
             _deviceRepository.updateDevices(deviceList, roomModel.roomId);
             _deviceRepository.createMoterStatusList(deviceList);
             return roomModel;
@@ -33,14 +33,14 @@ public class RoomService
 
     public bool DeleteRoom(int roomId)
     {
-        if (_roomRepository.DeleteRoomConfig(roomId))
+        if (_roomRepository.deleteRoomConfig(roomId))
         {
             _deviceRepository.deleteHistoricDataForRoom(roomId);
             _deviceRepository.deleteCurrentDataForRoom(roomId);
             _deviceRepository.deleteMotorStatus(roomId);
             if (_deviceRepository.deleteRoomIdOnDevices(roomId))
             {
-                return _roomRepository.DeleteRoom(roomId);
+                return _roomRepository.deleteRoom(roomId);
             }
         }
         else
@@ -81,7 +81,7 @@ public class RoomService
         try
         {
             List<BasicRoomStatus> roomStatusList = new List<BasicRoomStatus>();
-        IEnumerable<BasicRoomSettingModel> roomConfigModels = _roomRepository.GetALLRoomSettings();
+        IEnumerable<BasicRoomSettingModel> roomConfigModels = _roomRepository.getAllRoomSettings();
         List<BasicDeviceDModel> basicDeviceDList = _deviceRepository.getBasicDeviceData();
         
         foreach (var roomConfig in roomConfigModels)

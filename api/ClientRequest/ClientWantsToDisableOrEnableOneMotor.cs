@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using api.State;
 using Fleck;
 using lib;
@@ -8,6 +9,7 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
 public class ClientWantsToDisableOrEnableOneMotor(DeviceService _deviceService) : BaseEventHandler<ClientWantsToDisableOrEnableOneMotorDto>
 {
     public override Task Handle(ClientWantsToDisableOrEnableOneMotorDto dto, IWebSocketConnection socket)

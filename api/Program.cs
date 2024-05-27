@@ -46,8 +46,8 @@ public static class StartUp
 
         void Config(IWebSocketConnection ws)
         {
-            ws.OnOpen = ws.AddConnection;
-            ws.OnClose = ws.RemoveFromConnections;
+            ws.OnOpen = ws.addConnection;
+            ws.OnClose = ws.removeFromConnections;
             ws.OnError = ex => ex.Handle(ws, null);
             ws.OnMessage = async message =>
             {

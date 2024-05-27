@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using api.Dtos;
+using api.EventFilters;
 using api.Mqtt;
 using api.State;
 using Fleck;
@@ -10,6 +11,7 @@ using socketAPIFirst.Dtos;
 
 namespace api.ClientRequest;
 
+[AuthenticationRequired]
 public class ClientWantsToOpenOrCloseWindow(DeviceService _deviceService, MqttClient mqttClient) : BaseEventHandler<ClientWantsToOpenOrCloseWindowDto>
 {
     public override Task Handle(ClientWantsToOpenOrCloseWindowDto dto, IWebSocketConnection socket)

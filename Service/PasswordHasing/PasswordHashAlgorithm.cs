@@ -4,36 +4,36 @@ namespace Service;
 
 public abstract class PasswordHashAlgorithm
 {
-    const string PreferredAlgorithmName = Argon2idPasswordHashAlgorithm.Name;
+    const string PreferredAlgorithmName = Argon2idPasswordHashAlgorithm.name;
 
-    public static PasswordHashAlgorithm Create(string algorithmName = PreferredAlgorithmName)
+    public static PasswordHashAlgorithm create(string algorithmName = PreferredAlgorithmName)
     {
         switch (algorithmName)
         {
-            case Argon2idPasswordHashAlgorithm.Name:
+            case Argon2idPasswordHashAlgorithm.name:
                 return new Argon2idPasswordHashAlgorithm();
             default:
                 throw new NotImplementedException();
         }
     }
 
-    public abstract string GetName();
+    public abstract string getName();
 
-    public abstract string HashPassword(string password, string salt);
+    public abstract string hashPassword(string password, string salt);
 
-    public abstract bool VerifyHashedPassword(string password, string hash, string salt);
+    public abstract bool verifyHashedPassword(string password, string hash, string salt);
 
-    public string GenerateSalt()
+    public string generateSalt()
     {
-        return Encode(RandomNumberGenerator.GetBytes(128));
+        return encode(RandomNumberGenerator.GetBytes(128));
     }
 
-    protected byte[] Decode(string value)
+    protected byte[] decode(string value)
     {
         return Convert.FromBase64String(value);
     }
 
-    protected string Encode(byte[] value)
+    protected string encode(byte[] value)
     {
         return Convert.ToBase64String(value);
     }

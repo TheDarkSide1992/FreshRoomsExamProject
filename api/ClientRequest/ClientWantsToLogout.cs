@@ -14,7 +14,7 @@ public class ClientWantsToLogout: BaseEventHandler<ClientWantsToLogoutDto>
 {
     public override Task Handle(ClientWantsToLogoutDto dto, IWebSocketConnection socket)
     {
-        socket.UnAuthenticate();
+        socket.unAuthenticate();
         socket.Send(JsonSerializer.Serialize(new ServerLogsoutUser()));
         return Task.CompletedTask;
     }

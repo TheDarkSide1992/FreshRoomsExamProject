@@ -11,7 +11,7 @@ public class ClientWantsToVerifyDevice(MqttClient mqttClient) : BaseEventHandler
 {
     public override Task Handle(ClientWantsToVerifyDeviceDto dto, IWebSocketConnection socket)
     {
-        socket.AddDeviceId(dto.sensorGuid);
+        socket.addDeviceId(dto.sensorGuid);
         mqttClient.verifyDeviceGuid(dto.sensorGuid);
         return Task.CompletedTask;
     }

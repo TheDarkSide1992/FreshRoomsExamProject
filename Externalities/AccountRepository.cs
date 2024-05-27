@@ -17,7 +17,7 @@ public class AccountRepository
     /**
      * This method is used to create a user in the DB
      */
-    public User CreateUser(int id, string userDisplayName, string userEmail, bool isDeleted)
+    public User createUser(int id, string userDisplayName, string userEmail, bool isDeleted)
     {
         var sql =
             $@"INSERT INTO freshrooms.users (userId, name, email, isDeleted) VALUES(@id, @userDisplayName, @userEmail, @isDeleted) RETURNING 
@@ -42,7 +42,7 @@ public class AccountRepository
     /**
      * This method is used to get a user object from the DB, by using the user id.
      */
-    public User? GetById(int id)
+    public User? getById(int id)
     {
         try
         {
@@ -63,7 +63,7 @@ public class AccountRepository
     /**
      * This is used to check if a user is deleted, by checking if it exist in the DB
      */
-    public int CheckIfUserIsDeleted(int id)
+    public int checkIfUserIsDeleted(int id)
     {
         try
         {

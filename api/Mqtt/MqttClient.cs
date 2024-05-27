@@ -17,14 +17,17 @@ namespace api.Mqtt;
 
 public class MqttClient(DeviceService _deviceService, RoomService _roomService)
 {
-   public IMqttClient _Client;
-   public MqttFactory Factory;
+   public IMqttClient _client;
+   public MqttFactory factory;
    public DateTime? timelastChecked = null;
 
+   /*
+    * this method handles all communication with the mqtt broker
+    */
    public async Task communicateWithMqttBroker()
    {
-       Factory = new MqttFactory();
-       _Client = Factory.CreateMqttClient();
+       factory = new MqttFactory();
+       _client = factory.CreateMqttClient();
 
        byte[]? caCertFile = null;
        X509Certificate2? caCert = null;
@@ -51,23 +54,23 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                    });
                })
            .Build();
-       await _Client.ConnectAsync(mqttClientOptions, CancellationToken.None);
+       await _client.ConnectAsync(mqttClientOptions, CancellationToken.None);
 
-       var mqttsensorsub = Factory.CreateSubscribeOptionsBuilder()
+       var mqttsensorsub = factory.CreateSubscribeOptionsBuilder()
            .WithTopicFilter(f => f.WithTopic("freshrooms/sensor/#"))
            .Build();
        
-       var mqttmotorsub = Factory.CreateSubscribeOptionsBuilder()
+       var mqttmotorsub = factory.CreateSubscribeOptionsBuilder()
            .WithTopicFilter(f => f.WithTopic("freshrooms/motor/status/#"))
            .Build();
-       var mqttdeviceverification = Factory.CreateSubscribeOptionsBuilder()
+       var mqttdeviceverification = factory.CreateSubscribeOptionsBuilder()
            .WithTopicFilter(f => f.WithTopic("freshrooms/verified/#"))
            .Build();
-       await _Client.SubscribeAsync(mqttsensorsub, CancellationToken.None);
-       await _Client.SubscribeAsync(mqttmotorsub, CancellationToken.None);
-       await _Client.SubscribeAsync(mqttdeviceverification, CancellationToken.None);
+       await _client.SubscribeAsync(mqttsensorsub, CancellationToken.None);
+       await _client.SubscribeAsync(mqttmotorsub, CancellationToken.None);
+       await _client.SubscribeAsync(mqttdeviceverification, CancellationToken.None);
        Console.WriteLine("mqtt connection successfull");
-       _Client.ApplicationMessageReceivedAsync += async e =>
+       _client.ApplicationMessageReceivedAsync += async e =>
        {
            try
            {
@@ -111,7 +114,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
             .WithTopic(topic)
             .WithPayload(message)
             .Build();
-        await _Client.PublishAsync(pongMessage, CancellationToken.None);
+        await _client.PublishAsync(pongMessage, CancellationToken.None);
     }
 
     private void saveOrCreateSensordata(string message, string id)
@@ -173,7 +176,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
         timelastChecked = DateTime.Now;
     }
 
-    public void OpenAllWindowsWithUserInput(List<MotorModel> motors, bool open,int roomid)
+    public void openAllWindowsWithUserInput(List<MotorModel> motors, bool open,int roomid)
     {
         var message = "";
         foreach (var m in motors)
@@ -268,7 +271,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                         deviceTypeName = deviceType,
                         sensorGuid = deviceId
                     }));
-                    ws.Socket.RemoveDeviceId(deviceId);
+                    ws.Socket.removeDeviceId(deviceId);
                 }
         }
     }

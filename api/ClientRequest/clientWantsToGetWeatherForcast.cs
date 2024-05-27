@@ -16,7 +16,7 @@ public class clientWantsToGetWeatherForcast(AccountService accountService, OpenM
 {
     public override async Task Handle(clientWantsToGetWeatherForcastDto dto, IWebSocketConnection socket)
     {
-        var metadata = socket.GetMetadata();
+        var metadata = socket.getMetadata();
         var city = accountService.getCity(metadata.userInfo.userId);
         var location = await openMeteo.getlocation(city);
         var dailyForcast = await openMeteo.getDailyForecast(location);

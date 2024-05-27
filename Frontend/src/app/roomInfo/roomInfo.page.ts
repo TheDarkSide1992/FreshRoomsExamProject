@@ -9,9 +9,10 @@ import {ClientWantsToOpenOrCloseAllWindowsInRoom} from "../Models/Client/ClientW
 import {MotorModel} from "../Models/objects/MotorModel";
 import {ClientWantsToOpenOrCloseWindow} from "../Models/Client/ClientWantsToOpenOrCloseWindow";
 import {ClientWantsToDisableOrEnableOneMotor} from "../Models/Client/ClientWantsToDisableOrEnableOneMotor";
-import {ClientWantsToDisableOrEnableAllMotorsFromRoom} from "../Models/Client/ClientWantsToDisableOrEnableAllMotorsFromRoom";
+import {
+  ClientWantsToDisableOrEnableAllMotorsFromRoom
+} from "../Models/Client/ClientWantsToDisableOrEnableAllMotorsFromRoom";
 import {ClientWantsToLeaveRoom} from "../Models/Client/ClientWantsToLeaveRoom";
-
 
 
 @Component({

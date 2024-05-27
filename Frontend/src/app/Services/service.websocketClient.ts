@@ -24,7 +24,9 @@ import {ServerReturnsDetailedRoomToUser} from "../Models/Server/ServerReturnsDet
 import {ServerReturnsNewestSensorData} from "../Models/Server/ServerReturnsNewestSensorData";
 import {ServerReturnsBasicRoomStatus} from "../Models/Server/ServerReturnsBasicRoomStatus";
 import {BasicRoomStatusModel} from "../Models/objects/BasicRoomStatusModel";
-import {ServerReturnsNewMotorStatusForAllMotorsInRoom} from "../Models/Server/ServerReturnsNewMotorStatusForAllMotorsInRoom";
+import {
+  ServerReturnsNewMotorStatusForAllMotorsInRoom
+} from "../Models/Server/ServerReturnsNewMotorStatusForAllMotorsInRoom";
 import {ServerReturnsNewMotorStatusForOneMotor} from "../Models/Server/ServerReturnsNewMotorStatusForOneMotor";
 
 

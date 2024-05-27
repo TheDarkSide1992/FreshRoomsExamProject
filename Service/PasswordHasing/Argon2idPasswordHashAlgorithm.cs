@@ -5,24 +5,24 @@ namespace Service;
 
 public class Argon2idPasswordHashAlgorithm : PasswordHashAlgorithm
 {
-    public const string Name = "argon2id";
+    public const string name = "argon2id";
 
-    public override string GetName() => Name;
+    public override string getName() => name;
 
-    public override string HashPassword(string password, string salt)
+    public override string hashPassword(string password, string salt)
     {
         using var hashAlgo = new Argon2id(Encoding.UTF8.GetBytes(password))
         {
-            Salt = Decode(salt),
+            Salt = decode(salt),
             MemorySize = 12288,
             Iterations = 10,
             DegreeOfParallelism = 1,
         };
-        return Encode(hashAlgo.GetBytes(256));
+        return encode(hashAlgo.GetBytes(256));
     }
 
-    public override bool VerifyHashedPassword(string password, string hash, string salt)
+    public override bool verifyHashedPassword(string password, string hash, string salt)
     {
-        return HashPassword(password, salt).SequenceEqual(hash);
+        return hashPassword(password, salt).SequenceEqual(hash);
     }
 }

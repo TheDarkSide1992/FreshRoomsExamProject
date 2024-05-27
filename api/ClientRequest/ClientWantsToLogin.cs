@@ -24,12 +24,12 @@ public class ClientWantsToLogin(AccountService accountService, MqttClient mqttCl
             User user = accountService.Login(dto.email, dto.password);
             if (user != null)
                 {
-                    socket.Authenticate(user);
-                    if (mqttClient._Client == null)
+                    socket.authenticate(user);
+                    if (mqttClient._client == null)
                     {
                         mqttClient.communicateWithMqttBroker();
                     }
-                    socket.Send(JsonSerializer.Serialize(new ServerLogsInUser { jwt = SecurityUtilities.IssueJwt(user.userId) }));
+                    socket.Send(JsonSerializer.Serialize(new ServerLogsInUser { jwt = SecurityUtilities.issueJwt(user.userId) }));
                 }
         }
         catch (Exception e)

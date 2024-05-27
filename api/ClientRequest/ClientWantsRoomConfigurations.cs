@@ -14,7 +14,7 @@ public class ClientWantsRoomConfigurations(RoomService service) : BaseEventHandl
 {
     public override Task Handle(ClientWantsRoomConfigurationsDto dto, IWebSocketConnection socket)
     {
-        var roomConf = service.getRoomPrefrencesConfiguration(dto.roomId);
+        var roomConf = service.getRoomPreferencesConfiguration(dto.roomId);
         var roomConfig = new ServerSendsRoomConfigurations(){
             minTemparature = roomConf.minTemparature,
             maxTemparature = roomConf.maxTemparature,

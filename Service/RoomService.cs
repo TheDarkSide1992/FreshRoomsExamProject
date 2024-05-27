@@ -51,14 +51,14 @@ public class RoomService
         return false;
     }
     
-    public RoomConfigModel getRoomPrefrencesConfiguration(int dtoRoomId)
+    public RoomConfigModel getRoomPreferencesConfiguration(int dtoRoomId)
     {
         return _roomRepository.getRoomPreferencesConfiguration(dtoRoomId);
     }
 
 
    
-    public RoomConfigModel updateRoomPrefrencesConfiguration(int userInfoUserId, int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, double dtoUpdatedMinHumidity, double dtoUpdatedMaxHumidity, double dtoUpdatedMinAq, double dtoUpdatedMaxAq)
+    public RoomConfigModel updateRoomPreferencesConfiguration(int userInfoUserId, int dtoRoomId, double dtoUpdatedMinTemperature, double dtoUpdatedMaxTemperature, double dtoUpdatedMinHumidity, double dtoUpdatedMaxHumidity, double dtoUpdatedMinAq, double dtoUpdatedMaxAq)
     {
         if (_accountRepository.isAdmin(userInfoUserId))
         {

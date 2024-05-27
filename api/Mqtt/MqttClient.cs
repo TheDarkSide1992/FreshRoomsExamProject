@@ -120,7 +120,7 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
         _deviceService.createOrUpdateSensorData(obj);
         if (timelastChecked != null && DateTime.Now.Minute >= timelastChecked.Value.Minute + 5)
         {
-            openWindows(id);
+            autoOpenWindows(id);
         }
         if (timelastChecked == null)
         {
@@ -129,10 +129,10 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
         
     }
 
-    public void openWindows(string id)
+    public void autoOpenWindows(string id)
     {
         var avrage = _deviceService.getAverageRoomSensorData(id);
-        var pref = _roomService.getRoomPrefrencesConfiguration(avrage.roomId);
+        var pref = _roomService.getRoomPreferencesConfiguration(avrage.roomId);
         List<MotorModel> motors = _deviceService.getMotorsForRoom(avrage.roomId);
         if (avrage.Humidity <= pref.minHumidity || avrage.Humidity >= pref.maxHumidity)
         {

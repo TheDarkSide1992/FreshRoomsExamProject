@@ -22,13 +22,17 @@ public class OpenMeteoApi
             var url = $"https://geocoding-api.open-meteo.com/v1/search?name={city.ToLower()}&count=10&language=en&format=json";
             var response = await _client.GetStringAsync(url);
             GeolocationModels locations = JsonSerializer.Deserialize<GeolocationModels>(response);
-            return locations;
+            if (locations.results != null || locations.results.Count != 0)
+            {
+                return locations;
+            }
+
+            return null;
         }
         catch (Exception e)
         {
-            throw new GeolocationExeption("failed to get location");
+            throw new GeolocationExeption("Could not find anything, please Confirm the location name and try again");
         }
-
     }
     
     /**

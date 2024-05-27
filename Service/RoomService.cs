@@ -33,21 +33,23 @@ public class RoomService
 
     public bool DeleteRoom(int roomId)
     {
-        if (_roomRepository.deleteRoomConfig(roomId))
+        try
         {
-            _deviceRepository.deleteHistoricDataForRoom(roomId);
-            _deviceRepository.deleteCurrentDataForRoom(roomId);
-            _deviceRepository.deleteMotorStatus(roomId);
-            if (_deviceRepository.deleteRoomIdOnDevices(roomId))
+            if (_roomRepository.deleteRoomConfig(roomId))
             {
-                return _roomRepository.deleteRoom(roomId);
+                _deviceRepository.deleteHistoricDataForRoom(roomId);
+                _deviceRepository.deleteCurrentDataForRoom(roomId);
+                _deviceRepository.deleteMotorStatus(roomId);
+                if (_deviceRepository.deleteRoomIdOnDevices(roomId))
+                {
+                    return _roomRepository.deleteRoom(roomId);
+                }
             }
         }
-        else
+        catch (Exception e)
         {
             throw new Exception("Could not delete room");
         }
-
         return false;
     }
     

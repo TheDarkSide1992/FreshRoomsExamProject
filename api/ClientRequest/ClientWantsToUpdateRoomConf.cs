@@ -16,7 +16,7 @@ public class ClientWantsToUpdateRoomConf(RoomService service) : BaseEventHandler
     {
         var metData = socket.getMetadata();
 
-        var roomConf = service.updateRoomPrefrencesConfiguration(metData.userInfo.userId, dto.roomId, dto.updatedMinTemperature, dto.updatedMaxTemperature, dto.updatedMinHumidity, dto.updatedMaxHumidity, dto.updatedMinAq, dto.updatedMaxAq);
+        var roomConf = service.updateRoomPreferencesConfiguration(metData.userInfo.userId, dto.roomId, dto.updatedMinTemperature, dto.updatedMaxTemperature, dto.updatedMinHumidity, dto.updatedMaxHumidity, dto.updatedMinAq, dto.updatedMaxAq);
         var roomConfig = new ServerSendsRoomConfigurations(){
             minTemparature = roomConf.minTemparature,
             maxTemparature = roomConf.maxTemparature,

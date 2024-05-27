@@ -106,25 +106,25 @@ public class AccountService
     public bool changeAccountInfo(int userInfoUserId, string? dtoNewNameDto, string? dtoNewEmailDto, string? dtoNewCityDto, string? dtoNewPasswordDto)
     {
         bool couldUpdate = false;
-        if (dtoNewNameDto != "N/A")
+        if (dtoNewNameDto != null)
         {
             _accountRepository.updateName(userInfoUserId, dtoNewNameDto);
             couldUpdate = true;
 
         }        
-        if (dtoNewEmailDto != "N/A")
+        if (dtoNewEmailDto != null)
         {
             _accountRepository.updateEmail(userInfoUserId, dtoNewEmailDto);
             couldUpdate = true;
 
         }        
-        if (dtoNewCityDto != "N/A")
+        if (dtoNewCityDto != null)
         {
             _accountRepository.updateCity(userInfoUserId, dtoNewCityDto);
             couldUpdate = true;
 
         }        
-        if (dtoNewPasswordDto != "N/A")
+        if (dtoNewPasswordDto != null)
         {
             //TODO HASH PASSWROD
             var hashAlgorithm = PasswordHashAlgorithm.Create();

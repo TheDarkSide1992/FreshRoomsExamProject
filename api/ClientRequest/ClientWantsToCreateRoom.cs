@@ -20,7 +20,6 @@ public class ClientWantsToCreateRoom(RoomService roomService) : BaseEventHandler
         if (room != null)
         {
             
-            //TODO make this return one room to add to frontend list instead of override
             var mess = new ServerReturnsBasicRoomStatus()
             {
                 basicRoomListData = roomService.getBasicRoomWindowStatus(),

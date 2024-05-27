@@ -101,7 +101,6 @@ export class AccountPage implements OnInit {
   }
 
   changeSettings() {
-    //TODO implement later
     this.router.navigate(["account/settings"])
   }
 

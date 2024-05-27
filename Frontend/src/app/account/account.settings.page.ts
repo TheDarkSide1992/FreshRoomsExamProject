@@ -181,7 +181,6 @@ export class AccountSettingsPage implements OnInit{
       newCityDto: newCity,
       newPasswordDto: newPassword
     }))
-    //TODO SEND TO API
 
     await this.wsService.socketConnection.sendDto(new ClientWantsAccountInfo)
 

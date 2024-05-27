@@ -97,7 +97,6 @@ public class AccountRepository
         {
             using (var connection = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql get account info"); //TODO Remowe Before deployment
                 return connection.QueryFirst<AccountInfo>(sql, new { id });
             }
         }
@@ -139,7 +138,6 @@ public class AccountRepository
         {
             using (var conn = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql update Name"); //TODO Remowe Before deployment
                 conn.Execute(sql, new { dtoNewNameDto, userInfoUserId });
             }
         }
@@ -161,7 +159,6 @@ public class AccountRepository
         {
             using (var conn = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql update Email"); //TODO Remowe Before deployment
                 conn.Execute(sql, new { dtoNewEmailDto, userInfoUserId });
             }
         }
@@ -184,7 +181,6 @@ public class AccountRepository
         {
             using (var conn = _dataSource.OpenConnection())
             {
-                Console.WriteLine("runnign sql update City"); //TODO Remowe Before deployment
                 conn.Execute(sql, new { dtoNewCityDto, userInfoUserId });
             }
         }

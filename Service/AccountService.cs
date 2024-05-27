@@ -38,7 +38,6 @@ public class AccountService
     public User CreateUser(string userDisplayName, string userEmail, string password, string guid)
     {
         int userId = _hashRepository.getIdFromGuid(guid);
-        Console.WriteLine("first succes");
         if (userId != null && userId > 0)
         {
             var hashAlgorithm = PasswordHashAlgorithm.create();
@@ -68,7 +67,6 @@ public class AccountService
         try
         {
             var userexists = _accountRepository.checkIfUserIsDeleted(id);
-            Console.WriteLine(userexists);
             if (userexists == 0)
             {
                 return _accountRepository.getById(id);
@@ -135,7 +133,6 @@ public class AccountService
         }        
         if (dtoNewPasswordDto != null)
         {
-            //TODO HASH PASSWROD
             var hashAlgorithm = PasswordHashAlgorithm.create();
             var salt = hashAlgorithm.generateSalt();
             var hash = hashAlgorithm.hashPassword(dtoNewPasswordDto, salt);

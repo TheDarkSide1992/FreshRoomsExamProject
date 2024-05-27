@@ -75,8 +75,6 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
            try
            {
                var message = e.ApplicationMessage.ConvertPayloadToString();
-               Console.WriteLine("topic: " + e.ApplicationMessage.Topic.ToString().Split("/")[2]);
-               Console.WriteLine("message: " + message);
                if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("sensor"))
                {
                    var roomid = _deviceService.getRoomIdFromDeviceId(e.ApplicationMessage.Topic.ToString().Split("/")[2]);
@@ -92,8 +90,6 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                }
                else if (e.ApplicationMessage.Topic.ToString().Split("/")[1].Equals("verified"))
                {
-                   Console.WriteLine("This is e: " + e);
-                   Console.WriteLine("Got a return from device");
                    sendVerificationToUsers(e.ApplicationMessage.Topic.ToString().Split("/")[2], message);
                }
            }
@@ -186,7 +182,6 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "open");
                 m.isOpen = true;
                 m.isDisabled = true;
-                Console.WriteLine(m.motorId);
                 _deviceService.updateMotorstatusWithUsersInput(m);
                 message = "all windows are open or are being opened";
             }
@@ -195,7 +190,6 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
                 sendMessageToTopic("freshrooms/motor/action/" + m.motorId, "close");
                 m.isOpen = false;
                 m.isDisabled = false;
-                Console.WriteLine(m.motorId);
                 _deviceService.updateMotorstatusWithUsersInput(m);
                 message = "all windows are closed or are being closed";
             }
@@ -252,7 +246,6 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
 
     public void verifyDeviceGuid(string guid)
     {
-        Console.WriteLine("testing mqtt verify device: " + guid);
         sendMessageToTopic("freshrooms/verify/" + guid, "verify");
     }
     
@@ -263,8 +256,6 @@ public class MqttClient(DeviceService _deviceService, RoomService _roomService)
         {
                 if(WebSocketConnections.connections.TryGetValue(guid, out var ws))
                 {
-                    Console.WriteLine("testing mqtt verify device return : " + guid);
-                    Console.WriteLine("this is my ws guid: " + guid);
                     ws.Socket.Send(JsonSerializer.Serialize(new ServerRespondsToDeviceVerificationDto
                     {
                         foundSensor = true,
